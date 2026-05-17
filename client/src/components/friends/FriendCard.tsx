@@ -11,6 +11,7 @@ interface Props {
   type?: "friend" | "request";
   onAccept?: (id: string) => void;
   onReject?: (id: string) => void;
+  onMessage: (id: string) => void;
   onRemove?: (id: string) => void;
 }
 
