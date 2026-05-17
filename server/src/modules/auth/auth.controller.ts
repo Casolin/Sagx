@@ -139,7 +139,7 @@ export const forgotPassword = async (req: Request, res: Response) => {
     const result = await requestPasswordReset(email);
 
     if (result) {
-      const link = `${process.env.VITE_API_URL}/reset-password?token=${result.rawToken}`;
+      const link = `${process.env.CLIENT_URL}/reset-password?token=${result.rawToken}`;
 
       await sendEmail(result.email, link);
     }

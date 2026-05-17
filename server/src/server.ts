@@ -18,7 +18,7 @@ const server = http.createServer(app);
 // ========================
 const io = new Server(server, {
   cors: {
-    origin: process.env.VITE_API_URL,
+    origin: process.env.CLIENT_URL,
     credentials: true,
   },
 });

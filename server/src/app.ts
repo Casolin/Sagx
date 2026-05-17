@@ -20,7 +20,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: process.env.VITE_API_URL,
+    origin: process.env.CLIENT_URL,
     credentials: true,
   }),
 );
