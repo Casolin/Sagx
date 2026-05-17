@@ -22,6 +22,10 @@ export const generateTwoFactorSecret = async (userId: string) => {
 
   console.log("OTP Auth URL:", otpAuthUri); // Debugging: Check the generated OTP URL
 
+  if (!otpAuthUri) {
+    throw new AppError("Failed to generate OTP auth URL", 500);
+  }
+
   const qrCodeUrl = await QRCode.toDataURL(otpAuthUri);
 
   console.log("QR Code URL:", qrCodeUrl); // Debugging: Check the generated QR Code URL
