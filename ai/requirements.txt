@@ -5,6 +5,7 @@ itsdangerous==2.2.0
 Jinja2==3.1.6
 click==8.3.2
 blinker==1.9.0
+flask-cors==4.1.2
 
 # AI / ML dependencies for assign_technician
 numpy==2.3.4
