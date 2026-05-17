@@ -7,7 +7,7 @@ let socket: Socket | null = null;
 export const initSocket = (userId: string) => {
   if (socket && socket.connected) return socket;
 
-  socket = io("http://localhost:5000", {
+  socket = io(import.meta.env.VITE_SERVER_API, {
     withCredentials: true,
     auth: {
       userId,
