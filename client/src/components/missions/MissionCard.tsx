@@ -60,7 +60,7 @@ export default function MissionCard({ mission, refresh }: Props) {
     try {
       const reportUrl = await generateMissionReport(mission._id);
 
-      window.open(`http://localhost:10000${reportUrl}`, "_blank");
+      window.open(`${import.meta.env.VITE_AI_URL}${reportUrl}`, "_blank");
 
       toast.success("Report generated");
     } catch {
