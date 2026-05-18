@@ -159,8 +159,6 @@ export const update = async (req: any, res: Response) => {
     return res.status(401).json({ success: false, message: "Unauthorized" });
   }
 
-  // 🔥 FIX: prevent duplicate mission from this function
-  // (updateStatus is the ONLY mission creator now)
   await broadcastKpiUpdate();
   await broadcastMachineUpdated(machine);
   return res.json({ success: true, data: machine });
@@ -188,6 +186,9 @@ export const updateStatus = async (req: any, res: Response) => {
         failureType: req.body.failureType,
       },
     );
+
+    await broadcastKpiUpdate();
+    await broadcastMachineUpdated(machine);
 
     const status = machine.status;
     const condition = machine.condition;
@@ -345,8 +346,6 @@ export const updateStatus = async (req: any, res: Response) => {
       availability:
         (updatedUser?.currentTasks ?? 0) < (updatedUser?.maxTasks ?? 5),
     });
-    await broadcastKpiUpdate();
-    await broadcastMachineUpdated(machine);
 
     return res.json({
       success: true,
