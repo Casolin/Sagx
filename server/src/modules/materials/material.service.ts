@@ -59,3 +59,22 @@ export const resolveMaterials = async (
 
   return materials;
 };
+
+export const consumeMaterials = async (materials: any[]) => {
+  for (const item of materials) {
+    const material = await Material.findById(item.materialId);
+
+    if (!material) {
+      throw new AppError("Material not found", 404);
+    }
+
+    const qtyToConsume = item.quantity || 1;
+
+    if (material.quantity < qtyToConsume) {
+      throw new AppError(`Not enough stock for material ${material.name}`, 400);
+    }
+
+    material.quantity -= qtyToConsume;
+    await material.save();
+  }
+};

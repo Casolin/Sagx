@@ -13,6 +13,7 @@ import {
 
 import { emitToUser } from "../../sockets/socket.service.js";
 import { SOCKET_EVENTS } from "../../sockets/socket.events.js";
+import { consumeMaterials } from "../materials/material.service.js";
 
 import Alert from "../alert/alert.model.js";
 import { createActivityLog } from "../logs/activitylog.service.js";
@@ -346,7 +347,13 @@ export const updateTaskStatus = async (req: Request, res: Response) => {
 
       await releaseTechnician(mission);
     } else if (anyInProgress) {
+      const wasNotInProgress = mission.status !== "IN_PROGRESS";
+
       mission.status = "IN_PROGRESS";
+
+      if (wasNotInProgress && mission.materials?.length) {
+        await consumeMaterials(mission.materials);
+      }
     }
 
     await mission.save();
