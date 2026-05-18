@@ -130,7 +130,7 @@ export default function AlertCard({ alert, refresh }: Props) {
             <h2 className="font-semibold text-gray-900 group-hover:text-blue-600 transition">
               {typeof alert.machine === "string"
                 ? alert.machine
-                : alert.machine?.name}
+                : alert.machine?.name || "Unknown Machine"}
             </h2>
 
             <span className="text-xs text-gray-400 mt-0.5">{alert.type}</span>

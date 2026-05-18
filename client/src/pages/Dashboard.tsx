@@ -5,6 +5,8 @@ import { getKpis, getMyKpis } from "../api/kpi.api";
 import type { Message, Activity } from "../types/global.types";
 import { timeAgo } from "../utils/formatTime";
 import { getUserUpdates } from "../api/notification.api";
+import { SOCKET_EVENTS } from "../services/socket.events";
+import { getSocket } from "../services/socket.service";
 import {
   BarChart,
   Bar,
@@ -150,6 +152,22 @@ export default function Dashboard({ dark }: { dark?: boolean }) {
     };
 
     fetch();
+  }, []);
+
+  useEffect(() => {
+    const socket = getSocket();
+    if (!socket) return;
+
+    const handleKpiUpdate = (kpiData: KpiData) => {
+      console.log("Received KPI update:", kpiData);
+      setData(kpiData); // <-- THIS updates your dashboard state!
+    };
+
+    socket.on(SOCKET_EVENTS.KPI_UPDATE, handleKpiUpdate);
+
+    return () => {
+      socket.off(SOCKET_EVENTS.KPI_UPDATE, handleKpiUpdate);
+    };
   }, []);
 
   if (loading)

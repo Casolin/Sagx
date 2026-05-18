@@ -9,6 +9,13 @@ import {
   deleteAlert,
 } from "./alert.service.js";
 
+import { broadcastKpiUpdate } from "../../utils/kpi.helper.js";
+import {
+  broadcastAlertCreated,
+  broadcastAlertUpdated,
+  broadcastAlertDeleted,
+} from "../../utils/alert.helper.js";
+
 const getParam = (param: unknown): string => {
   if (typeof param === "string") return param;
   if (Array.isArray(param)) return param[0];
@@ -20,6 +27,9 @@ export const create = async (req: any, res: Response) => {
     const userId = req.user?._id || req.user?.id;
 
     const result = await createAlert(req.body, userId);
+
+    await broadcastKpiUpdate();
+    await broadcastAlertCreated(result);
 
     return res.status(201).json({
       success: true,
@@ -37,6 +47,7 @@ export const diagnose = async (req: any, res: Response) => {
   const userId = req.user?.id;
 
   const alert = await diagnoseAlert(req.params.alertId, req.body, userId);
+  await broadcastKpiUpdate();
 
   return res.json({ success: true, data: alert });
 };
@@ -66,6 +77,8 @@ export const getOne = async (req: Request, res: Response) => {
 export const update = async (req: any, res: Response) => {
   try {
     const alert = await updateAlert(req.params.alertId, req.body);
+    await broadcastKpiUpdate();
+    await broadcastAlertUpdated(alert);
     return res.json({ success: true, data: alert });
   } catch (error: any) {
     return res.status(404).json({ success: false, message: error.message });
@@ -78,6 +91,8 @@ export const updateStatus = async (req: Request, res: Response) => {
       getParam(req.params.alertId),
       req.body.status,
     );
+    await broadcastKpiUpdate();
+    await broadcastAlertUpdated(alert);
     return res.json({ success: true, data: alert });
   } catch (error: any) {
     return res.status(404).json({ success: false, message: error.message });
@@ -87,6 +102,8 @@ export const updateStatus = async (req: Request, res: Response) => {
 export const remove = async (req: Request, res: Response) => {
   try {
     const alert = await deleteAlert(getParam(req.params.alertId));
+    await broadcastKpiUpdate();
+    await broadcastAlertDeleted(alert);
     return res.json({ success: true, data: alert });
   } catch (error: any) {
     return res.status(404).json({ success: false, message: error.message });

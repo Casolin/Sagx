@@ -3,6 +3,8 @@ import { getMissions } from "../api/mission.api";
 import type { Mission } from "../types/global.types";
 import MissionList from "../components/missions/MissionList";
 import { searchBus } from "../utils/searchBus";
+import { getSocket } from "../services/socket.service";
+import { SOCKET_EVENTS } from "../services/socket.events";
 
 export default function Missions() {
   const [missions, setMissions] = useState<Mission[]>([]);
@@ -41,6 +43,40 @@ export default function Missions() {
 
     return unsubscribe;
   }, [allMissions]);
+
+  useEffect(() => {
+    const socket = getSocket();
+    if (!socket) return;
+
+    const addMission = (mission: Mission) => {
+      setMissions((prev) => [mission, ...prev]);
+      setAllMissions((prev) => [mission, ...prev]);
+    };
+
+    const updateMission = (mission: Mission) => {
+      setMissions((prev) =>
+        prev.map((m) => (m._id === mission._id ? mission : m)),
+      );
+      setAllMissions((prev) =>
+        prev.map((m) => (m._id === mission._id ? mission : m)),
+      );
+    };
+
+    const deleteMission = (mission: Mission) => {
+      setMissions((prev) => prev.filter((m) => m._id !== mission._id));
+      setAllMissions((prev) => prev.filter((m) => m._id !== mission._id));
+    };
+
+    socket.on(SOCKET_EVENTS.MISSION_CREATED, addMission);
+    socket.on(SOCKET_EVENTS.MISSION_UPDATED, updateMission);
+    socket.on(SOCKET_EVENTS.MISSION_DELETED, deleteMission);
+
+    return () => {
+      socket.off(SOCKET_EVENTS.MISSION_CREATED, addMission);
+      socket.off(SOCKET_EVENTS.MISSION_UPDATED, updateMission);
+      socket.off(SOCKET_EVENTS.MISSION_DELETED, deleteMission);
+    };
+  }, []);
 
   return (
     <div className="p-6 space-y-6 bg-white min-h-screen">

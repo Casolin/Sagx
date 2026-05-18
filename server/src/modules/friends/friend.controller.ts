@@ -13,6 +13,12 @@ import { SOCKET_EVENTS } from "../../sockets/socket.events.js";
 
 import { createActivityLog } from "../logs/activitylog.service.js";
 import { createNotification } from "../notification/notification.service.js";
+import {
+  broadcastFriendRequest,
+  broadcastFriendAccept,
+  broadcastFriendRemove,
+  broadcastFriendReject,
+} from "../../utils/friend.helper.js";
 
 export const sendFriendRequest = async (req: Request, res: Response) => {
   try {
@@ -45,6 +51,10 @@ export const sendFriendRequest = async (req: Request, res: Response) => {
     });
 
     emitToUser(recipientId, SOCKET_EVENTS.NOTIFICATION_NEW, notification);
+    await broadcastFriendRequest({
+      requester: userId,
+      recipient: recipientId,
+    });
 
     res.json({ success: true, data: result });
   } catch (err: any) {
@@ -116,6 +126,10 @@ export const acceptFriendRequest = async (req: Request, res: Response) => {
       SOCKET_EVENTS.NOTIFICATION_NEW,
       notification,
     );
+    await broadcastFriendAccept({
+      requester: result.requester,
+      accepter: userId,
+    });
 
     res.json({ success: true, data: result });
   } catch (err: any) {
@@ -151,6 +165,11 @@ export const rejectFriendRequest = async (req: Request, res: Response) => {
       description: `Friend request rejected`,
     });
 
+    await broadcastFriendReject({
+      requester: result.requester,
+      rejectedBy: userId,
+    });
+
     res.json({ success: true, data: result });
   } catch (err: any) {
     res.status(err.statusCode || 400).json({
@@ -183,6 +202,11 @@ export const removeFriend = async (req: Request, res: Response) => {
       entityType: "USER",
       entityId: friendId,
       description: `Friend removed`,
+    });
+
+    await broadcastFriendRemove({
+      userId,
+      friendId,
     });
 
     res.json({ success: true, data: result });

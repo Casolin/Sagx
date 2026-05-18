@@ -3,6 +3,8 @@ import type { Alert } from "../../types/global.types";
 import { getAlerts } from "../../api/alert.api";
 import AlertCard from "./AlertCard";
 import { AlertTriangle } from "lucide-react";
+import { SOCKET_EVENTS } from "../../services/socket.events";
+import { getSocket } from "../../services/socket.service";
 
 export default function AlertList() {
   const [alerts, setAlerts] = useState<Alert[]>([]);
@@ -20,6 +22,33 @@ export default function AlertList() {
 
   useEffect(() => {
     fetchAlerts();
+  }, []);
+
+  useEffect(() => {
+    const socket = getSocket();
+    if (!socket) return;
+
+    const handleAlertCreated = (alert: Alert) => {
+      setAlerts((prev) => [alert, ...prev]);
+    };
+
+    const handleAlertUpdated = (alert: Alert) => {
+      setAlerts((prev) => prev.map((a) => (a._id === alert._id ? alert : a)));
+    };
+
+    const handleAlertDeleted = (alert: Alert) => {
+      setAlerts((prev) => prev.filter((a) => a._id !== alert._id));
+    };
+
+    socket.on(SOCKET_EVENTS.ALERT_CREATED, handleAlertCreated);
+    socket.on(SOCKET_EVENTS.ALERT_UPDATED, handleAlertUpdated);
+    socket.on(SOCKET_EVENTS.ALERT_DELETED, handleAlertDeleted);
+
+    return () => {
+      socket.off(SOCKET_EVENTS.ALERT_CREATED, handleAlertCreated);
+      socket.off(SOCKET_EVENTS.ALERT_UPDATED, handleAlertUpdated);
+      socket.off(SOCKET_EVENTS.ALERT_DELETED, handleAlertDeleted);
+    };
   }, []);
 
   if (loading) {

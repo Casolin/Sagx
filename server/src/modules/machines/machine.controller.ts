@@ -7,6 +7,13 @@ import {
   deleteMachine,
 } from "./machine.service.js";
 
+import { broadcastKpiUpdate } from "../../utils/kpi.helper.js";
+import {
+  broadcastMachineCreated,
+  broadcastMachineUpdated,
+  broadcastMachineDeleted,
+} from "../../utils/machine.helper.js";
+
 import Alert from "../alert/alert.model.js";
 
 import { resolveMaterials } from "../materials/material.service.js";
@@ -122,6 +129,9 @@ export const create = async (req: any, res: Response) => {
     createdBy: userId,
   });
 
+  await broadcastKpiUpdate();
+  await broadcastMachineCreated(machine);
+
   return res.status(201).json({ success: true, data: machine });
 };
 
@@ -151,6 +161,8 @@ export const update = async (req: any, res: Response) => {
 
   // 🔥 FIX: prevent duplicate mission from this function
   // (updateStatus is the ONLY mission creator now)
+  await broadcastKpiUpdate();
+  await broadcastMachineUpdated(machine);
   return res.json({ success: true, data: machine });
 };
 
@@ -333,6 +345,8 @@ export const updateStatus = async (req: any, res: Response) => {
       availability:
         (updatedUser?.currentTasks ?? 0) < (updatedUser?.maxTasks ?? 5),
     });
+    await broadcastKpiUpdate();
+    await broadcastMachineUpdated(machine);
 
     return res.json({
       success: true,
@@ -353,5 +367,7 @@ export const updateStatus = async (req: any, res: Response) => {
 /* ---------------- DELETE ---------------- */
 export const remove = async (req: Request, res: Response) => {
   const machine = await deleteMachine(getParam(req.params.machineId));
+  await broadcastKpiUpdate();
+  await broadcastMachineDeleted(machine);
   return res.json({ success: true, data: machine });
 };

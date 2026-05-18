@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
 import Mission from "./mission.model.js";
 import User from "../users/user.model.js";
+import { broadcastKpiUpdate } from "../../utils/kpi.helper.js";
 
 import {
   createMission,
@@ -16,6 +17,11 @@ import { SOCKET_EVENTS } from "../../sockets/socket.events.js";
 import Alert from "../alert/alert.model.js";
 import { createActivityLog } from "../logs/activitylog.service.js";
 import { createNotification } from "../notification/notification.service.js";
+import {
+  broadcastMissionCreated,
+  broadcastMissionUpdated,
+  broadcastMissionDeleted,
+} from "../../utils/mission.helper.js";
 
 /* ---------------- SAFE PARAM ---------------- */
 const getParam = (param: unknown): string => {
@@ -178,6 +184,8 @@ export const create = async (req: Request, res: Response) => {
     });
 
     emitToUser(assignedTech.id, SOCKET_EVENTS.NOTIFICATION_NEW, notification);
+    await broadcastKpiUpdate();
+    await broadcastMissionCreated(mission);
 
     return res.status(201).json({
       success: true,
@@ -215,6 +223,8 @@ export const update = async (req: Request, res: Response) => {
     entityId: mission._id,
     description: "Mission updated",
   });
+  await broadcastKpiUpdate();
+  await broadcastMissionUpdated(mission);
 
   return res.json({ success: true, data: mission });
 };
@@ -232,6 +242,8 @@ export const remove = async (req: Request, res: Response) => {
     entityId: missionId,
     description: "Mission deleted",
   });
+  await broadcastKpiUpdate();
+  await broadcastMissionDeleted(mission);
 
   return res.json({ success: true, data: mission });
 };
@@ -346,6 +358,8 @@ export const updateTaskStatus = async (req: Request, res: Response) => {
       entityId: mission._id,
       description: `Task ${taskId} updated`,
     });
+    await broadcastKpiUpdate();
+    await broadcastMissionUpdated(mission);
 
     return res.json({ success: true, data: mission });
   } catch (error: any) {

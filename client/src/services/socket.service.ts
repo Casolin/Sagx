@@ -30,6 +30,58 @@ export const initSocket = (userId: string) => {
     useNotificationStore.getState().markAsRead(notificationId);
   });
 
+  socket.on(SOCKET_EVENTS.KPI_UPDATE, (kpiData) => {
+    console.log("📊 KPI Updated:", kpiData);
+  });
+
+  socket.on(SOCKET_EVENTS.MISSION_CREATED, (mission) => {
+    console.log("Mission Created:", mission);
+  });
+
+  socket.on(SOCKET_EVENTS.MISSION_UPDATED, (mission) => {
+    console.log("Mission Updated:", mission);
+  });
+
+  socket.on(SOCKET_EVENTS.MISSION_DELETED, (mission) => {
+    console.log("Mission Deleted:", mission);
+  });
+
+  socket.on(SOCKET_EVENTS.MACHINE_CREATED, (machine) => {
+    console.log("Machine Created:", machine);
+  });
+
+  socket.on(SOCKET_EVENTS.MACHINE_UPDATED, (machine) => {
+    console.log("Machine Updated:", machine);
+  });
+
+  socket.on(SOCKET_EVENTS.MACHINE_DELETED, (machine) => {
+    console.log("Machine Deleted:", machine);
+  });
+
+  socket.on(SOCKET_EVENTS.ALERT_CREATED, (alert) => {
+    console.log("Alert Created:", alert);
+  });
+
+  socket.on(SOCKET_EVENTS.ALERT_UPDATED, (alert) => {
+    console.log("Alert Updated:", alert);
+  });
+
+  socket.on(SOCKET_EVENTS.ALERT_DELETED, (alert) => {
+    console.log("Alert Deleted:", alert);
+  });
+
+  socket.on(SOCKET_EVENTS.FRIEND_REQUEST, (data) => {
+    console.log("Friend Request:", data);
+  });
+
+  socket.on(SOCKET_EVENTS.FRIEND_ACCEPT, (data) => {
+    console.log("Friend Accepted:", data);
+  });
+
+  socket.on(SOCKET_EVENTS.FRIEND_REMOVE, (data) => {
+    console.log("Friend Removed:", data);
+  });
+
   socket.on("disconnect", (reason) => {
     console.log("❌ Socket disconnected:", reason);
   });

@@ -9,6 +9,9 @@ import {
   removeFriend,
 } from "../api/friend.api";
 
+import { SOCKET_EVENTS } from "../services/socket.events";
+import { getSocket } from "../services/socket.service";
+
 import FriendList from "../components/friends/FriendList";
 import FriendRequests from "../components/friends/FriendRequests";
 import AddFriendModal from "../components/friends/AddFriendModal";
@@ -40,6 +43,39 @@ const FriendsPage = () => {
 
   useEffect(() => {
     fetchData();
+  }, []);
+
+  useEffect(() => {
+    const socket = getSocket();
+    if (!socket) return;
+
+    const handleFriendRequest = () => {
+      fetchData();
+    };
+
+    const handleFriendAccept = () => {
+      fetchData();
+    };
+
+    const handleFriendReject = () => {
+      fetchData();
+    };
+
+    const handleFriendRemove = () => {
+      fetchData();
+    };
+
+    socket.on(SOCKET_EVENTS.FRIEND_REQUEST, handleFriendRequest);
+    socket.on(SOCKET_EVENTS.FRIEND_ACCEPT, handleFriendAccept);
+    socket.on(SOCKET_EVENTS.FRIEND_REMOVE, handleFriendReject);
+    socket.on(SOCKET_EVENTS.FRIEND_REMOVE, handleFriendRemove);
+
+    return () => {
+      socket.off(SOCKET_EVENTS.FRIEND_REQUEST, handleFriendRequest);
+      socket.off(SOCKET_EVENTS.FRIEND_ACCEPT, handleFriendAccept);
+      socket.off(SOCKET_EVENTS.FRIEND_REMOVE, handleFriendReject);
+      socket.off(SOCKET_EVENTS.FRIEND_REMOVE, handleFriendRemove);
+    };
   }, []);
 
   const handleAccept = async (id: string) => {
