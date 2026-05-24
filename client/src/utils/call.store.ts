@@ -22,22 +22,28 @@ type CallState = {
   callAccepted: boolean;
   isCalling: boolean;
 
-  isMinimized: boolean;
-
   peer: Peer.Instance | null;
+
   stream: MediaStream | null;
   remoteStream: MediaStream | null;
 
   activeCallUserId: string | null;
 
   isMuted: boolean;
+  isScreenSharing: boolean;
+
+  isMinimized: boolean;
 
   bindSocket: (socket: Socket) => void;
   startCall: (receiverId: string, currentUser: CallUser) => Promise<void>;
   answerCall: () => Promise<void>;
+
   rejectCall: () => void;
   endCall: () => void;
+
   toggleMute: () => void;
+  toggleCamera: () => void;
+  toggleScreenShare: () => Promise<void>;
 
   minimizeCall: () => void;
   restoreCall: () => void;
@@ -52,14 +58,16 @@ export const useCallStore = create<CallState>((set, get) => ({
   callAccepted: false,
   isCalling: false,
 
-  isMinimized: false,
-
   peer: null,
   stream: null,
   remoteStream: null,
 
   activeCallUserId: null,
+
   isMuted: false,
+  isScreenSharing: false,
+
+  isMinimized: false,
 
   bindSocket: (socket) => {
     set({ socket });
@@ -82,17 +90,11 @@ export const useCallStore = create<CallState>((set, get) => ({
       set({
         callAccepted: true,
         isCalling: false,
-        isMinimized: false,
       });
     });
 
-    socket.on(SOCKET_EVENTS.CALL_REJECT, () => {
-      get().cleanup();
-    });
-
-    socket.on(SOCKET_EVENTS.CALL_END, () => {
-      get().cleanup();
-    });
+    socket.on(SOCKET_EVENTS.CALL_REJECT, () => get().cleanup());
+    socket.on(SOCKET_EVENTS.CALL_END, () => get().cleanup());
   },
 
   startCall: async (receiverId, currentUser) => {
@@ -101,8 +103,11 @@ export const useCallStore = create<CallState>((set, get) => ({
 
     const stream = await navigator.mediaDevices.getUserMedia({
       audio: true,
-      video: false,
+      video: true,
     });
+
+    stream.getAudioTracks().forEach((t) => (t.enabled = true));
+    stream.getVideoTracks().forEach((t) => (t.enabled = true));
 
     const peer = new Peer({
       initiator: true,
@@ -128,7 +133,7 @@ export const useCallStore = create<CallState>((set, get) => ({
       isCalling: true,
       activeCallUserId: receiverId,
       isMuted: false,
-      isMinimized: false,
+      isScreenSharing: false,
     });
   },
 
@@ -138,8 +143,11 @@ export const useCallStore = create<CallState>((set, get) => ({
 
     const stream = await navigator.mediaDevices.getUserMedia({
       audio: true,
-      video: false,
+      video: true,
     });
+
+    stream.getAudioTracks().forEach((t) => (t.enabled = true));
+    stream.getVideoTracks().forEach((t) => (t.enabled = true));
 
     const peer = new Peer({
       initiator: false,
@@ -168,7 +176,7 @@ export const useCallStore = create<CallState>((set, get) => ({
       isCalling: false,
       activeCallUserId: incomingCall.caller._id,
       isMuted: false,
-      isMinimized: false,
+      isScreenSharing: false,
     });
   },
 
@@ -180,15 +188,65 @@ export const useCallStore = create<CallState>((set, get) => ({
     if (!audioTrack) return;
 
     audioTrack.enabled = isMuted;
-
     set({ isMuted: !isMuted });
   },
 
+  toggleCamera: () => {
+    const { stream } = get();
+    if (!stream) return;
+
+    const videoTrack = stream.getVideoTracks()[0];
+    if (!videoTrack) return;
+
+    videoTrack.enabled = !videoTrack.enabled;
+  },
+
+  toggleScreenShare: async () => {
+    const { peer, stream, isScreenSharing } = get();
+    if (!peer || !stream) return;
+    // eslint-disable-next-line
+    const pc = (peer as any)._pc as RTCPeerConnection;
+    const sender = pc.getSenders().find((s) => s.track?.kind === "video");
+    if (!sender) return;
+
+    if (isScreenSharing) {
+      const camTrack = stream.getVideoTracks()[0];
+      if (camTrack) await sender.replaceTrack(camTrack);
+
+      set({ isScreenSharing: false });
+      return;
+    }
+
+    const screenStream = await navigator.mediaDevices.getDisplayMedia({
+      video: true,
+    });
+
+    const screenTrack = screenStream.getVideoTracks()[0];
+    await sender.replaceTrack(screenTrack);
+
+    screenTrack.onended = async () => {
+      const camTrack = stream.getVideoTracks()[0];
+      if (camTrack) await sender.replaceTrack(camTrack);
+      set({ isScreenSharing: false });
+    };
+
+    set({ isScreenSharing: true });
+  },
+
   minimizeCall: () => {
+    const { stream } = get();
+
+    stream?.getVideoTracks().forEach((t) => (t.enabled = false));
+
     set({ isMinimized: true });
   },
 
   restoreCall: () => {
+    const { stream } = get();
+
+    stream?.getAudioTracks().forEach((t) => (t.enabled = true));
+    stream?.getVideoTracks().forEach((t) => (t.enabled = true));
+
     set({ isMinimized: false });
   },
 
@@ -230,6 +288,7 @@ export const useCallStore = create<CallState>((set, get) => ({
       isCalling: false,
       activeCallUserId: null,
       isMuted: false,
+      isScreenSharing: false,
       isMinimized: false,
     });
   },
