@@ -2,19 +2,22 @@ import nodemailer from "nodemailer";
 
 const transporter = nodemailer.createTransport({
   host: "smtp.mailersend.net",
-  port: 587,
+  port: 2525,
   secure: false,
+  requireTLS: true,
   auth: {
     user: process.env.MAILERSEND_SMTP_USER,
     pass: process.env.MAILERSEND_SMTP_PASS,
   },
+  connectionTimeout: 15000,
+  greetingTimeout: 15000,
+  socketTimeout: 15000,
 });
-
-console.log("SMTP USER:", process.env.MAILERSEND_SMTP_USER);
-console.log("SMTP PASS exists:", !!process.env.MAILERSEND_SMTP_PASS);
 
 export const sendEmail = async (to: string, link: string) => {
   try {
+    await transporter.verify();
+
     await transporter.sendMail({
       from: `"SagX Support" <no-reply@test-zkq340e35n3gd796.mlsender.net>`,
       to,
