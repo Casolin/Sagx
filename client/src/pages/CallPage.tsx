@@ -44,10 +44,7 @@ export const CallPage = () => {
   const restoreCall = useCallStore((s) => s.restoreCall);
 
   const videoRef = useRef<HTMLVideoElement | null>(null);
-
   const audioRef = useRef<HTMLAudioElement | null>(null);
-
-  const containerRef = useRef<HTMLDivElement | null>(null);
 
   const isIncoming = !!incomingCall;
   const isInCall = callAccepted;
@@ -61,21 +58,47 @@ export const CallPage = () => {
   useEffect(() => {
     if (!remoteStream) return;
 
-    // VIDEO
-    if (videoRef.current) {
-      videoRef.current.srcObject = remoteStream;
-      videoRef.current.play().catch(() => {});
-    }
+    const attachStreams = async () => {
+      if (videoRef.current) {
+        if (videoRef.current.srcObject !== remoteStream) {
+          videoRef.current.srcObject = remoteStream;
+        }
 
-    // AUDIO
-    if (audioRef.current) {
-      audioRef.current.srcObject = remoteStream;
-      audioRef.current.muted = false;
-      audioRef.current.volume = 1;
+        try {
+          await videoRef.current.play();
+        } catch {}
+      }
 
-      audioRef.current.play().catch(console.error);
-    }
-  }, [remoteStream]);
+      if (audioRef.current) {
+        if (audioRef.current.srcObject !== remoteStream) {
+          audioRef.current.srcObject = remoteStream;
+        }
+
+        audioRef.current.muted = false;
+        audioRef.current.volume = 1;
+
+        try {
+          await audioRef.current.play();
+        } catch {}
+      }
+    };
+
+    setTimeout(() => {
+      attachStreams();
+    }, 50);
+
+    const onVisibility = () => {
+      if (!document.hidden) {
+        attachStreams();
+      }
+    };
+
+    document.addEventListener("visibilitychange", onVisibility);
+
+    return () => {
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
+  }, [remoteStream, isMinimized]);
 
   useEffect(() => {
     if (isIncoming && !isInCall) startRingtone();
@@ -95,7 +118,6 @@ export const CallPage = () => {
     <>
       <audio ref={audioRef} autoPlay playsInline style={{ display: "none" }} />
 
-      {/* MINIMIZED */}
       {isMinimized && isInCall ? (
         <div className="fixed bottom-5 right-5 z-50">
           <div className="bg-zinc-900/90 backdrop-blur-xl border border-white/10 text-white px-4 py-3 rounded-2xl flex items-center gap-3 shadow-xl">
@@ -119,23 +141,26 @@ export const CallPage = () => {
           </div>
         </div>
       ) : (
-        <div
-          ref={containerRef}
-          className="fixed inset-0 bg-black text-white flex items-center justify-center z-50"
-        >
-          {/* VIDEO */}
+        <div className="fixed inset-0 bg-black text-white flex items-center justify-center z-50">
+          {!remoteStream && (
+            <div className="absolute inset-0 flex items-center justify-center bg-zinc-950">
+              <p className="text-white/40 text-sm">
+                {isScreenSharing ? "Waiting for screen share..." : "No video"}
+              </p>
+            </div>
+          )}
+
           <video
             ref={videoRef}
             autoPlay
             playsInline
             className={
-              isVideoFull || isScreenSharing
+              isVideoFull
                 ? "absolute inset-0 w-full h-full object-contain bg-black"
                 : "absolute top-6 right-6 w-72 h-48 bg-zinc-900 rounded-2xl shadow-2xl border border-white/10 object-cover"
             }
           />
 
-          {/* FULLSCREEN BUTTON */}
           {isInCall && (
             <button
               onClick={toggleVideoFull}
@@ -145,7 +170,6 @@ export const CallPage = () => {
             </button>
           )}
 
-          {/* CONTROLS */}
           {isInCall && !isVideoFull && (
             <div className="absolute bottom-6 flex items-center gap-3 bg-black/40 backdrop-blur-xl px-4 py-3 rounded-2xl border border-white/10">
               <button
@@ -182,7 +206,6 @@ export const CallPage = () => {
             </div>
           )}
 
-          {/* INCOMING CALL */}
           {isIncoming && !isInCall && (
             <div className="flex flex-col items-center gap-6">
               <img
@@ -204,7 +227,7 @@ export const CallPage = () => {
 
                 <button
                   onClick={answerCall}
-                  className="p-4 rounded-full bg-green-500/20 text-green-400 hover:bg-green-500/30 transition"
+                  className="p-4 rounded-full bg-green-500/20 text-green-400 hover:bg-green-500/30 transition cursor-pointer"
                 >
                   <Phone />
                 </button>
@@ -212,7 +235,6 @@ export const CallPage = () => {
             </div>
           )}
 
-          {/* CALLING */}
           {isCalling && !isInCall && (
             <div className="flex flex-col items-center gap-6">
               <PhoneCall size={40} className="opacity-80" />
