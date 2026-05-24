@@ -44,6 +44,7 @@ export const CallPage = () => {
   const restoreCall = useCallStore((s) => s.restoreCall);
 
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   const isIncoming = !!incomingCall;
@@ -86,6 +87,18 @@ export const CallPage = () => {
   }, [remoteStream, isMinimized]);
 
   useEffect(() => {
+    if (!remoteStream) return;
+
+    if (!audioRef.current) return;
+
+    audioRef.current.srcObject = remoteStream;
+    audioRef.current.muted = false;
+    audioRef.current.volume = 1;
+
+    audioRef.current.play().catch(() => {});
+  }, [remoteStream, isMinimized]);
+
+  useEffect(() => {
     if (isIncoming && !isInCall) startRingtone();
     else stopRingtone();
     return () => stopRingtone();
@@ -123,113 +136,117 @@ export const CallPage = () => {
   }
 
   return (
-    <div
-      ref={containerRef}
-      className="fixed inset-0 bg-black text-white flex items-center justify-center z-50"
-    >
-      {/* VIDEO */}
-      <video
-        ref={videoRef}
-        autoPlay
-        playsInline
-        className={
-          isVideoFull
-            ? "absolute inset-0 w-full h-full object-contain bg-black"
-            : "absolute top-6 right-6 w-72 h-48 bg-zinc-900 rounded-2xl shadow-2xl border border-white/10 object-cover"
-        }
-      />
+    <>
+      {" "}
+      <audio ref={audioRef} autoPlay playsInline hidden />
+      <div
+        ref={containerRef}
+        className="fixed inset-0 bg-black text-white flex items-center justify-center z-50"
+      >
+        {/* VIDEO */}
+        <video
+          ref={videoRef}
+          autoPlay
+          playsInline
+          className={
+            isVideoFull
+              ? "absolute inset-0 w-full h-full object-contain bg-black"
+              : "absolute top-6 right-6 w-72 h-48 bg-zinc-900 rounded-2xl shadow-2xl border border-white/10 object-cover"
+          }
+        />
 
-      {/* FULLSCREEN BUTTON (now only toggles VIDEO fullscreen) */}
-      {isInCall && (
-        <button
-          onClick={toggleVideoFull}
-          className="absolute top-4 right-4 bg-black/40 backdrop-blur-md border border-white/10 p-2 rounded-full hover:bg-black/60 transition z-50 cursor-pointer"
-        >
-          {isVideoFull ? <Minimize size={18} /> : <Maximize size={18} />}
-        </button>
-      )}
-
-      {/* CONTROLS */}
-      {isInCall && !isVideoFull && (
-        <div className="absolute bottom-6 flex items-center gap-3 bg-black/40 backdrop-blur-xl px-4 py-3 rounded-2xl border border-white/10">
+        {/* FULLSCREEN BUTTON (now only toggles VIDEO fullscreen) */}
+        {isInCall && (
           <button
-            onClick={toggleMute}
-            className="p-3 rounded-full bg-white/5 hover:bg-white/10 transition cursor-pointer"
+            onClick={toggleVideoFull}
+            className="absolute top-4 right-4 bg-black/40 backdrop-blur-md border border-white/10 p-2 rounded-full hover:bg-black/60 transition z-50 cursor-pointer"
           >
-            {isMuted ? <MicOff size={18} /> : <Mic size={18} />}
+            {isVideoFull ? <Minimize size={18} /> : <Maximize size={18} />}
           </button>
+        )}
 
-          <button
-            onClick={toggleScreenShare}
-            className="p-3 rounded-full bg-white/5 hover:bg-white/10 transition cursor-pointer"
-          >
-            {isScreenSharing ? (
-              <MonitorOff size={18} />
-            ) : (
-              <ScreenShare size={18} />
-            )}
-          </button>
-
-          <button
-            onClick={minimizeCall}
-            className="p-3 rounded-full bg-white/5 hover:bg-white/10 transition cursor-pointer"
-          >
-            <Minimize2 size={18} />
-          </button>
-
-          <button
-            onClick={endCall}
-            className="p-3 rounded-full bg-red-500/20 text-red-400 hover:bg-red-500/30 transition cursor-pointer"
-          >
-            <PhoneOff size={18} />
-          </button>
-        </div>
-      )}
-
-      {/* INCOMING CALL */}
-      {isIncoming && !isInCall && (
-        <div className="flex flex-col items-center gap-6">
-          <img
-            src={incomingCall.caller.avatar || "/default-avatar.png"}
-            className="w-24 h-24 rounded-full border border-white/10"
-          />
-
-          <p className="text-sm text-white/80">
-            {incomingCall.caller.firstName} {incomingCall.caller.lastName}
-          </p>
-
-          <div className="flex gap-10">
+        {/* CONTROLS */}
+        {isInCall && !isVideoFull && (
+          <div className="absolute bottom-6 flex items-center gap-3 bg-black/40 backdrop-blur-xl px-4 py-3 rounded-2xl border border-white/10">
             <button
-              onClick={rejectCall}
-              className="p-4 rounded-full bg-white/5 hover:bg-white/10 transition cursor-pointer"
+              onClick={toggleMute}
+              className="p-3 rounded-full bg-white/5 hover:bg-white/10 transition cursor-pointer"
             >
-              <X />
+              {isMuted ? <MicOff size={18} /> : <Mic size={18} />}
             </button>
 
             <button
-              onClick={answerCall}
-              className="p-4 rounded-full bg-green-500/20 text-green-400 hover:bg-green-500/30 transition"
+              onClick={toggleScreenShare}
+              className="p-3 rounded-full bg-white/5 hover:bg-white/10 transition cursor-pointer"
             >
-              <Phone />
+              {isScreenSharing ? (
+                <MonitorOff size={18} />
+              ) : (
+                <ScreenShare size={18} />
+              )}
+            </button>
+
+            <button
+              onClick={minimizeCall}
+              className="p-3 rounded-full bg-white/5 hover:bg-white/10 transition cursor-pointer"
+            >
+              <Minimize2 size={18} />
+            </button>
+
+            <button
+              onClick={endCall}
+              className="p-3 rounded-full bg-red-500/20 text-red-400 hover:bg-red-500/30 transition cursor-pointer"
+            >
+              <PhoneOff size={18} />
             </button>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* CALLING */}
-      {isCalling && !isInCall && (
-        <div className="flex flex-col items-center gap-6">
-          <PhoneCall size={40} className="opacity-80" />
-          <p className="text-white/70 text-sm">Calling...</p>
+        {/* INCOMING CALL */}
+        {isIncoming && !isInCall && (
+          <div className="flex flex-col items-center gap-6">
+            <img
+              src={incomingCall.caller.avatar || "/default-avatar.png"}
+              className="w-24 h-24 rounded-full border border-white/10"
+            />
 
-          <button
-            onClick={endCall}
-            className="p-3 rounded-full bg-white/5 hover:bg-white/10 transition cursor-pointer"
-          >
-            <PhoneOff />
-          </button>
-        </div>
-      )}
-    </div>
+            <p className="text-sm text-white/80">
+              {incomingCall.caller.firstName} {incomingCall.caller.lastName}
+            </p>
+
+            <div className="flex gap-10">
+              <button
+                onClick={rejectCall}
+                className="p-4 rounded-full bg-white/5 hover:bg-white/10 transition cursor-pointer"
+              >
+                <X />
+              </button>
+
+              <button
+                onClick={answerCall}
+                className="p-4 rounded-full bg-green-500/20 text-green-400 hover:bg-green-500/30 transition"
+              >
+                <Phone />
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* CALLING */}
+        {isCalling && !isInCall && (
+          <div className="flex flex-col items-center gap-6">
+            <PhoneCall size={40} className="opacity-80" />
+            <p className="text-white/70 text-sm">Calling...</p>
+
+            <button
+              onClick={endCall}
+              className="p-3 rounded-full bg-white/5 hover:bg-white/10 transition cursor-pointer"
+            >
+              <PhoneOff />
+            </button>
+          </div>
+        )}
+      </div>
+    </>
   );
 };
