@@ -10,6 +10,9 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+console.log("SMTP USER:", process.env.MAILERSEND_SMTP_USER);
+console.log("SMTP PASS exists:", !!process.env.MAILERSEND_SMTP_PASS);
+
 export const sendEmail = async (to: string, link: string) => {
   try {
     await transporter.sendMail({
