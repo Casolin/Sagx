@@ -12,6 +12,9 @@ const transporter = nodemailer.createTransport({
 
 export const sendEmail = async (to: string, link: string) => {
   try {
+    console.log("EMAIL USER:", process.env.EMAIL_USER);
+    console.log("EMAIL PASS EXISTS:", !!process.env.EMAIL_PASS);
+
     await transporter.sendMail({
       from: `"Support Team" <${process.env.EMAIL_USER}>`,
       to,
@@ -19,6 +22,7 @@ export const sendEmail = async (to: string, link: string) => {
       html: `
         <div style="font-family: Arial, sans-serif; line-height: 1.5;">
           <h2>Password Reset</h2>
+
           <p>You requested to reset your password.</p>
           <p>Click the button below to reset it:</p>
 
@@ -41,8 +45,10 @@ export const sendEmail = async (to: string, link: string) => {
         </div>
       `,
     });
+
+    console.log("EMAIL SENT SUCCESS");
   } catch (error) {
-    console.error("Email sending failed:", error);
-    throw new Error("Failed to send email");
+    console.error("EMAIL FAILED FULL ERROR:", error);
+    throw error;
   }
 };
