@@ -89,7 +89,7 @@ const ChatNavbar = ({ selectedUser = null, roomId }: Props) => {
               className="w-11 h-11 rounded-full"
             />
             <div>
-              <p className="font-semibold">
+              <p className="font-semibold truncate max-w-30 sm:max-w-none">
                 {selectedUser.firstName} {selectedUser.lastName}
               </p>
               <p className="text-xs text-green-600">Online</p>
