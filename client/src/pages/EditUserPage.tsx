@@ -178,7 +178,7 @@ export default function EditUserPage() {
             <button
               type="button"
               onClick={() => navigate("/users")}
-              className="px-4 py-2 rounded-xl border border-zinc-200 text-sm text-zinc-600 hover:bg-zinc-50 transition"
+              className="px-4 py-2 rounded-xl border border-zinc-200 text-sm text-zinc-600 hover:bg-zinc-50 transition cursor-pointer"
             >
               Cancel
             </button>
@@ -187,7 +187,7 @@ export default function EditUserPage() {
               type="submit"
               onClick={handleSubmit}
               disabled={saving}
-              className="px-4 py-2 rounded-xl bg-black text-white text-sm hover:opacity-90 disabled:opacity-40 transition"
+              className="px-4 py-2 rounded-xl bg-black text-white text-sm hover:opacity-90 disabled:opacity-40 transition cursor-pointer"
             >
               {saving ? "Updating..." : "Update User"}
             </button>

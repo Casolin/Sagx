@@ -130,7 +130,7 @@ export default function AddUserPage() {
             <button
               type="button"
               onClick={() => navigate("/users")}
-              className="px-4 py-2 rounded-xl border border-zinc-200 text-sm text-zinc-600 hover:bg-zinc-50 transition"
+              className="px-4 py-2 rounded-xl border border-zinc-200 text-sm text-zinc-600 hover:bg-zinc-50 transition cursor-pointer"
             >
               Cancel
             </button>
@@ -139,7 +139,7 @@ export default function AddUserPage() {
               type="submit"
               disabled={loading}
               onClick={handleSubmit}
-              className="px-4 py-2 rounded-xl bg-black text-white text-sm hover:opacity-90 disabled:opacity-40 transition"
+              className="px-4 py-2 rounded-xl bg-black text-white text-sm hover:opacity-90 disabled:opacity-40 transition cursor-pointer"
             >
               {loading ? "Creating..." : "Create User"}
             </button>
