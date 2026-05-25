@@ -113,31 +113,45 @@ export default function AlertCard({ alert, refresh }: Props) {
 
   return (
     <>
-      {/* CARD */}
       <div
         className="
-          group relative
-          rounded-2xl border border-gray-200
-          bg-white p-5
-          hover:shadow-xl hover:border-gray-300
-          transition-all duration-200
-          space-y-3 hover:-translate-y-0.5
-        "
+        group relative rounded-3xl border border-gray-200/70 bg-white
+        p-5 space-y-4
+        transition-all duration-300
+        hover:-translate-y-1 hover:shadow-[0_16px_50px_rgba(0,0,0,0.10)]
+      "
       >
+        {/* LEFT PRIORITY STRIPE */}
+        <div
+          className={`absolute left-0 top-0 h-full w-1 rounded-l-3xl ${
+            alert.priority === "HIGH"
+              ? "bg-red-500"
+              : alert.priority === "MEDIUM"
+                ? "bg-yellow-500"
+                : "bg-green-500"
+          }`}
+        />
+
         {/* HEADER */}
         <div className="flex items-start justify-between">
-          <div className="flex flex-col">
-            <h2 className="font-semibold text-gray-900 group-hover:text-blue-600 transition">
+          <div>
+            <h2 className="text-lg font-bold text-gray-900 group-hover:text-blue-600 transition">
               {typeof alert.machine === "string"
                 ? alert.machine
                 : alert.machine?.name || "Unknown Machine"}
             </h2>
 
-            <span className="text-xs text-gray-400 mt-0.5">{alert.type}</span>
+            <div className="flex items-center gap-2 mt-1">
+              <span className="text-xs text-gray-400">{alert.type}</span>
+
+              <span className="text-[10px] px-2 py-0.5 rounded-full bg-gray-100 text-gray-600 border">
+                ID: {alert._id.slice(-5)}
+              </span>
+            </div>
           </div>
 
           <span
-            className={`text-xs font-medium px-3 py-1 rounded-full border ${statusColor(
+            className={`text-[11px] px-3 py-1 rounded-full font-semibold border ${statusColor(
               alert.status,
             )}`}
           >
@@ -148,63 +162,67 @@ export default function AlertCard({ alert, refresh }: Props) {
         {/* MESSAGE */}
         <p className="text-sm text-gray-600 leading-relaxed">{alert.message}</p>
 
-        {/* PRIORITY */}
-        <div className="flex gap-2 text-xs">
-          <span className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full border">
+        {/* META */}
+        <div className="flex items-center gap-2 text-xs">
+          <span className="px-3 py-1 rounded-full bg-gray-50 border text-gray-600">
             Priority: {alert.priority}
           </span>
+
+          {alert.failureType && (
+            <span className="px-3 py-1 rounded-full bg-gray-50 border text-gray-600">
+              {alert.failureType}
+            </span>
+          )}
         </div>
 
-        {/* TIMESTAMP */}
-        <div className="text-[11px] text-gray-400 pt-1">
-          Updated {new Date(alert.updatedAt).toLocaleString()}
-        </div>
+        {/* FOOTER */}
+        <div className="flex items-center justify-between pt-3 border-t border-gray-100">
+          <span className="text-[11px] text-gray-400">
+            Updated {new Date(alert.updatedAt).toLocaleString()}
+          </span>
 
-        {/* ACTIONS */}
-        <div className="flex justify-end gap-2 pt-3 border-t border-gray-100 opacity-90 group-hover:opacity-100 transition">
-          {alert.status === "RESOLVED" ? (
-            <button
-              disabled
-              className="p-2 rounded-xl text-emerald-600 bg-emerald-50 cursor-default flex items-center gap-1"
-            >
-              <Verified size={16} />
-              <span className="text-xs font-medium">Verified</span>
-            </button>
-          ) : (
-            isTechnician && (
-              <button
-                onClick={() => setOpenDiagnose(true)}
-                className="p-2 rounded-xl text-green-600 hover:bg-green-50 transition cursor-pointer"
-              >
-                <Archive size={16} />
+          <div className="flex items-center gap-1">
+            {alert.status === "RESOLVED" ? (
+              <button className="flex items-center gap-1 px-3 py-1 rounded-xl bg-emerald-50 text-emerald-600 text-xs font-medium">
+                <Verified size={14} />
+                Verified
               </button>
-            )
-          )}
+            ) : (
+              isTechnician && (
+                <button
+                  onClick={() => setOpenDiagnose(true)}
+                  className="p-2 rounded-xl text-green-600 hover:bg-green-50 transition"
+                >
+                  <Archive size={16} />
+                </button>
+              )
+            )}
 
-          {isAdminOrManager && (
-            <>
-              <button
-                onClick={handleMarkInProgress}
-                className="p-2 rounded-xl text-blue-600 hover:bg-blue-50 transition cursor-pointer"
-              >
-                <Activity size={16} />
-              </button>
+            {isAdminOrManager && (
+              <>
+                <button
+                  onClick={handleMarkInProgress}
+                  className="p-2 rounded-xl text-blue-600 hover:bg-blue-50 transition"
+                >
+                  <Activity size={16} />
+                </button>
 
-              <button
-                onClick={() => setOpenEdit(true)}
-                className="p-2 rounded-xl text-gray-600 hover:bg-gray-100 transition cursor-pointer"
-              >
-                <Settings size={16} />
-              </button>
+                <button
+                  onClick={() => setOpenEdit(true)}
+                  className="p-2 rounded-xl text-gray-600 hover:bg-gray-100 transition"
+                >
+                  <Settings size={16} />
+                </button>
 
-              <button
-                onClick={() => setOpenDelete(true)}
-                className="p-2 rounded-xl text-red-600 hover:bg-red-50 transition cursor-pointer"
-              >
-                <Trash2 size={16} />
-              </button>
-            </>
-          )}
+                <button
+                  onClick={() => setOpenDelete(true)}
+                  className="p-2 rounded-xl text-red-600 hover:bg-red-50 transition"
+                >
+                  <Trash2 size={16} />
+                </button>
+              </>
+            )}
+          </div>
         </div>
       </div>
 

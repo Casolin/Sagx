@@ -80,60 +80,81 @@ const ChatNavbar = ({ selectedUser = null, roomId }: Props) => {
   };
 
   return (
-    <div className="h-20 bg-white/90 backdrop-blur-xl border-b border-gray-100 px-6 flex items-center justify-between">
-      <div className="flex items-center gap-4">
+    <div className="h-16 bg-white/80 backdrop-blur border-b border-zinc-200 px-6 flex items-center justify-between">
+      {/* LEFT SIDE */}
+      <div className="flex items-center gap-4 min-w-0">
+        {/* PRIVATE CHAT */}
         {selectedUser && !isRoom && (
           <>
-            <img
-              src={selectedUser.avatar || "/default-avatar.png"}
-              className="w-11 h-11 rounded-full"
-            />
-            <div>
-              <p className="font-semibold text-sm sm:text-base">
+            <div className="relative">
+              <img
+                src={selectedUser.avatar || "/default-avatar.png"}
+                className="w-10 h-10 rounded-full object-cover"
+              />
+
+              {/* online dot */}
+              <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-white rounded-full" />
+            </div>
+
+            <div className="min-w-0">
+              <p className="font-semibold text-sm text-zinc-800 truncate">
                 {selectedUser.firstName} {selectedUser.lastName}
               </p>
-              <p className="text-xs text-green-600">Online</p>
+
+              <p className="text-xs text-green-600">Active now</p>
             </div>
           </>
         )}
 
+        {/* ROOM */}
         {isRoom && (
-          <div>
-            <p className="font-semibold">{room?.name}</p>
-            <p className="text-xs text-gray-500">
+          <div className="min-w-0">
+            <p className="font-semibold text-sm text-zinc-800 truncate">
+              {room?.name}
+            </p>
+
+            <p className="text-xs text-zinc-500">
               {room?.members?.length ?? 0} members
             </p>
           </div>
         )}
 
+        {/* EMPTY */}
         {!selectedUser && !isRoom && (
-          <p className="text-gray-400">Select a chat</p>
+          <p className="text-sm text-zinc-400">Select a conversation</p>
         )}
       </div>
 
-      <div className="flex items-center gap-3">
+      {/* RIGHT ACTIONS */}
+      <div className="flex items-center gap-2">
+        {/* CALL */}
         {selectedUser && !isRoom && (
           <button
             onClick={handleStartCall}
-            className="p-2 rounded-full hover:bg-gray-100 cursor-pointer"
+            className="p-2.5 rounded-xl hover:bg-zinc-100 text-zinc-700 transition cursor-pointer"
+            title="Start call"
           >
             <Phone size={18} />
           </button>
         )}
 
+        {/* LEAVE ROOM */}
         {isRoom && isMember && !isOwner && (
           <button
             onClick={handleLeave}
-            className="p-2 rounded-full hover:bg-gray-100 cursor-pointer"
+            className="p-2.5 rounded-xl hover:bg-zinc-100 text-zinc-700 transition"
+            title="Leave room"
           >
             <LogOut size={18} />
           </button>
         )}
 
+        {/* DELETE ROOM */}
         {isRoom && isOwner && (
           <button
             onClick={handleDelete}
-            className="p-2 rounded-full hover:bg-gray-100 text-red-500 cursor-pointer"
+            className="p-2.5 rounded-xl hover:bg-red-50 text-red-500 transition"
+            title="Delete room"
           >
             <Trash2 size={18} />
           </button>

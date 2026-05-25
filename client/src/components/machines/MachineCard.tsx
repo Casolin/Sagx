@@ -69,84 +69,95 @@ export default function MachineCard({ machine, refresh }: Props) {
     <>
       <div
         onClick={handleOpenEditPage}
-        className="group relative h-full flex flex-col bg-white border border-gray-200 rounded-2xl p-5 shadow-sm hover:shadow-lg transition-all duration-200 hover:-translate-y-0.5 cursor-pointer"
+        className="group relative flex flex-col justify-between rounded-3xl border border-gray-200/70 bg-white
+      shadow-sm hover:shadow-[0_18px_50px_rgba(0,0,0,0.10)]
+      transition-all duration-300 hover:-translate-y-1 cursor-pointer"
       >
-        <div className="flex justify-between items-start">
-          <div>
-            <h2 className="font-semibold text-gray-900 group-hover:text-blue-600 transition">
-              {machine.name}
-            </h2>
-            <p className="text-xs text-gray-500 mt-1">
-              {machine.type || "No type"}
-            </p>
-          </div>
+        <div className="p-5 flex flex-col gap-4">
+          {/* HEADER */}
+          <div className="flex items-start justify-between">
+            <div>
+              <h2 className="text-lg font-bold text-gray-900 group-hover:text-blue-600 transition">
+                {machine.name}
+              </h2>
 
-          <span
-            className={`text-xs px-3 py-1 rounded-full text-white font-medium ${
-              statusStyle[machine.status]
-            }`}
-          >
-            {machine.status}
-          </span>
-        </div>
+              <p className="text-xs text-gray-400 mt-1">
+                {machine.type || "No type"}
+              </p>
+            </div>
 
-        <div className="grid grid-cols-2 gap-3 text-sm">
-          <div>
-            <p className="text-gray-400 text-xs">Condition</p>
             <span
-              className={`inline-block mt-1 px-2 py-1 rounded-md text-xs font-medium ${
-                conditionStyle[machine.condition]
+              className={`text-[11px] px-3 py-1 rounded-full font-semibold text-white shadow-sm ${
+                statusStyle[machine.status]
               }`}
             >
-              {machine.condition}
+              {machine.status}
             </span>
           </div>
 
-          <div>
-            <p className="text-gray-400 text-xs">Failure</p>
-            <p className="mt-1 font-medium text-gray-700 text-sm">
-              {machine.failureType}
-            </p>
+          {/* BODY */}
+          <div className="grid grid-cols-2 gap-3 text-sm">
+            <div className="rounded-xl border border-gray-100 bg-gray-50/60 p-3">
+              <p className="text-[11px] text-gray-400">Condition</p>
+              <span
+                className={`inline-block mt-1 px-2 py-1 rounded-md text-xs font-semibold ${
+                  conditionStyle[machine.condition]
+                }`}
+              >
+                {machine.condition}
+              </span>
+            </div>
+
+            <div className="rounded-xl border border-gray-100 bg-gray-50/60 p-3">
+              <p className="text-[11px] text-gray-400">Failure</p>
+              <p className="mt-1 font-medium text-gray-800 text-sm">
+                {machine.failureType || "-"}
+              </p>
+            </div>
+
+            {machine.location && (
+              <div className="col-span-2 rounded-xl border border-gray-100 bg-gray-50/60 p-3">
+                <p className="text-[11px] text-gray-400">Location</p>
+                <p className="mt-1 text-sm font-medium text-gray-700">
+                  {machine.location}
+                </p>
+              </div>
+            )}
           </div>
 
-          {machine.location && (
-            <div className="col-span-2 border-b border-gray-200 pb-3">
-              <p className="text-gray-400 text-xs">Location</p>
-              <p className="mt-1 text-gray-700 text-sm">{machine.location}</p>
-            </div>
-          )}
-        </div>
-
-        {machine.description && (
-          <p className="text-xs text-gray-500 line-clamp-2">
-            {machine.description}
-          </p>
-        )}
-
-        <div className="mt-auto flex justify-end gap-2">
-          {canEdit && (
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                setOpenEdit(true);
-              }}
-              className="p-2 rounded-lg text-blue-600 hover:bg-blue-50  transition cursor-pointer"
-            >
-              <SlidersHorizontal size={18} />
-            </button>
+          {/* DESCRIPTION */}
+          {machine.description && (
+            <p className="text-xs text-gray-500 leading-relaxed border-t border-gray-100 pt-3">
+              {machine.description}
+            </p>
           )}
 
-          {canDelete && (
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                setOpenDelete(true);
-              }}
-              className="p-2 rounded-lg text-red-500 hover:bg-red-50 transition cursor-pointer"
-            >
-              <Trash2 size={18} />
-            </button>
-          )}
+          {/* FOOTER */}
+          <div className="flex justify-end gap-2 border-t border-gray-100 pt-3">
+            {canEdit && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setOpenEdit(true);
+                }}
+                className="p-2 rounded-xl text-blue-600 hover:bg-blue-50 transition"
+              >
+                <SlidersHorizontal size={18} />
+              </button>
+            )}
+
+            {canDelete && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setOpenDelete(true);
+                }}
+                className="p-2 rounded-xl text-red-500 hover:bg-red-50 transition"
+              >
+                <Trash2 size={18} />
+              </button>
+            )}
+          </div>
         </div>
       </div>
 

@@ -153,178 +153,235 @@ export default function CreateMissionPage({ refresh }: Props) {
 
   /* ================= UI ================= */
   return (
-    <div className="min-h-screen p-6 bg-white space-y-6">
-      <div
-        className="flex gap-1 items-center cursor-pointer"
-        onClick={() => navigate("/missions")}
-      >
-        <ArrowLeftToLine size={15} />
-        <button className="cursor-pointer">Back</button>
+    <div className="min-h-screen bg-zinc-50">
+      {/* TOP BAR */}
+      <div className="sticky top-0 z-20 bg-white/80 backdrop-blur border-b border-zinc-200">
+        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+          <button
+            onClick={() => navigate("/missions")}
+            className="flex items-center gap-2 text-sm text-zinc-600 hover:text-black transition"
+          >
+            <ArrowLeftToLine size={16} />
+            Missions
+          </button>
+
+          <h1 className="text-sm font-semibold tracking-wide text-zinc-800">
+            New Mission
+          </h1>
+
+          <div />
+        </div>
       </div>
-      <div className="w-full bg-white rounded-lg p-6 space-y-4 border border-gray-300">
-        <h1 className="text-xl font-bold">Create Mission</h1>
 
-        {/* ALERT */}
-        <AlertSelector
-          alertId={alertId}
-          setAlertId={setAlertId}
-          setMachineId={setMachineId}
-        />
+      {/* CONTENT */}
+      <div className="max-w-6xl mx-auto px-6 py-8 grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* LEFT (FORM) */}
+        <div className="lg:col-span-2 space-y-5">
+          {/* BASIC INFO CARD */}
+          <div className="bg-white border border-zinc-200 rounded-2xl p-5 space-y-4">
+            <h2 className="text-sm font-semibold text-zinc-700">
+              Mission details
+            </h2>
 
-        <input
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder="Mission title *"
-          className="w-full border rounded-lg px-3 py-2"
-        />
+            <input
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="Mission title"
+              className="w-full px-4 py-3 rounded-xl border border-zinc-200 bg-zinc-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-black/10"
+            />
 
-        <textarea
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          placeholder="Mission description *"
-          className="w-full border rounded-lg px-3 py-2 h-20"
-        />
-        <div className="grid grid-cols-2 gap-3">
-          <select
-            value={failureType}
-            onChange={(e) => setFailureType(e.target.value as FailureType)}
-            className="w-full border rounded-lg px-3 py-2"
-          >
-            <option value="NONE">NONE</option>
-            <option value="MECHANICAL">MECHANICAL</option>
-            <option value="ELECTRICAL">ELECTRICAL</option>
-            <option value="OVERHEAT">OVERHEAT</option>
-            <option value="SENSOR">SENSOR</option>
-            <option value="HYDRAULIC">HYDRAULIC</option>
-            <option value="UNKNOWN">UNKNOWN</option>
-          </select>
+            <textarea
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Describe what needs to be done..."
+              className="w-full px-4 py-3 rounded-xl border border-zinc-200 bg-zinc-50 h-28 focus:bg-white focus:outline-none focus:ring-2 focus:ring-black/10"
+            />
+          </div>
 
-          <select
-            value={condition}
-            onChange={(e) => setCondition(e.target.value as MachineCondition)}
-            className="w-full border rounded-lg px-3 py-2"
-          >
-            <option value="NORMAL">NORMAL</option>
-            <option value="ANOMALY">ANOMALY</option>
-            <option value="FAILURE">FAILURE</option>
-          </select>
-        </div>
+          {/* MACHINE + TECH */}
+          <div className="grid md:grid-cols-2 gap-4">
+            {/* TECH */}
+            <div
+              ref={techRef}
+              className="bg-white border border-zinc-200 rounded-2xl p-4 relative"
+            >
+              <p className="text-xs text-zinc-500 mb-2">Assigned technician</p>
 
-        <select
-          value={status}
-          onChange={(e) => setStatus(e.target.value as MissionStatus)}
-          className="w-full border rounded-lg px-3 py-2"
-        >
-          <option value="PENDING">PENDING</option>
-          <option value="ASSIGNED">ASSIGNED</option>
-          <option value="IN_PROGRESS">IN_PROGRESS</option>
-          <option value="COMPLETED">COMPLETED</option>
-          <option value="CANCELLED">CANCELLED</option>
-        </select>
-
-        {/* TECHNICIAN */}
-        <div ref={techRef} className="space-y-1">
-          <button
-            type="button"
-            onClick={() => setOpenTechDropdown((v) => !v)}
-            className="w-full border rounded-lg px-3 py-2 flex justify-between items-center"
-          >
-            {selectedTechnician ? (
-              <div className="flex items-center gap-2">
-                <img
-                  src={selectedTechnician.avatar || "/default-avatar.png"}
-                  className="w-8 h-8 rounded-full object-cover border"
-                />
-                <div className="flex flex-col text-left leading-tight">
-                  <p className="text-sm font-medium">
-                    {selectedTechnician.firstName}
-                  </p>
-                  <p className="text-xs text-gray-500">
-                    {selectedTechnician.email}
-                  </p>
-                </div>
-              </div>
-            ) : (
-              <span className="text-gray-400">Select technician</span>
-            )}
-            <span>▾</span>
-          </button>
-
-          {openTechDropdown && (
-            <div className="border rounded-lg max-h-40 overflow-y-auto">
-              {technicians.map((t) => (
-                <button
-                  key={t._id}
-                  onClick={() => {
-                    setAssignedTo(t._id);
-                    setOpenTechDropdown(false);
-                  }}
-                  className="flex items-center gap-2 w-full px-2 py-2 hover:bg-gray-100"
-                >
-                  <img
-                    src={t.avatar || "/default-avatar.png"}
-                    className="w-8 h-8 rounded-full border"
-                  />
-                  <div className="text-left leading-tight">
-                    <p className="text-sm font-medium">{t.firstName}</p>
-                    <p className="text-xs text-gray-500">{t.email}</p>
+              <button
+                onClick={() => setOpenTechDropdown((v) => !v)}
+                className="w-full flex items-center justify-between px-3 py-2 rounded-xl border bg-zinc-50 hover:bg-white"
+              >
+                {selectedTechnician ? (
+                  <div className="flex items-center gap-2">
+                    <img
+                      src={selectedTechnician.avatar || "/default-avatar.png"}
+                      className="w-8 h-8 rounded-full border"
+                    />
+                    <div className="text-left">
+                      <p className="text-sm font-medium">
+                        {selectedTechnician.firstName}
+                      </p>
+                      <p className="text-xs text-zinc-500">
+                        {selectedTechnician.email}
+                      </p>
+                    </div>
                   </div>
-                </button>
-              ))}
+                ) : (
+                  <span className="text-zinc-400">Select technician</span>
+                )}
+
+                <span className="text-zinc-400">▾</span>
+              </button>
+
+              {openTechDropdown && (
+                <div className="absolute left-0 right-0 mt-2 bg-white border border-zinc-200 rounded-xl shadow-lg max-h-48 overflow-y-auto z-10">
+                  {technicians.map((t) => (
+                    <button
+                      key={t._id}
+                      onClick={() => {
+                        setAssignedTo(t._id);
+                        setOpenTechDropdown(false);
+                      }}
+                      className="w-full flex items-center gap-3 px-3 py-2 hover:bg-zinc-50"
+                    >
+                      <img
+                        src={t.avatar || "/default-avatar.png"}
+                        className="w-8 h-8 rounded-full border"
+                      />
+                      <div className="text-left">
+                        <p className="text-sm font-medium">{t.firstName}</p>
+                        <p className="text-xs text-zinc-500">{t.email}</p>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
-          )}
+
+            {/* MACHINE */}
+            <div className="bg-white border border-zinc-200 rounded-2xl p-4">
+              <p className="text-xs text-zinc-500 mb-2">Machine</p>
+
+              <select
+                value={machineId}
+                onChange={(e) => setMachineId(e.target.value)}
+                className="w-full px-3 py-2 rounded-xl border bg-zinc-50"
+              >
+                <option value="">Select machine</option>
+                {machines.map((m) => (
+                  <option key={m._id} value={m._id}>
+                    {m.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          {/* CONFIG */}
+          <div className="bg-white border border-zinc-200 rounded-2xl p-5 grid md:grid-cols-3 gap-3">
+            <select
+              className="px-3 py-2 rounded-xl border bg-zinc-50"
+              value={failureType}
+              onChange={(e) => setFailureType(e.target.value as FailureType)}
+            >
+              <option>NONE</option>
+              <option>MECHANICAL</option>
+              <option>ELECTRICAL</option>
+              <option>OVERHEAT</option>
+              <option>SENSOR</option>
+              <option>HYDRAULIC</option>
+              <option>UNKNOWN</option>
+            </select>
+
+            <select
+              className="px-3 py-2 rounded-xl border bg-zinc-50"
+              value={condition}
+              onChange={(e) => setCondition(e.target.value as MachineCondition)}
+            >
+              <option>NORMAL</option>
+              <option>ANOMALY</option>
+              <option>FAILURE</option>
+            </select>
+
+            <select
+              className="px-3 py-2 rounded-xl border bg-zinc-50"
+              value={status}
+              onChange={(e) => setStatus(e.target.value as MissionStatus)}
+            >
+              <option>PENDING</option>
+              <option>ASSIGNED</option>
+              <option>IN_PROGRESS</option>
+              <option>COMPLETED</option>
+              <option>CANCELLED</option>
+            </select>
+          </div>
+
+          {/* TASKS + MATERIALS */}
+          <div className="space-y-4">
+            <TasksEditor
+              tasks={tasks}
+              setTasks={setTasks}
+              machineId={machineId}
+            />
+            <MaterialsSelector
+              materials={materials}
+              setMaterials={setMaterials}
+            />
+          </div>
+
+          {/* LOCATION + SKILLS */}
+          <div className="grid md:grid-cols-2 gap-4">
+            <input
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+              placeholder="Location"
+              className="px-4 py-3 rounded-xl border bg-white"
+            />
+
+            <input
+              value={requiredSkills}
+              onChange={(e) => setRequiredSkills(e.target.value)}
+              placeholder="Skills (comma separated)"
+              className="px-4 py-3 rounded-xl border bg-white"
+            />
+          </div>
         </div>
 
-        {/* MACHINE */}
-        <select
-          value={machineId}
-          onChange={(e) => setMachineId(e.target.value)}
-          className="w-full border rounded-lg px-3 py-2"
-        >
-          <option value="">Select machine *</option>
-          {machines.map((m) => (
-            <option key={m._id} value={m._id}>
-              {m.name}
-            </option>
-          ))}
-        </select>
+        {/* RIGHT SIDEBAR */}
+        <div className="space-y-4">
+          {/* ALERT CARD */}
+          <div className="bg-white border border-zinc-200 rounded-2xl p-4">
+            <p className="text-xs text-zinc-500 mb-2">Linked alert</p>
+            <AlertSelector
+              alertId={alertId}
+              setAlertId={setAlertId}
+              setMachineId={setMachineId}
+            />
+          </div>
 
-        {/* TASKS + MATERIALS */}
-        <TasksEditor tasks={tasks} setTasks={setTasks} machineId={machineId} />
-        <MaterialsSelector materials={materials} setMaterials={setMaterials} />
+          {/* ACTION CARD */}
+          <div className="sticky top-24 bg-white border border-zinc-200 rounded-2xl p-4 space-y-3">
+            <p className="text-sm font-medium">Actions</p>
 
-        {/* LOCATION */}
-        <input
-          value={location}
-          onChange={(e) => setLocation(e.target.value)}
-          placeholder="Location *"
-          className="w-full border rounded-lg px-3 py-2"
-        />
+            <button
+              onClick={resetForm}
+              className="w-full py-2.5 rounded-xl border hover:bg-zinc-50 transition"
+            >
+              Reset
+            </button>
 
-        {/* SKILLS */}
-        <input
-          value={requiredSkills}
-          onChange={(e) => setRequiredSkills(e.target.value)}
-          placeholder="Skills (comma separated) *"
-          className="w-full border rounded-lg px-3 py-2"
-        />
+            <button
+              onClick={handleCreate}
+              disabled={!isValid}
+              className="w-full py-2.5 rounded-xl bg-black text-white hover:opacity-90 disabled:opacity-40 transition"
+            >
+              Create Mission
+            </button>
 
-        {/* ACTIONS */}
-        <div className="flex gap-2 pt-2">
-          <button
-            onClick={resetForm}
-            className="w-1/2 border rounded-lg py-2 cursor-pointer"
-          >
-            Reset
-          </button>
-
-          <button
-            onClick={handleCreate}
-            disabled={!isValid}
-            className="w-1/2 bg-blue-600 text-white rounded-lg py-2 disabled:opacity-50 cursor-pointer"
-          >
-            Create Mission
-          </button>
+            <p className="text-xs text-zinc-400 text-center">
+              Mission will be assigned instantly after creation
+            </p>
+          </div>
         </div>
       </div>
     </div>

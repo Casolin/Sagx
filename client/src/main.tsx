@@ -16,7 +16,7 @@ createRoot(document.getElementById("root")!).render(
     <BrowserRouter>
       <AuthContextProvider>
         <App />
-        <ToastContainer position="top-right" />
+        <ToastContainer />
       </AuthContextProvider>
     </BrowserRouter>
   </StrictMode>,

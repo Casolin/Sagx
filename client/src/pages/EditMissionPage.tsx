@@ -166,183 +166,262 @@ export default function EditMissionPage() {
   if (!mission) return <div className="p-6">Mission not found</div>;
 
   return (
-    <div className="min-h-screen p-6">
-      <div className="bg-white rounded-lg p-6 space-y-4">
-        <div
-          className="flex gap-1 items-center cursor-pointer"
-          onClick={() => navigate("/missions")}
-        >
-          <ArrowLeftToLine size={15} />
-          <button className="cursor-pointer">Back</button>
-        </div>
-
-        <h2 className="text-xl font-bold">Edit Mission</h2>
-
-        <AlertSelector
-          alertId={alertId}
-          setAlertId={setAlertId}
-          setMachineId={setMachineId}
-        />
-
-        <input
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          className="w-full border rounded px-3 py-2"
-          placeholder="Title"
-        />
-
-        <textarea
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          className="w-full border rounded px-3 py-2"
-          placeholder="Description"
-        />
-
-        {/* FAILURE TYPE + CONDITION EDITABLE */}
-        <div className="grid grid-cols-2 gap-3">
-          <select
-            value={failureType}
-            onChange={(e) => setFailureType(e.target.value as FailureType)}
-            className="w-full border rounded px-3 py-2"
-          >
-            <option value="NONE">NONE</option>
-            <option value="MECHANICAL">MECHANICAL</option>
-            <option value="ELECTRICAL">ELECTRICAL</option>
-            <option value="OVERHEAT">OVERHEAT</option>
-            <option value="SENSOR">SENSOR</option>
-            <option value="HYDRAULIC">HYDRAULIC</option>
-            <option value="UNKNOWN">UNKNOWN</option>
-          </select>
-
-          <select
-            value={condition}
-            onChange={(e) => setCondition(e.target.value as MachineCondition)}
-            className="w-full border rounded px-3 py-2"
-          >
-            <option value="NORMAL">NORMAL</option>
-            <option value="ANOMALY">ANOMALY</option>
-            <option value="FAILURE">FAILURE</option>
-          </select>
-        </div>
-
-        {/* TECHNICIAN */}
-        <div ref={techRef}>
+    <div className="min-h-screen bg-zinc-50">
+      {/* TOP BAR */}
+      <div className="sticky top-0 z-20 bg-white/80 backdrop-blur border-b border-zinc-200">
+        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <button
-            onClick={() => setOpenTechDropdown(!openTechDropdown)}
-            className="w-full border rounded px-3 py-2 flex justify-between items-center"
+            onClick={() => navigate("/missions")}
+            className="flex items-center gap-2 text-sm text-zinc-600 hover:text-black transition"
           >
-            {selectedTechnician ? (
-              <div className="flex items-center gap-2">
-                <img
-                  src={selectedTechnician.avatar || "/default-avatar.png"}
-                  className="w-8 h-8 rounded-full"
-                />
-                <div className="text-left">
-                  <p className="text-sm font-medium">
-                    {selectedTechnician.firstName}
-                  </p>
-                  <p className="text-xs text-gray-500">
-                    {selectedTechnician.email}
-                  </p>
-                </div>
-              </div>
-            ) : (
-              <span className="text-gray-400">Select technician</span>
-            )}
+            <ArrowLeftToLine size={16} />
+            Missions
           </button>
 
-          {openTechDropdown && (
-            <div className="border rounded max-h-40 overflow-y-auto">
-              {technicians.map((t: User) => (
-                <button
-                  key={t._id}
-                  onClick={() => {
-                    setAssignedTo(t._id);
-                    setOpenTechDropdown(false);
-                  }}
-                  className="flex items-center gap-2 w-full p-2 hover:bg-gray-100"
-                >
-                  <img
-                    src={t.avatar || "/default-avatar.png"}
-                    className="w-8 h-8 rounded-full"
-                  />
-                  <div className="text-left">
-                    <p className="text-sm">{t.firstName}</p>
-                    <p className="text-xs text-gray-500">{t.email}</p>
+          <h1 className="text-sm font-semibold tracking-wide text-zinc-800">
+            Edit Mission
+          </h1>
+
+          <div />
+        </div>
+      </div>
+
+      {/* CONTENT */}
+      <div className="max-w-6xl mx-auto px-6 py-8 grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* LEFT */}
+        <div className="lg:col-span-2 space-y-5">
+          {/* MISSION DETAILS */}
+          <div className="bg-white border border-zinc-200 rounded-2xl p-5 space-y-4">
+            <h2 className="text-sm font-semibold text-zinc-700">
+              Mission details
+            </h2>
+
+            <input
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="Mission title"
+              className="w-full px-4 py-3 rounded-xl border border-zinc-200 bg-zinc-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-black/10"
+            />
+
+            <textarea
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Describe what needs to be done..."
+              className="w-full px-4 py-3 rounded-xl border border-zinc-200 bg-zinc-50 h-28 focus:bg-white focus:outline-none focus:ring-2 focus:ring-black/10"
+            />
+          </div>
+
+          {/* CONFIG GRID */}
+          <div className="bg-white border border-zinc-200 rounded-2xl p-5 grid md:grid-cols-2 gap-4">
+            {/* FAILURE */}
+            <select
+              value={failureType}
+              onChange={(e) => setFailureType(e.target.value as FailureType)}
+              className="px-3 py-2 rounded-xl border bg-zinc-50"
+            >
+              <option value="NONE">NONE</option>
+              <option value="MECHANICAL">MECHANICAL</option>
+              <option value="ELECTRICAL">ELECTRICAL</option>
+              <option value="OVERHEAT">OVERHEAT</option>
+              <option value="SENSOR">SENSOR</option>
+              <option value="HYDRAULIC">HYDRAULIC</option>
+              <option value="UNKNOWN">UNKNOWN</option>
+            </select>
+
+            {/* CONDITION */}
+            <select
+              value={condition}
+              onChange={(e) => setCondition(e.target.value as MachineCondition)}
+              className="px-3 py-2 rounded-xl border bg-zinc-50"
+            >
+              <option value="NORMAL">NORMAL</option>
+              <option value="ANOMALY">ANOMALY</option>
+              <option value="FAILURE">FAILURE</option>
+            </select>
+
+            {/* PRIORITY */}
+            <select
+              value={priority}
+              onChange={(e) => setPriority(e.target.value as MissionPriority)}
+              className="px-3 py-2 rounded-xl border bg-zinc-50"
+            >
+              <option value="LOW">LOW</option>
+              <option value="MEDIUM">MEDIUM</option>
+              <option value="HIGH">HIGH</option>
+              <option value="URGENT">URGENT</option>
+            </select>
+
+            {/* STATUS */}
+            <select
+              value={status}
+              onChange={(e) => setStatus(e.target.value as MissionStatus)}
+              className="px-3 py-2 rounded-xl border bg-zinc-50"
+            >
+              <option value="PENDING">PENDING</option>
+              <option value="ASSIGNED">ASSIGNED</option>
+              <option value="IN_PROGRESS">IN_PROGRESS</option>
+              <option value="COMPLETED">COMPLETED</option>
+              <option value="CANCELLED">CANCELLED</option>
+            </select>
+          </div>
+
+          {/* TECH + MACHINE */}
+          <div className="grid md:grid-cols-2 gap-4">
+            {/* TECH */}
+            <div
+              ref={techRef}
+              className="bg-white border border-zinc-200 rounded-2xl p-4 relative"
+            >
+              <p className="text-xs text-zinc-500 mb-2">Assigned technician</p>
+
+              <button
+                onClick={() => setOpenTechDropdown((v) => !v)}
+                className="w-full flex items-center justify-between px-3 py-2 rounded-xl border bg-zinc-50 hover:bg-white"
+              >
+                {selectedTechnician ? (
+                  <div className="flex items-center gap-2">
+                    <img
+                      src={selectedTechnician.avatar || "/default-avatar.png"}
+                      className="w-8 h-8 rounded-full border"
+                    />
+                    <div className="text-left">
+                      <p className="text-sm font-medium">
+                        {selectedTechnician.firstName}
+                      </p>
+                      <p className="text-xs text-zinc-500">
+                        {selectedTechnician.email}
+                      </p>
+                    </div>
                   </div>
-                </button>
-              ))}
+                ) : (
+                  <span className="text-zinc-400">Select technician</span>
+                )}
+
+                <span className="text-zinc-400">▾</span>
+              </button>
+
+              {openTechDropdown && (
+                <div className="absolute left-0 right-0 mt-2 bg-white border border-zinc-200 rounded-xl shadow-lg max-h-48 overflow-y-auto z-10">
+                  {technicians.map((t) => (
+                    <button
+                      key={t._id}
+                      onClick={() => {
+                        setAssignedTo(t._id);
+                        setOpenTechDropdown(false);
+                      }}
+                      className="w-full flex items-center gap-3 px-3 py-2 hover:bg-zinc-50"
+                    >
+                      <img
+                        src={t.avatar || "/default-avatar.png"}
+                        className="w-8 h-8 rounded-full border"
+                      />
+                      <div className="text-left">
+                        <p className="text-sm font-medium">{t.firstName}</p>
+                        <p className="text-xs text-zinc-500">{t.email}</p>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* MACHINE */}
+            <div className="bg-white border border-zinc-200 rounded-2xl p-4">
+              <p className="text-xs text-zinc-500 mb-2">Machine</p>
+
+              <select
+                value={machineId}
+                onChange={(e) => setMachineId(e.target.value)}
+                className="w-full px-3 py-2 rounded-xl border bg-zinc-50"
+              >
+                <option value="">Select machine</option>
+                {machines.map((m) => (
+                  <option key={m._id} value={m._id}>
+                    {m.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          {/* EXTRA FIELDS */}
+          {status === "CANCELLED" && (
+            <div className="bg-white border border-zinc-200 rounded-2xl p-5">
+              <input
+                value={cancellationReason}
+                onChange={(e) => setCancellationReason(e.target.value)}
+                placeholder="Cancellation reason"
+                className="w-full px-4 py-3 rounded-xl border bg-zinc-50"
+              />
             </div>
           )}
+
+          {/* TASKS + MATERIALS */}
+          <div className="space-y-4">
+            <TasksEditor
+              tasks={tasks}
+              setTasks={setTasks}
+              machineId={machineId}
+            />
+            <MaterialsSelector
+              materials={materials}
+              setMaterials={setMaterials}
+            />
+          </div>
+
+          {/* LOCATION + SKILLS */}
+          <div className="grid md:grid-cols-2 gap-4">
+            <input
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+              placeholder="Location"
+              className="px-4 py-3 rounded-xl border bg-white"
+            />
+
+            <input
+              value={requiredSkills}
+              onChange={(e) => setRequiredSkills(e.target.value)}
+              placeholder="Skills (comma separated)"
+              className="px-4 py-3 rounded-xl border bg-white"
+            />
+          </div>
         </div>
 
-        <select
-          value={machineId}
-          onChange={(e) => setMachineId(e.target.value)}
-          className="w-full border rounded px-3 py-2"
-        >
-          <option value="">Select machine</option>
-          {machines.map((m: Machine) => (
-            <option key={m._id} value={m._id}>
-              {m.name}
-            </option>
-          ))}
-        </select>
+        {/* RIGHT SIDEBAR */}
+        <div className="space-y-4">
+          {/* ALERT */}
+          <div className="bg-white border border-zinc-200 rounded-2xl p-4">
+            <p className="text-xs text-zinc-500 mb-2">Linked alert</p>
+            <AlertSelector
+              alertId={alertId}
+              setAlertId={setAlertId}
+              setMachineId={setMachineId}
+            />
+          </div>
 
-        <select
-          value={priority}
-          onChange={(e) => setPriority(e.target.value as MissionPriority)}
-          className="w-full border rounded px-3 py-2"
-        >
-          <option value="LOW">LOW</option>
-          <option value="MEDIUM">MEDIUM</option>
-          <option value="HIGH">HIGH</option>
-          <option value="URGENT">URGENT</option>
-        </select>
+          {/* ACTIONS */}
+          <div className="sticky top-24 bg-white border border-zinc-200 rounded-2xl p-4 space-y-3">
+            <p className="text-sm font-medium">Actions</p>
 
-        <select
-          value={status}
-          onChange={(e) => setStatus(e.target.value as MissionStatus)}
-          className="w-full border rounded px-3 py-2"
-        >
-          <option value="PENDING">PENDING</option>
-          <option value="ASSIGNED">ASSIGNED</option>
-          <option value="IN_PROGRESS">IN_PROGRESS</option>
-          <option value="COMPLETED">COMPLETED</option>
-          <option value="CANCELLED">CANCELLED</option>
-        </select>
-        {status === "CANCELLED" && (
-          <input
-            value={cancellationReason}
-            onChange={(e) => setCancellationReason(e.target.value)}
-            className="w-full border rounded px-3 py-2"
-            placeholder="Cancellation reason"
-          />
-        )}
+            <button
+              onClick={handleUpdate}
+              className="w-full py-2.5 rounded-xl bg-black text-white hover:opacity-90 transition"
+            >
+              Update Mission
+            </button>
 
-        <TasksEditor tasks={tasks} setTasks={setTasks} machineId={machineId} />
-        <MaterialsSelector materials={materials} setMaterials={setMaterials} />
+            <button
+              onClick={() => navigate("/missions")}
+              className="w-full py-2.5 rounded-xl border hover:bg-zinc-50 transition"
+            >
+              Cancel
+            </button>
 
-        <input
-          value={location}
-          onChange={(e) => setLocation(e.target.value)}
-          className="w-full border rounded px-3 py-2"
-          placeholder="Location"
-        />
-
-        <input
-          value={requiredSkills}
-          onChange={(e) => setRequiredSkills(e.target.value)}
-          className="w-full border rounded px-3 py-2"
-          placeholder="Skills"
-        />
-
-        <button
-          onClick={handleUpdate}
-          className="w-full bg-blue-600 text-white py-2 rounded cursor-pointer"
-        >
-          Update Mission
-        </button>
+            <p className="text-xs text-zinc-400 text-center">
+              Changes will be saved immediately
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   );

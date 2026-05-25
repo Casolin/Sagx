@@ -82,7 +82,7 @@ export default function NotificationPanel() {
 
       {/* PANEL */}
       <div
-        className={`fixed top-0 left-0 h-full w-80 bg-white border-r border-gray-200 z-50 transition-transform duration-300 shadow-xl ${
+        className={`fixed top-0 left-0 h-full w-64 bg-white border-r border-gray-200 z-50 transition-transform duration-300 shadow-xl ${
           open ? "translate-x-0" : "-translate-x-full"
         }`}
       >

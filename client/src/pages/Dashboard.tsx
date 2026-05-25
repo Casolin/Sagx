@@ -17,6 +17,7 @@ import {
   PieChart,
   Pie,
   Cell,
+  CartesianGrid,
 } from "recharts";
 
 /* =========================
@@ -235,36 +236,59 @@ export default function Dashboard({ dark }: { dark?: boolean }) {
 
   return (
     <div
-      className={`p-6 space-y-8 transition-colors
-      ${dark ? "bg-gray-950 text-gray-100" : "bg-gray-50 text-gray-900"}`}
+      className={`
+      min-h-screen p-6 md:p-8 space-y-8
+      ${
+        dark
+          ? "bg-[#030712] text-white"
+          : "bg-linear-to-br from-[#f8fafc] via-[#eef2ff] to-[#f1f5f9] text-gray-900"
+      }
+    `}
     >
-      {/* HEADER */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Dashboard</h1>
-          <p className="text-gray-500 mt-1">Welcome back, {user?.firstName}</p>
+          <h1 className="text-4xl font-black tracking-tight">Dashboard</h1>
+
+          <p className={`mt-2 ${dark ? "text-gray-400" : "text-gray-500"}`}>
+            Welcome back, {user?.firstName}
+          </p>
+        </div>
+
+        <div
+          className={`
+          px-4 py-2 rounded-2xl border text-sm font-medium
+          ${
+            dark
+              ? "bg-white/5 border-white/10 text-green-400"
+              : "bg-white/70 border-white text-green-600 backdrop-blur-xl"
+          }
+        `}
+        >
+          ● Live
         </div>
       </div>
 
-      {/* ADMIN / MANAGER */}
       {user?.role !== "TECHNICIAN" && (
         <>
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
             <KpiCard
               dark={dark}
               title="Total Missions"
               value={data.missions?.total || 0}
             />
+
             <KpiCard
               dark={dark}
               title="Completed"
               value={data.missions?.COMPLETED || 0}
             />
+
             <KpiCard
               dark={dark}
               title="Open Alerts"
               value={data.alerts?.OPEN || 0}
             />
+
             <KpiCard
               dark={dark}
               title="Machines Down"
@@ -274,20 +298,56 @@ export default function Dashboard({ dark }: { dark?: boolean }) {
 
           <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
             <div
-              className={`rounded-2xl border p-6 ${dark ? "bg-gray-900 border-gray-800" : "bg-white"}`}
+              className={`
+              rounded-3xl border p-6
+              ${
+                dark
+                  ? "bg-[#111827]/70 border-white/10 backdrop-blur-xl"
+                  : "bg-white/80 border-white backdrop-blur-xl shadow-[0_10px_40px_rgba(0,0,0,0.06)]"
+              }
+            `}
             >
-              <h2 className="font-semibold mb-4">Mission Status</h2>
+              <div className="mb-6">
+                <h2 className="text-xl font-bold">Mission Status</h2>
 
-              <ResponsiveContainer width="100%" height={300}>
+                <p className="text-sm text-gray-400 mt-1">
+                  Real-time mission overview
+                </p>
+              </div>
+
+              <ResponsiveContainer width="100%" height={320}>
                 <BarChart data={missionChartData}>
+                  <CartesianGrid
+                    strokeDasharray="3 3"
+                    vertical={false}
+                    stroke={dark ? "rgba(255,255,255,0.08)" : "#e5e7eb"}
+                  />
+
                   <XAxis
                     dataKey="name"
-                    interval={0}
                     tick={isMobile ? false : { fontSize: 12 }}
+                    axisLine={false}
+                    tickLine={false}
+                    stroke={dark ? "#9ca3af" : "#6b7280"}
                   />
-                  <YAxis />
-                  <Tooltip />
-                  <Bar dataKey="value">
+
+                  <YAxis
+                    stroke={dark ? "#9ca3af" : "#6b7280"}
+                    axisLine={false}
+                    tickLine={false}
+                  />
+
+                  <Tooltip
+                    cursor={{ fill: "transparent" }}
+                    contentStyle={{
+                      borderRadius: "16px",
+                      border: "none",
+                      background: dark ? "#111827" : "#ffffff",
+                      boxShadow: "0 10px 30px rgba(0,0,0,0.12)",
+                    }}
+                  />
+
+                  <Bar dataKey="value" radius={[12, 12, 0, 0]} barSize={42}>
                     {missionChartData.map((e, i) => (
                       <Cell
                         key={i}
@@ -300,20 +360,56 @@ export default function Dashboard({ dark }: { dark?: boolean }) {
             </div>
 
             <div
-              className={`rounded-2xl border p-6 ${dark ? "bg-gray-900 border-gray-800" : "bg-white"}`}
+              className={`
+              rounded-3xl border p-6
+              ${
+                dark
+                  ? "bg-[#111827]/70 border-white/10 backdrop-blur-xl"
+                  : "bg-white/80 border-white backdrop-blur-xl shadow-[0_10px_40px_rgba(0,0,0,0.06)]"
+              }
+            `}
             >
-              <h2 className="font-semibold mb-4">Machines</h2>
+              <div className="mb-6">
+                <h2 className="text-xl font-bold">Machines</h2>
 
-              <ResponsiveContainer width="100%" height={300}>
+                <p className="text-sm text-gray-400 mt-1">
+                  Machine health & uptime
+                </p>
+              </div>
+
+              <ResponsiveContainer width="100%" height={320}>
                 <BarChart data={machineChartData}>
+                  <CartesianGrid
+                    strokeDasharray="3 3"
+                    vertical={false}
+                    stroke={dark ? "rgba(255,255,255,0.08)" : "#e5e7eb"}
+                  />
+
                   <XAxis
                     dataKey="name"
-                    interval={0}
                     tick={isMobile ? false : { fontSize: 12 }}
+                    axisLine={false}
+                    tickLine={false}
+                    stroke={dark ? "#9ca3af" : "#6b7280"}
                   />
-                  <YAxis />
-                  <Tooltip />
-                  <Bar dataKey="value">
+
+                  <YAxis
+                    stroke={dark ? "#9ca3af" : "#6b7280"}
+                    axisLine={false}
+                    tickLine={false}
+                  />
+
+                  <Tooltip
+                    cursor={{ fill: "transparent" }}
+                    contentStyle={{
+                      borderRadius: "16px",
+                      border: "none",
+                      background: dark ? "#111827" : "#ffffff",
+                      boxShadow: "0 10px 30px rgba(0,0,0,0.12)",
+                    }}
+                  />
+
+                  <Bar dataKey="value" radius={[12, 12, 0, 0]} barSize={52}>
                     {machineChartData.map((e, i) => (
                       <Cell
                         key={i}
@@ -327,17 +423,37 @@ export default function Dashboard({ dark }: { dark?: boolean }) {
           </div>
 
           <div
-            className={`rounded-2xl border p-6 ${dark ? "bg-gray-900 border-gray-800" : "bg-white"}`}
+            className={`
+            rounded-3xl border p-6
+            ${
+              dark
+                ? "bg-[#111827]/70 border-white/10 backdrop-blur-xl"
+                : "bg-white/80 border-white backdrop-blur-xl shadow-[0_10px_40px_rgba(0,0,0,0.06)]"
+            }
+          `}
           >
-            <h2 className="font-semibold mb-4">Technician Availability</h2>
+            <div className="mb-6">
+              <h2 className="text-xl font-bold">Technician Availability</h2>
+
+              <p className="text-sm text-gray-400 mt-1">
+                Live technician availability
+              </p>
+            </div>
 
             <ResponsiveContainer width="100%" height={320}>
               <PieChart>
-                <Pie data={pieData} dataKey="value" outerRadius={110}>
+                <Pie
+                  data={pieData}
+                  dataKey="value"
+                  innerRadius={75}
+                  outerRadius={110}
+                  paddingAngle={5}
+                >
                   {pieData.map((_, i) => (
                     <Cell key={i} fill={i === 0 ? "#10b981" : "#ef4444"} />
                   ))}
                 </Pie>
+
                 <Tooltip />
               </PieChart>
             </ResponsiveContainer>
@@ -345,24 +461,26 @@ export default function Dashboard({ dark }: { dark?: boolean }) {
         </>
       )}
 
-      {/* TECHNICIAN */}
       {user?.role === "TECHNICIAN" && (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
           <KpiCard
             dark={dark}
             title="My Missions"
             value={data.myMissions?.total || 0}
           />
+
           <KpiCard
             dark={dark}
             title="Active"
             value={data.myMissions?.active || 0}
           />
+
           <KpiCard
             dark={dark}
             title="Pending Tasks"
             value={data.myTasks?.pending || 0}
           />
+
           <KpiCard
             dark={dark}
             title="Completed Tasks"
@@ -371,32 +489,44 @@ export default function Dashboard({ dark }: { dark?: boolean }) {
         </div>
       )}
 
-      {/* =========================
-          🔥 ADDED SECTION ONLY
-          LATEST UPDATES + MESSAGES
-      ========================= */}
       <div
-        className={`rounded-2xl border p-6 space-y-6 ${dark ? "bg-gray-900 border-gray-800" : "bg-white"}`}
+        className={`
+        rounded-3xl border p-6 space-y-8
+        ${
+          dark
+            ? "bg-[#111827]/70 border-white/10 backdrop-blur-xl"
+            : "bg-white/80 border-white backdrop-blur-xl shadow-[0_10px_40px_rgba(0,0,0,0.06)]"
+        }
+      `}
       >
-        {/* LATEST UPDATES */}
         <div>
-          <h2 className="font-semibold mb-3">Latest Activities</h2>
+          <h2 className="text-xl font-bold mb-5">Latest Activities</h2>
 
           {updates.length === 0 ? (
             <p className="text-sm text-gray-400">No recent activity</p>
           ) : (
-            <div className="space-y-2 text-sm">
+            <div className="space-y-3">
               {updates.slice(0, 3).map((u) => (
                 <div
                   key={u._id}
-                  className="flex justify-between items-start border-b pb-2"
+                  className={`
+                  flex justify-between items-start rounded-2xl px-4 py-4 transition-all
+                  ${
+                    dark
+                      ? "bg-white/3 hover:bg-white/6"
+                      : "bg-gray-50 hover:bg-gray-100/80"
+                  }
+                `}
                 >
                   <div className="flex flex-col">
-                    <span className="font-medium">{u.title}</span>
-                    <span className="text-xs text-gray-500">{u.message}</span>
+                    <span className="font-semibold">{u.title}</span>
+
+                    <span className="text-sm text-gray-400 mt-1">
+                      {u.message}
+                    </span>
                   </div>
 
-                  <span className="text-[11px] text-gray-400 whitespace-nowrap">
+                  <span className="text-xs text-gray-400 whitespace-nowrap">
                     {timeAgo(u.createdAt)}
                   </span>
                 </div>
@@ -405,32 +535,42 @@ export default function Dashboard({ dark }: { dark?: boolean }) {
           )}
         </div>
 
-        <div className="flex flex-col gap-3">
-          <h2 className="font-semibold mb-3">Latest Messages</h2>
+        <div>
+          <h2 className="text-xl font-bold mb-5">Latest Messages</h2>
 
           {messages.length === 0 ? (
             <p className="text-sm text-gray-400">No messages yet</p>
           ) : (
-            messages.slice(0, 5).map((m) => (
-              <div key={m._id} className="flex items-center gap-3">
-                <img
-                  src={isPopulatedUser(m.sender) ? m.sender.avatar : ""}
-                  className="h-8 w-8 rounded-full border"
-                />
+            <div className="space-y-3">
+              {messages.slice(0, 5).map((m) => (
+                <div
+                  key={m._id}
+                  className={`
+                  flex items-center gap-4 rounded-2xl px-4 py-3 transition-all
+                  ${dark ? "hover:bg-white/4" : "hover:bg-gray-100/70"}
+                `}
+                >
+                  <img
+                    src={isPopulatedUser(m.sender) ? m.sender.avatar : ""}
+                    className="h-11 w-11 rounded-2xl border object-cover"
+                  />
 
-                <div className="flex flex-col">
-                  <p className="text-sm font-medium">
-                    {isPopulatedUser(m.sender) ? m.sender.firstName : "User"}
+                  <div className="flex flex-col min-w-0">
+                    <p className="text-sm font-semibold">
+                      {isPopulatedUser(m.sender) ? m.sender.firstName : "User"}
+                    </p>
+
+                    <p className="text-sm text-gray-400 truncate">
+                      {m.content}
+                    </p>
+                  </div>
+
+                  <p className="ml-auto text-xs text-gray-400 whitespace-nowrap">
+                    {timeAgo(m.createdAt)}
                   </p>
-
-                  <p className="text-xs text-gray-500">{m.content}</p>
                 </div>
-
-                <p className="ml-auto text-[10px] text-gray-400">
-                  {timeAgo(m.createdAt)}
-                </p>
-              </div>
-            ))
+              ))}
+            </div>
           )}
         </div>
       </div>

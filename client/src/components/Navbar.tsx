@@ -82,69 +82,90 @@ export default function Navbar({ setIsOpen }: Props) {
 
   const showSearch = currentPage === "Missions" || currentPage === "Machines";
 
-  const iconButton =
-    "p-2.5 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-700 transition-all duration-200 cursor-pointer";
-
-  const primaryButton =
-    "p-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm transition-all duration-200 cursor-pointer";
-
-  const warningButton =
-    "p-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white shadow-sm transition-all duration-200 cursor-pointer";
-
   return (
-    <div className="relative">
-      <div className="h-16 flex items-center justify-between px-5 border-b border-slate-200 bg-white/90 backdrop-blur-md">
-        <div className="flex items-center gap-3">
+    <div className="sticky top-0 z-50">
+      {/* MAIN BAR */}
+      <div
+        className="h-16 md:h-14 flex items-center justify-between px-3 md:px-6 
+      bg-white/70 backdrop-blur-2xl border-b border-slate-200/40 shadow-sm"
+      >
+        {/* LEFT */}
+        <div className="flex items-center gap-2 md:gap-3 min-w-fit">
           <button
             onClick={() => setIsOpen(true)}
-            className="md:hidden p-2.5 rounded-xl hover:bg-slate-100 transition-all"
+            className="md:hidden p-2 rounded-xl active:scale-95 transition bg-slate-100 hover:bg-slate-200"
           >
-            <Menu size={20} className="text-slate-700" />
+            <Menu size={20} />
           </button>
 
-          <h1 className="font-semibold text-xl text-slate-800">
-            {currentPage || "Dashboard"}
-          </h1>
+          {/* CLEAN MODERN PILL */}
+          <div
+            className="flex items-center gap-2 px-3 py-1.5 rounded-full
+    bg-white/70 backdrop-blur-xl border border-slate-200/60
+    shadow-sm"
+          >
+            <div
+              className={`w-2 h-2 rounded-full ${
+                currentPage === "Alerts" ? "bg-orange-500" : "bg-indigo-500"
+              }`}
+            />
+
+            <span className="text-sm font-semibold text-slate-900 tracking-tight">
+              {currentPage || "Dashboard"}
+            </span>
+          </div>
         </div>
 
-        {showSearch && (
-          <div className="flex-1 flex justify-center px-4">
-            <div className="relative w-full max-w-md">
+        {/* CENTER SEARCH (mobile becomes icon only) */}
+        {showSearch ? (
+          <div className="flex-1 flex justify-center px-2 md:px-6">
+            <div className="relative w-full max-w-xl">
               <Search
                 size={16}
                 className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
               />
-
               <input
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder={getPlaceholder()}
-                className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                className="w-full pl-10 pr-4 py-2 md:py-2.5
+              rounded-full bg-slate-100/70 hover:bg-white
+              border border-slate-200/50
+              text-sm outline-none
+              focus:ring-2 focus:ring-indigo-500/30
+              transition"
               />
             </div>
           </div>
+        ) : (
+          <div className="flex-1" />
         )}
 
-        <div className="flex items-center gap-3">
-          <button
-            onClick={takeScreenshot}
-            className={iconButton}
-            title="Take Screenshot"
-          >
-            <Camera size={19} />
-          </button>
+        {/* RIGHT */}
+        <div className="flex items-center gap-1 md:gap-2">
+          {/* quick actions pill (Instagram style) */}
+          <div className="hidden sm:flex items-center gap-1 p-1 rounded-full bg-slate-100/70 border border-slate-200/50">
+            <button
+              onClick={takeScreenshot}
+              className="p-2 rounded-full hover:bg-white active:scale-95 transition cursor-pointer"
+            >
+              <Camera size={18} />
+            </button>
 
-          <button
-            onClick={() => window.location.reload()}
-            className={iconButton}
-          >
-            <RefreshCw size={19} />
-          </button>
+            <button
+              onClick={() => window.location.reload()}
+              className="p-2 rounded-full hover:bg-white active:scale-95 transition cursor-pointer"
+            >
+              <RefreshCw size={18} />
+            </button>
+          </div>
 
+          {/* + BUTTON (primary floating style) */}
           {currentPage === "Missions" && isAdminOrManager && (
             <button
               onClick={() => navigate("/missions/add")}
-              className={primaryButton}
+              className="p-2.5 md:p-2.5 rounded-full bg-indigo-600 text-white
+            shadow-md hover:scale-105 active:scale-95 transition cursor-pointer"
             >
               <Plus size={20} />
             </button>
@@ -153,7 +174,8 @@ export default function Navbar({ setIsOpen }: Props) {
           {currentPage === "Machines" && isAdminOrManager && (
             <button
               onClick={() => navigate("/machines/add")}
-              className={primaryButton}
+              className="p-2.5 rounded-full bg-indigo-600 text-white
+            shadow-md hover:scale-105 active:scale-95 transition cursor-pointer"
             >
               <Plus size={20} />
             </button>
@@ -162,7 +184,8 @@ export default function Navbar({ setIsOpen }: Props) {
           {currentPage === "Alerts" && (
             <button
               onClick={() => navigate("/alerts/add")}
-              className={warningButton}
+              className="p-2.5 rounded-full bg-amber-500 text-white
+            shadow-md hover:scale-105 active:scale-95 transition cursor-pointer"
             >
               <Plus size={20} />
             </button>
@@ -171,7 +194,8 @@ export default function Navbar({ setIsOpen }: Props) {
           {currentPage === "Users" && (
             <button
               onClick={() => navigate("/users/add")}
-              className={primaryButton}
+              className="p-2.5 rounded-full bg-indigo-600 text-white
+            shadow-md hover:scale-105 active:scale-95 transition cursor-pointer"
             >
               <Plus size={20} />
             </button>
@@ -180,30 +204,27 @@ export default function Navbar({ setIsOpen }: Props) {
           {currentPage === "Materials" && (
             <button
               onClick={() => setIsAddMaterialOpen(true)}
-              className={primaryButton}
+              className="p-2.5 rounded-full bg-indigo-600 text-white
+            shadow-md hover:scale-105 active:scale-95 transition cursor-pointer"
             >
               <Plus size={20} />
             </button>
           )}
 
+          {/* chat sidebar toggle (mobile only) */}
           {currentPage === "Chat" && (
             <button
               onClick={() => {
                 const sidebar = document.getElementById("chat-sidebar");
+                if (!sidebar) return;
 
-                if (sidebar) {
-                  if (sidebar.classList.contains("w-0")) {
-                    sidebar.classList.remove("w-0");
-                    sidebar.classList.add("w-max");
-                    setIsSidebarOpen(true);
-                  } else {
-                    sidebar.classList.remove("w-max");
-                    sidebar.classList.add("w-0");
-                    setIsSidebarOpen(false);
-                  }
-                }
+                const open = sidebar.classList.contains("w-0");
+                sidebar.classList.toggle("w-0", !open);
+                sidebar.classList.toggle("w-max", open);
+                setIsSidebarOpen(open);
               }}
-              className="md:hidden p-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white transition-all duration-200 cursor-pointer"
+              className="md:hidden p-2.5 rounded-full bg-slate-900 text-white
+            active:scale-95 transition"
             >
               {isSidebarOpen ? (
                 <ArrowLeftToLine size={20} />
@@ -213,15 +234,19 @@ export default function Navbar({ setIsOpen }: Props) {
             </button>
           )}
 
+          {/* AI button (floating glass) */}
           <button
             onClick={() => setIsChatOpen(true)}
-            className="p-2.5 rounded-xl bg-linear-to-br from-slate-900 to-black hover:scale-105 transition-all duration-200 cursor-pointer shadow-md"
+            className="ml-1 p-2.5 rounded-full bg-black text-white
+          shadow-lg hover:scale-105 active:scale-95 transition cursor-pointer
+          bg-linear-to-br from-slate-900 to-black"
           >
             <img src="/ailogo.png" className="w-5 h-5" />
           </button>
         </div>
       </div>
 
+      {/* MODALS */}
       {isChatOpen && <AIChat closeChat={() => setIsChatOpen(false)} />}
 
       <CreateMaterialModal

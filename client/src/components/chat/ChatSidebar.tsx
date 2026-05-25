@@ -32,34 +32,45 @@ const ChatSidebar = ({ setSelectedUser }: Props) => {
 
   return (
     <>
-      <div className="w-64 md:w-[320px] bg-white border-r border-gray-200 flex flex-col h-screen">
-        {/* ROOMS HEADER */}
-        <div className="p-4 border-b border-gray-200 flex items-center justify-between mr-2">
-          <p className="text-sm font-semibold text-gray-700">Rooms</p>
+      <div className="w-64 md:w-[320px] bg-white border-r border-zinc-200 flex flex-col h-screen">
+        {/* HEADER */}
+        <div className="p-4 border-b border-zinc-200 flex items-center justify-between">
+          <div>
+            <p className="text-sm font-semibold text-zinc-800">Chat</p>
+            <p className="text-xs text-zinc-500">Rooms & friends</p>
+          </div>
 
           <button
             onClick={() => setOpenCreateRoom(true)}
-            className="flex items-center gap-1 text-xs bg-black text-white px-3 py-1.5 rounded-full hover:bg-gray-800 transition cursor-pointer"
+            className="flex items-center gap-1 text-xs px-3 py-1.5 rounded-xl bg-black text-white hover:opacity-90 transition cursor-pointer"
           >
             <Plus size={14} />
-            Add Room
+            Room
           </button>
         </div>
 
         {/* ROOMS */}
-        <div className="px-4 pt-3">
-          <RoomList />
+        <div className="px-4 pt-4">
+          <p className="text-[11px] uppercase tracking-wider text-zinc-400 mb-2">
+            Rooms
+          </p>
+
+          <div className="bg-zinc-50 border border-zinc-200 rounded-xl p-2">
+            <RoomList />
+          </div>
         </div>
 
         {/* FRIENDS */}
-        <div className="flex-1 overflow-y-auto p-4">
-          <h2 className="text-xs uppercase text-gray-400 mb-3 tracking-wider">
+        <div className="flex-1 overflow-y-auto px-4 pt-5">
+          <p className="text-[11px] uppercase tracking-wider text-zinc-400 mb-3">
             Friends
-          </h2>
+          </p>
 
-          <div className="space-y-2">
+          <div className="space-y-1">
             {friends.length === 0 && (
-              <p className="text-sm text-gray-400">No friends yet</p>
+              <div className="text-sm text-zinc-400 px-2 py-3">
+                No friends yet
+              </div>
             )}
 
             {friends.map((friend) => {
@@ -79,19 +90,20 @@ const ChatSidebar = ({ setSelectedUser }: Props) => {
                     });
                     navigate(`/chat/private/${user._id}`);
                   }}
-                  className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-gray-100 transition group"
+                  className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-zinc-100 transition group"
                 >
                   <img
                     src={user.avatar || "/default-avatar.png"}
                     className="w-10 h-10 rounded-full object-cover group-hover:scale-105 transition"
                   />
 
-                  <div className="text-left min-w-0">
-                    <p className="font-medium truncate text-gray-900">
+                  <div className="min-w-0 text-left">
+                    <p className="text-sm font-medium text-zinc-800 truncate">
                       {user.firstName} {user.lastName}
                     </p>
-                    <p className="text-sm text-gray-500 truncate">
-                      Click to chat
+
+                    <p className="text-xs text-zinc-500 truncate">
+                      Click to start chat
                     </p>
                   </div>
                 </button>
@@ -99,16 +111,16 @@ const ChatSidebar = ({ setSelectedUser }: Props) => {
             })}
           </div>
         </div>
-      </div>
 
-      {/* MODAL */}
-      <CreateRoomModal
-        open={openCreateRoom}
-        onOpenChange={setOpenCreateRoom}
-        onCreated={() => {
-          // optional: refresh room list later
-        }}
-      />
+        {/* MODAL */}
+        <CreateRoomModal
+          open={openCreateRoom}
+          onOpenChange={setOpenCreateRoom}
+          onCreated={() => {
+            // optional refresh
+          }}
+        />
+      </div>
     </>
   );
 };

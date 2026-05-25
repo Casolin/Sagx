@@ -80,7 +80,7 @@ export default function Missions() {
 
   return (
     <div className="p-6 space-y-6 bg-white min-h-screen">
-      <h1 className="text-2xl font-bold">Missions</h1>
+      <h1 className="text-4xl font-black tracking-tight">Missions</h1>
 
       {loading ? (
         <div>Loading...</div>

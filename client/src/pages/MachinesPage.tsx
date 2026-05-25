@@ -67,7 +67,7 @@ export default function MachinesPage() {
 
   return (
     <div className="p-6 space-y-6 bg-white min-h-screen">
-      <h1 className="text-2xl font-bold text-gray-800">Machines</h1>
+      <h1 className="text-4xl font-black tracking-tight">Machines</h1>
 
       {loading ? (
         <div className="text-gray-500">Loading...</div>

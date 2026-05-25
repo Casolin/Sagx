@@ -91,56 +91,86 @@ const MessageInput = ({ userId, roomId }: Props) => {
   const removeFile = () => setFile(null);
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="w-full px-4 py-3 bg-white/80 backdrop-blur-xl border-t border-gray-200 space-y-2">
+      {/* FILE PREVIEW */}
       {file && (
-        <div className="flex items-center gap-2 bg-gray-100 p-2 rounded-md">
+        <div className="flex items-center gap-3 bg-gray-50 border border-gray-200 rounded-xl p-3 shadow-sm">
           {file.type.startsWith("image/") ? (
             <img
               src={URL.createObjectURL(file)}
               alt="preview"
-              className="h-16 w-16 object-cover rounded-md"
+              className="h-12 w-12 object-cover rounded-lg border"
             />
           ) : (
-            <span className="text-gray-700">{file.name}</span>
+            <div className="h-12 w-12 flex items-center justify-center bg-gray-200 rounded-lg text-xs text-gray-600">
+              FILE
+            </div>
           )}
-          <button onClick={removeFile} className="ml-auto p-1">
+
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-medium text-gray-700 truncate">
+              {file.name}
+            </p>
+            <p className="text-xs text-gray-400">Ready to send</p>
+          </div>
+
+          <button
+            onClick={removeFile}
+            className="p-2 rounded-full hover:bg-gray-200 transition"
+          >
             <X size={16} />
           </button>
         </div>
       )}
 
-      <div className="bg-gray-50 border-t border-gray-200 p-3 flex gap-2 items-center">
+      {/* INPUT BAR */}
+      <div className="flex items-end gap-2 bg-white border border-gray-200 rounded-2xl px-3 py-2 shadow-sm">
+        {/* ATTACH BUTTON */}
         <button
           type="button"
           onClick={() => fileInputRef.current?.click()}
-          className="p-2 bg-gray-200 rounded-full hover:bg-gray-300"
+          className="p-2 rounded-full hover:bg-gray-100 transition"
         >
-          <Paperclip size={18} />
+          <Paperclip size={18} className="text-gray-600" />
         </button>
 
         <input
           type="file"
           ref={fileInputRef}
           onChange={handleFileSelect}
-          style={{ display: "none" }}
+          className="hidden"
         />
 
+        {/* TEXTAREA */}
         <textarea
           ref={textareaRef}
           value={text}
           onChange={(e) => setText(e.target.value)}
-          placeholder="Type a message..."
+          placeholder="Write a message..."
           onKeyDown={handleKeyDown}
           rows={1}
-          className="flex-1 resize-none overflow-hidden border border-gray-300 rounded-xl px-4 py-2 outline-none focus:ring-2 focus:ring-indigo-400 shadow-sm transition"
+          className="flex-1 resize-none max-h-40 py-2 px-2 text-sm outline-none bg-transparent"
         />
 
+        {/* SEND BUTTON */}
         <button
           onClick={handleSend}
           disabled={sending || (!text.trim() && !file)}
-          className="flex items-center justify-center bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl transition disabled:opacity-50 disabled:cursor-not-allowed"
+          className={`
+    flex items-center justify-center px-4 py-2 rounded-xl transition
+    ${
+      sending
+        ? "bg-indigo-500 opacity-60 cursor-wait"
+        : text.trim() || file
+          ? "bg-indigo-600 hover:bg-indigo-700 text-white active:scale-95"
+          : "bg-gray-200 text-gray-400 cursor-not-allowed"
+    }
+  `}
         >
-          <Send size={20} />
+          <Send
+            size={18}
+            className={sending ? "opacity-50 animate-pulse" : "opacity-100"}
+          />
         </button>
       </div>
     </div>

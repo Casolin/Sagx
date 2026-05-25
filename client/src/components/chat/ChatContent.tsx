@@ -50,17 +50,24 @@ const ChatContent = ({
   }
 
   return (
-    <div className="flex-1 flex flex-col h-full min-h-0 from-gray-50 to-gray-100">
-      {/* Pass roomId so navbar knows it's a room */}
+    <div className="flex-1 flex flex-col h-full min-h-0 bg-gray-50">
+      {/* NAVBAR */}
       <ChatNavbar selectedUser={roomId ? null : selectedUser} roomId={roomId} />
 
+      {/* MESSAGES */}
       <div
         ref={scrollRef}
         className="flex-1 overflow-y-auto px-5 py-4 space-y-3 scroll-smooth"
       >
         {messages.length === 0 && (
           <div className="h-full flex flex-col items-center justify-center text-gray-400 text-sm gap-2">
-            <MessageCircle size={48} className="text-gray-600 animate-pulse" />
+            <div className="p-3 rounded-full bg-white border shadow-sm">
+              <MessageCircle
+                size={40}
+                className="text-gray-500 animate-pulse"
+              />
+            </div>
+
             <p className="font-medium text-gray-500">No messages yet</p>
             <p className="text-xs text-gray-400">Start the conversation</p>
           </div>
@@ -76,22 +83,26 @@ const ChatContent = ({
           const own = senderId === currentUserId;
 
           return (
-            <MessageBubble
-              key={message._id}
-              message={message}
-              own={own}
-              setMessages={setMessages}
-            />
+            <div key={message._id} className="flex flex-col">
+              <MessageBubble
+                message={message}
+                own={own}
+                setMessages={setMessages}
+              />
+            </div>
           );
         })}
       </div>
 
-      <MessageInput
-        userId={userId}
-        roomId={roomId}
-        setMessages={setMessages}
-        currentUserId={currentUserId}
-      />
+      {/* INPUT */}
+      <div className="bg-white border-t border-gray-200">
+        <MessageInput
+          userId={userId}
+          roomId={roomId}
+          setMessages={setMessages}
+          currentUserId={currentUserId}
+        />
+      </div>
     </div>
   );
 };

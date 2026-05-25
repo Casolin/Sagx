@@ -15,7 +15,7 @@ export default function AlertsPage() {
 
   return (
     <div className="p-6 space-y-6 bg-white min-h-screen">
-      <h1 className="text-2xl font-bold">Alerts</h1>
+      <h1 className="text-4xl font-black tracking-tight">Alerts</h1>
 
       <AlertList />
     </div>

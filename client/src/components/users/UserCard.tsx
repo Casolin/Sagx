@@ -46,48 +46,73 @@ export default function UserCard({ user, onEdit, onDelete }: Props) {
       {/* CARD */}
       <div
         className="
-          w-full flex flex-col sm:flex-row items-center justify-between
-          bg-white border border-gray-100
-          rounded-2xl p-4 sm:p-5 shadow-sm
-          hover:shadow-md transition
-        "
+        group relative w-full
+        rounded-2xl border border-gray-200
+        bg-white p-5
+        flex flex-col sm:flex-row items-center justify-between
+        gap-4
+        transition-all duration-200
+        hover:shadow-lg hover:-translate-y-0.5
+      "
       >
-        {/* LEFT: Avatar + Info */}
-        <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-4 w-full sm:w-auto">
-          <img
-            src={user.avatar}
-            className="w-12 h-12 sm:w-14 sm:h-14 rounded-full border object-cover"
-          />
+        {/* subtle accent line */}
+        <div className="absolute left-0 top-0 h-full w-0.75 bg-linear-to-b from-indigo-500 via-blue-500 to-cyan-400 rounded-l-2xl opacity-0 group-hover:opacity-100 transition" />
 
-          <div className="text-center sm:text-left flex-1">
-            <h3 className="font-semibold text-gray-900">
+        {/* LEFT */}
+        <div className="flex items-center gap-4 w-full sm:w-auto">
+          {/* avatar */}
+          <div className="relative">
+            <img
+              src={user.avatar}
+              className="w-12 h-12 rounded-full border object-cover"
+            />
+            <span
+              className={`absolute -bottom-1 -right-1 w-3 h-3 rounded-full border-2 border-white ${
+                user.status === "ACTIVE"
+                  ? "bg-green-500"
+                  : user.status === "SUSPENDED"
+                    ? "bg-red-500"
+                    : "bg-gray-400"
+              }`}
+            />
+          </div>
+
+          {/* info */}
+          <div className="min-w-0">
+            <h3 className="font-semibold text-gray-900 group-hover:text-indigo-600 transition">
               {user.firstName} {user.lastName}
             </h3>
 
-            <p className="text-sm text-gray-500 truncate">{user.email}</p>
+            <p className="text-sm text-gray-500 truncate max-w-60">
+              {user.email}
+            </p>
 
-            <div className="flex flex-wrap justify-center sm:justify-start gap-2 mt-2">
-              <span className={`text-xs px-3 py-1 rounded-full ${roleColor}`}>
+            <div className="flex flex-wrap gap-2 mt-2">
+              <span
+                className={`text-[11px] px-2.5 py-1 rounded-full font-medium ${roleColor}`}
+              >
                 {user.role}
               </span>
 
-              <span className={`text-xs px-3 py-1 rounded-full ${statusColor}`}>
+              <span
+                className={`text-[11px] px-2.5 py-1 rounded-full font-medium ${statusColor}`}
+              >
                 {user.status}
               </span>
             </div>
           </div>
         </div>
 
-        {/* ACTIONS */}
-        <div className="flex flex-col sm:flex-row gap-2 mt-3 sm:mt-0">
+        {/* RIGHT ACTIONS */}
+        <div className="flex items-center gap-2 sm:ml-auto">
           <button
             onClick={() => onEdit(user)}
             className="
-              bg-indigo-600 hover:bg-indigo-700
-              text-white px-4 py-2 rounded-xl
-              text-sm font-medium transition cursor-pointer
-              w-full sm:w-auto
-            "
+            px-3 py-2 rounded-xl text-sm font-medium
+            bg-indigo-50 text-indigo-600
+            hover:bg-indigo-100 transition
+            cursor-pointer
+          "
           >
             Edit
           </button>
@@ -95,11 +120,11 @@ export default function UserCard({ user, onEdit, onDelete }: Props) {
           <button
             onClick={() => setOpen(true)}
             className="
-              bg-red-500 hover:bg-red-600
-              text-white px-4 py-2 rounded-xl
-              text-sm font-medium transition cursor-pointer
-              w-full sm:w-auto
-            "
+            px-3 py-2 rounded-xl text-sm font-medium
+            bg-red-50 text-red-600
+            hover:bg-red-100 transition
+            cursor-pointer
+          "
           >
             Delete
           </button>

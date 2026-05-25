@@ -67,105 +67,141 @@ export default function CreateMachinePage() {
   };
 
   return (
-    <div className="min-h-screen p-6 bg-white space-y-6">
-      <div
-        className="flex gap-1 items-center cursor-pointer"
-        onClick={() => navigate("/machines")}
-      >
-        <ArrowLeftToLine size={15} />
-        <button className="cursor-pointer">Back</button>
-      </div>
-
-      <div className="w-full bg-white rounded-lg p-6 space-y-4 border border-gray-300">
-        <h1 className="text-xl font-bold">Create Machine</h1>
-
-        <input
-          name="name"
-          placeholder="Machine name"
-          value={form.name}
-          onChange={handleChange}
-          className="w-full border rounded-lg px-3 py-2"
-        />
-
-        <input
-          name="type"
-          placeholder="Machine type"
-          value={form.type}
-          onChange={handleChange}
-          className="w-full border rounded-lg px-3 py-2"
-        />
-
-        <input
-          name="location"
-          placeholder="Location (optional)"
-          value={form.location}
-          onChange={handleChange}
-          className="w-full border rounded-lg px-3 py-2"
-        />
-
-        <div className="grid grid-cols-2 gap-3">
-          <select
-            name="failureType"
-            value={form.failureType}
-            onChange={handleChange}
-            className="w-full border rounded-lg px-3 py-2"
-          >
-            <option value="NONE">NONE</option>
-            <option value="ELECTRICAL">ELECTRICAL</option>
-            <option value="MECHANICAL">MECHANICAL</option>
-            <option value="HYDRAULIC">HYDRAULIC</option>
-            <option value="SENSOR">SENSOR</option>
-            <option value="OVERHEAT">OVERHEAT</option>
-            <option value="UNKNOWN">UNKNOWN</option>
-          </select>
-
-          <select
-            name="status"
-            value={form.status}
-            onChange={handleChange}
-            className="w-full border rounded-lg px-3 py-2"
-          >
-            <option value="OK">OK</option>
-            <option value="DOWN">DOWN</option>
-            <option value="MAINTENANCE">MAINTENANCE</option>
-          </select>
-        </div>
-
-        <select
-          name="condition"
-          value={form.condition}
-          onChange={handleChange}
-          className="w-full border rounded-lg px-3 py-2"
-        >
-          <option value="NORMAL">NORMAL</option>
-          <option value="ANOMALY">ANOMALY</option>
-          <option value="FAILURE">FAILURE</option>
-        </select>
-
-        <textarea
-          name="description"
-          placeholder="Description (optional)"
-          value={form.description}
-          onChange={handleChange}
-          className="w-full border rounded-lg px-3 py-2 h-24"
-        />
-
-        {/* ACTIONS */}
-        <div className="flex gap-2 pt-2">
+    <div className="min-h-screen bg-zinc-50">
+      {/* TOP BAR */}
+      <div className="sticky top-0 z-20 bg-white/80 backdrop-blur border-b border-zinc-200">
+        <div className="max-w-3xl mx-auto px-6 py-4 flex items-center justify-between">
           <button
             onClick={() => navigate("/machines")}
-            className="w-1/2 border rounded-lg py-2 cursor-pointer"
+            className="flex items-center gap-2 text-sm text-zinc-600 hover:text-black transition"
           >
-            Cancel
+            <ArrowLeftToLine size={16} />
+            Machines
           </button>
 
-          <button
-            onClick={handleSubmit}
-            disabled={loading}
-            className="w-1/2 bg-blue-600 text-white rounded-lg py-2 disabled:opacity-50 cursor-pointer"
+          <h1 className="text-sm font-semibold tracking-wide text-zinc-800">
+            Create Machine
+          </h1>
+
+          <div />
+        </div>
+      </div>
+
+      {/* CONTENT */}
+      <div className="max-w-3xl mx-auto px-6 py-8 space-y-6">
+        {/* MAIN CARD */}
+        <div className="bg-white border border-zinc-200 rounded-2xl p-6 space-y-5">
+          <div>
+            <h2 className="text-sm font-semibold text-zinc-700">
+              Machine details
+            </h2>
+            <p className="text-xs text-zinc-500 mt-1">
+              Add core information about the machine
+            </p>
+          </div>
+
+          {/* NAME */}
+          <input
+            name="name"
+            placeholder="Machine name"
+            value={form.name}
+            onChange={handleChange}
+            className="w-full px-4 py-3 rounded-xl border border-zinc-200 bg-zinc-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-black/10"
+          />
+
+          {/* TYPE */}
+          <input
+            name="type"
+            placeholder="Machine type"
+            value={form.type}
+            onChange={handleChange}
+            className="w-full px-4 py-3 rounded-xl border border-zinc-200 bg-zinc-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-black/10"
+          />
+
+          {/* LOCATION */}
+          <input
+            name="location"
+            placeholder="Location (optional)"
+            value={form.location}
+            onChange={handleChange}
+            className="w-full px-4 py-3 rounded-xl border border-zinc-200 bg-zinc-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-black/10"
+          />
+
+          {/* GRID OPTIONS */}
+          <div className="grid md:grid-cols-2 gap-4">
+            <select
+              name="failureType"
+              value={form.failureType}
+              onChange={handleChange}
+              className="px-3 py-2 rounded-xl border bg-zinc-50"
+            >
+              <option value="NONE">NONE</option>
+              <option value="ELECTRICAL">ELECTRICAL</option>
+              <option value="MECHANICAL">MECHANICAL</option>
+              <option value="HYDRAULIC">HYDRAULIC</option>
+              <option value="SENSOR">SENSOR</option>
+              <option value="OVERHEAT">OVERHEAT</option>
+              <option value="UNKNOWN">UNKNOWN</option>
+            </select>
+
+            <select
+              name="status"
+              value={form.status}
+              onChange={handleChange}
+              className="px-3 py-2 rounded-xl border bg-zinc-50"
+            >
+              <option value="OK">OK</option>
+              <option value="DOWN">DOWN</option>
+              <option value="MAINTENANCE">MAINTENANCE</option>
+            </select>
+          </div>
+
+          {/* CONDITION */}
+          <select
+            name="condition"
+            value={form.condition}
+            onChange={handleChange}
+            className="w-full px-3 py-2 rounded-xl border bg-zinc-50"
           >
-            {loading ? "Creating..." : "Create Machine"}
-          </button>
+            <option value="NORMAL">NORMAL</option>
+            <option value="ANOMALY">ANOMALY</option>
+            <option value="FAILURE">FAILURE</option>
+          </select>
+
+          {/* DESCRIPTION */}
+          <textarea
+            name="description"
+            placeholder="Description (optional)"
+            value={form.description}
+            onChange={handleChange}
+            className="w-full px-4 py-3 rounded-xl border border-zinc-200 bg-zinc-50 h-28 focus:bg-white focus:outline-none focus:ring-2 focus:ring-black/10"
+          />
+        </div>
+
+        {/* ACTION CARD */}
+        <div className="bg-white border border-zinc-200 rounded-2xl p-4 space-y-3">
+          <p className="text-sm font-medium text-zinc-700">Actions</p>
+
+          <div className="flex gap-3">
+            <button
+              onClick={() => navigate("/machines")}
+              className="w-1/2 py-2.5 rounded-xl border hover:bg-zinc-50 transition"
+            >
+              Cancel
+            </button>
+
+            <button
+              onClick={handleSubmit}
+              disabled={loading}
+              className="w-1/2 py-2.5 rounded-xl bg-black text-white hover:opacity-90 disabled:opacity-40 transition"
+            >
+              {loading ? "Creating..." : "Create Machine"}
+            </button>
+          </div>
+
+          <p className="text-xs text-zinc-400 text-center">
+            Machine will be added to the system immediately after creation
+          </p>
         </div>
       </div>
     </div>

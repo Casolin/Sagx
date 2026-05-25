@@ -49,29 +49,30 @@ export default function AddUserPage() {
   };
 
   return (
-    <div className="w-full min-h-screen bg-gray-50 px-10 py-10">
+    <div className="min-h-screen bg-zinc-50">
       {/* HEADER */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Create User</h1>
+      <div className="sticky top-0 z-20 bg-white/80 backdrop-blur border-b border-zinc-200">
+        <div className="max-w-5xl mx-auto px-6 py-4">
+          <h1 className="text-sm font-semibold text-zinc-800">Create User</h1>
 
-        <p className="text-gray-500 mt-1">
-          Add a new team member and assign their role
-        </p>
+          <p className="text-xs text-zinc-500 mt-1">
+            Add a new team member and assign their role
+          </p>
+        </div>
       </div>
 
-      {/* FORM CONTAINER */}
-      <div className="w-full bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
-        <form onSubmit={handleSubmit} className="space-y-6">
+      {/* CONTENT */}
+      <div className="max-w-5xl mx-auto px-6 py-8">
+        <div className="bg-white border border-zinc-200 rounded-2xl shadow-sm p-6 space-y-5">
           {/* NAME */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <input
               name="firstName"
               value={form.firstName}
               onChange={handleChange}
               placeholder="First name"
-              className="w-full px-4 py-3 rounded-xl border border-gray-200
-              focus:outline-none focus:ring-2 focus:ring-indigo-500
-              transition"
+              className="w-full px-4 py-3 rounded-xl border border-zinc-200 bg-zinc-50
+            focus:bg-white focus:outline-none focus:ring-2 focus:ring-black/10"
             />
 
             <input
@@ -79,9 +80,8 @@ export default function AddUserPage() {
               value={form.lastName}
               onChange={handleChange}
               placeholder="Last name"
-              className="w-full px-4 py-3 rounded-xl border border-gray-200
-              focus:outline-none focus:ring-2 focus:ring-indigo-500
-              transition"
+              className="w-full px-4 py-3 rounded-xl border border-zinc-200 bg-zinc-50
+            focus:bg-white focus:outline-none focus:ring-2 focus:ring-black/10"
             />
           </div>
 
@@ -91,9 +91,8 @@ export default function AddUserPage() {
             value={form.email}
             onChange={handleChange}
             placeholder="Email address"
-            className="w-full px-4 py-3 rounded-xl border border-gray-200
-            focus:outline-none focus:ring-2 focus:ring-indigo-500
-            transition"
+            className="w-full px-4 py-3 rounded-xl border border-zinc-200 bg-zinc-50
+          focus:bg-white focus:outline-none focus:ring-2 focus:ring-black/10"
           />
 
           {/* PASSWORD */}
@@ -103,67 +102,49 @@ export default function AddUserPage() {
             onChange={handleChange}
             placeholder="Password"
             type="password"
-            className="w-full px-4 py-3 rounded-xl border border-gray-200
-            focus:outline-none focus:ring-2 focus:ring-indigo-500
-            transition"
+            className="w-full px-4 py-3 rounded-xl border border-zinc-200 bg-zinc-50
+          focus:bg-white focus:outline-none focus:ring-2 focus:ring-black/10"
           />
 
           {/* ROLE */}
-          <select
-            name="role"
-            value={form.role}
-            onChange={handleChange}
-            className="w-full px-4 py-3 rounded-xl border border-gray-200
-            focus:outline-none focus:ring-2 focus:ring-indigo-500
-            transition"
-          >
-            {roles.map((role) => (
-              <option key={role} value={role}>
-                {role}
-              </option>
-            ))}
-          </select>
+          <div>
+            <p className="text-xs text-zinc-500 mb-1">Role</p>
 
-          {/* BUTTONS */}
-          <div className="flex items-center gap-4 pt-4">
-            <button
-              type="submit"
-              disabled={loading}
-              className="
-                bg-indigo-600
-                hover:bg-indigo-700
-                text-white
-                font-medium
-                px-6
-                py-3
-                rounded-xl
-                transition
-                cursor-pointer
-                disabled:opacity-50
-                disabled:cursor-not-allowed
-              "
+            <select
+              name="role"
+              value={form.role}
+              onChange={handleChange}
+              className="w-full px-4 py-3 rounded-xl border border-zinc-200 bg-zinc-50
+            focus:bg-white focus:outline-none focus:ring-2 focus:ring-black/10"
             >
-              {loading ? "Creating..." : "Create User"}
-            </button>
+              {roles.map((role) => (
+                <option key={role} value={role}>
+                  {role}
+                </option>
+              ))}
+            </select>
+          </div>
 
+          {/* ACTIONS */}
+          <div className="flex items-center justify-end gap-3 pt-4">
             <button
               type="button"
               onClick={() => navigate("/users")}
-              className="
-                px-6
-                py-3
-                rounded-xl
-                border border-gray-300
-                text-gray-700
-                hover:bg-gray-100
-                transition
-                cursor-pointer
-              "
+              className="px-4 py-2 rounded-xl border border-zinc-200 text-sm text-zinc-600 hover:bg-zinc-50 transition"
             >
               Cancel
             </button>
+
+            <button
+              type="submit"
+              disabled={loading}
+              onClick={handleSubmit}
+              className="px-4 py-2 rounded-xl bg-black text-white text-sm hover:opacity-90 disabled:opacity-40 transition"
+            >
+              {loading ? "Creating..." : "Create User"}
+            </button>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   );

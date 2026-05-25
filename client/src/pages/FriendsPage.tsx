@@ -110,26 +110,26 @@ const FriendsPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-zinc-50 text-black">
+    <div className="min-h-screen bg-linear-to-b from-zinc-50 to-white text-black">
       {/* HEADER */}
-      <div className="sticky top-0 z-10 bg-white/80 backdrop-blur border-b border-zinc-200">
-        <div className="max-w-6xl mx-auto px-6 py-6 flex items-center justify-between">
+      <div className="sticky top-0 z-10 backdrop-blur-xl bg-white/70 border-b border-zinc-200">
+        <div className="max-w-6xl mx-auto px-6 py-5 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-black text-white flex items-center justify-center">
+            <div className="w-12 h-12 rounded-2xl bg-black text-white flex items-center justify-center shadow-sm">
               <Users size={22} />
             </div>
 
             <div>
-              <h1 className="text-2xl font-semibold">Friends</h1>
+              <h1 className="text-2xl font-bold tracking-tight">Friends</h1>
               <p className="text-sm text-zinc-500">
-                Manage connections & chats
+                Manage connections, requests & chats
               </p>
             </div>
           </div>
 
           <button
             onClick={() => setOpenAddFriend(true)}
-            className="flex items-center gap-2 bg-black text-white px-4 py-2.5 rounded-xl hover:scale-[1.02] transition cursor-pointer"
+            className="flex items-center gap-2 bg-black text-white px-4 py-2.5 rounded-xl hover:scale-[1.03] active:scale-95 transition shadow-sm cursor-pointer"
           >
             <UserPlus size={18} />
             Add friend
@@ -139,53 +139,71 @@ const FriendsPage = () => {
 
       {/* CONTENT */}
       <div className="max-w-6xl mx-auto px-6 py-8 space-y-10">
-        {/* STATS */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="bg-white border border-zinc-200 rounded-2xl p-5 hover:shadow-md transition">
+        {/* HERO STATS */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          <div className="relative overflow-hidden rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm hover:shadow-md transition">
+            <div className="absolute -top-10 -right-10 w-32 h-32 bg-black/5 rounded-full" />
             <p className="text-sm text-zinc-500">Total friends</p>
-            <p className="text-3xl font-semibold mt-1">{friends.length}</p>
+            <p className="text-4xl font-bold mt-2">{friends.length}</p>
           </div>
 
-          <div className="bg-white border border-zinc-200 rounded-2xl p-5 hover:shadow-md transition">
+          <div className="relative overflow-hidden rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm hover:shadow-md transition">
+            <div className="absolute -top-10 -right-10 w-32 h-32 bg-amber-500/10 rounded-full" />
             <p className="text-sm text-zinc-500">Pending requests</p>
-            <p className="text-3xl font-semibold mt-1">{requests.length}</p>
+            <p className="text-4xl font-bold mt-2">{requests.length}</p>
           </div>
         </div>
 
-        {/* REQUESTS */}
-
+        {/* REQUESTS SECTION */}
         <section className="space-y-4">
           <div className="flex items-center gap-2">
-            <Sparkles size={18} className="text-yellow-500" />
-            <h2 className="text-lg font-semibold text-zinc-900">Requests</h2>
+            <div className="p-2 rounded-xl bg-yellow-100 text-yellow-600">
+              <Sparkles size={16} />
+            </div>
+            <h2 className="text-lg font-semibold">Friend Requests</h2>
           </div>
 
-          <div className="bg-white rounded-2xl border border-zinc-200 shadow-sm p-4">
-            <FriendRequests
-              requests={requests}
-              currentUserId={CURRENT_USER_ID}
-              onAccept={handleAccept}
-              onReject={handleReject}
-            />
+          <div className="rounded-2xl border border-zinc-200 bg-white shadow-sm overflow-hidden">
+            <div className="p-4 border-b border-zinc-100 text-sm text-zinc-500">
+              People who want to connect with you
+            </div>
+
+            <div className="p-2">
+              <FriendRequests
+                requests={requests}
+                currentUserId={CURRENT_USER_ID}
+                onAccept={handleAccept}
+                onReject={handleReject}
+              />
+            </div>
           </div>
         </section>
 
-        {/* FRIENDS */}
+        {/* FRIENDS SECTION */}
         <section className="space-y-4">
           <div className="flex items-center gap-2">
-            <Users size={18} />
-            <h2 className="text-lg font-semibold">Your Friends</h2>
+            <div className="p-2 rounded-xl bg-black text-white">
+              <Users size={16} />
+            </div>
+            <h2 className="text-lg font-semibold">Your Network</h2>
           </div>
 
-          <div className="bg-white rounded-2xl border border-zinc-200 p-4">
-            <FriendList
-              friends={friends}
-              currentUserId={CURRENT_USER_ID}
-              onRemove={handleRemove}
-              onMessage={handleMessage}
-            />
+          <div className="rounded-2xl border border-zinc-200 bg-white shadow-sm overflow-hidden">
+            <div className="p-4 border-b border-zinc-100 text-sm text-zinc-500">
+              Chat and manage your connections
+            </div>
+
+            <div className="p-2">
+              <FriendList
+                friends={friends}
+                currentUserId={CURRENT_USER_ID}
+                onRemove={handleRemove}
+                onMessage={handleMessage}
+              />
+            </div>
           </div>
         </section>
+
         <AddFriendModal open={openAddFriend} onOpenChange={setOpenAddFriend} />
       </div>
     </div>

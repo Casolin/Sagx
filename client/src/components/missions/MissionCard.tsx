@@ -70,10 +70,14 @@ export default function MissionCard({ mission, refresh }: Props) {
 
   return (
     <>
-      <div className="group relative bg-white border border-gray-200 rounded-2xl p-5 transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 space-y-4">
+      <div
+        className="group relative rounded-3xl border border-gray-200/70 bg-white/80 backdrop-blur-xl p-5 space-y-4
+      transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_40px_rgba(0,0,0,0.08)]"
+      >
+        {/* HEADER */}
         <div className="flex items-start justify-between gap-3">
-          <div className="space-y-1">
-            <h2 className="font-semibold text-gray-900 group-hover:text-blue-600 transition">
+          <div className="space-y-2">
+            <h2 className="text-lg font-bold text-gray-900 group-hover:text-blue-600 transition">
               {mission.title}
             </h2>
 
@@ -81,7 +85,7 @@ export default function MissionCard({ mission, refresh }: Props) {
               {creator?.avatar && (
                 <img
                   src={creator.avatar}
-                  className="w-6 h-6 rounded-full border object-cover"
+                  className="w-7 h-7 rounded-full border object-cover"
                 />
               )}
 
@@ -96,48 +100,52 @@ export default function MissionCard({ mission, refresh }: Props) {
             </div>
           </div>
 
+          {/* STATUS BADGE */}
           <span
             style={{ backgroundColor: statusColor }}
-            className="text-[11px] px-3 py-1 rounded-full text-white font-medium"
+            className="px-3 py-1 rounded-full text-[11px] font-semibold text-white shadow-sm"
           >
             {mission.status}
           </span>
         </div>
 
-        <p className="text-gray-500 text-sm leading-relaxed line-clamp-2">
+        {/* DESCRIPTION */}
+        <p className="text-sm text-gray-500 line-clamp-2 leading-relaxed">
           {mission.description}
         </p>
 
-        <div className="grid grid-cols-2 gap-4 text-sm">
-          <div>
+        {/* INFO GRID */}
+        <div className="grid grid-cols-3 gap-4 text-sm">
+          <div className="rounded-xl bg-gray-50 p-3">
             <p className="text-xs text-gray-400">Priority</p>
-            <p className="font-medium text-gray-700">{mission.priority}</p>
+            <p className="font-semibold text-gray-800">{mission.priority}</p>
           </div>
 
-          <div>
+          <div className="rounded-xl bg-gray-50 p-3">
             <p className="text-xs text-gray-400">Tasks</p>
-            <p className="font-medium text-gray-700">
+            <p className="font-semibold text-gray-800">
               {mission.tasks?.length || 0}
             </p>
           </div>
 
-          <div className="col-span-2">
+          <div className="rounded-xl bg-gray-50 p-3 col-span-1">
             <p className="text-xs text-gray-400">Skills</p>
-            <p className="font-medium text-gray-700">
+            <p className="font-semibold text-gray-800 truncate">
               {mission.requiredSkills?.join(", ") || "-"}
             </p>
           </div>
         </div>
 
+        {/* FOOTER */}
         <div className="flex items-center justify-between pt-3 border-t border-gray-100">
           <span className="text-xs text-gray-400">
             {new Date(mission.createdAt).toLocaleString()}
           </span>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1">
             <button
               onClick={handleEdit}
-              className="p-2 rounded-lg text-blue-600 hover:bg-blue-50 transition cursor-pointer"
+              className="p-2 rounded-xl text-blue-600 hover:bg-blue-50 transition"
             >
               <SlidersHorizontal size={18} />
             </button>
@@ -149,15 +157,16 @@ export default function MissionCard({ mission, refresh }: Props) {
                   setOpenDelete(true);
                 }}
                 disabled={deleting}
-                className="transition text-red-500 hover:text-red-600 p-2 rounded-lg hover:bg-red-50 disabled:opacity-50 cursor-pointer"
+                className="p-2 rounded-xl text-red-500 hover:bg-red-50 transition disabled:opacity-50"
               >
                 <Trash2 size={18} />
               </button>
             )}
+
             {!isTechnician && (
               <button
                 onClick={handleGenerateReport}
-                className="p-2 rounded-lg text-orange-600 hover:bg-orange-50 transition cursor-pointer"
+                className="p-2 rounded-xl text-orange-600 hover:bg-orange-50 transition"
               >
                 <File size={18} />
               </button>

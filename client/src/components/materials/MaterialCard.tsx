@@ -31,11 +31,26 @@ const MaterialCard = ({ material }: Props) => {
   };
 
   return (
-    <div className="group bg-white border border-gray-200 rounded-2xl p-5 transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5">
-      {/* Header */}
-      <div className="flex items-start justify-between gap-3">
+    <div
+      className="
+      group relative overflow-hidden
+      rounded-2xl border border-gray-200/70
+      bg-white
+      p-5
+      transition-all duration-300
+      hover:-translate-y-1 hover:shadow-2xl
+    "
+    >
+      {/* LEFT ACCENT BAR */}
+      <div className="absolute left-0 top-0 h-full w-1 bg-linear-to-b from-blue-500 via-cyan-400 to-indigo-500 opacity-80" />
+
+      {/* FLOATING GLOW */}
+      <div className="absolute -top-20 -right-20 w-40 h-40 bg-blue-100 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition" />
+
+      {/* HEADER */}
+      <div className="relative flex items-start justify-between gap-4">
         <div className="min-w-0">
-          <h2 className="text-lg font-semibold text-gray-900 truncate group-hover:text-blue-600 transition">
+          <h2 className="text-lg font-bold text-gray-900 group-hover:text-blue-600 transition">
             {material.name}
           </h2>
 
@@ -46,12 +61,23 @@ const MaterialCard = ({ material }: Props) => {
           </p>
         </div>
 
-        {/* Quantity (editable) */}
-        <div className="shrink-0 flex items-center gap-2">
+        {/* STATUS CHIP */}
+        <div className="flex items-center gap-2">
+          <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+
           {!isEditing ? (
             <span
               onClick={() => setIsEditing(true)}
-              className="cursor-pointer text-xs font-medium bg-gray-100 text-gray-700 px-2.5 py-1 rounded-full border border-gray-200 hover:bg-gray-200 transition"
+              className="
+              cursor-pointer
+              text-xs font-semibold
+              px-3 py-1.5
+              rounded-full
+              bg-gray-100 text-gray-700
+              border border-gray-200
+              hover:bg-gray-200
+              transition
+            "
             >
               {quantity} {material.unit}
             </span>
@@ -67,7 +93,7 @@ const MaterialCard = ({ material }: Props) => {
               <button
                 onClick={handleSave}
                 disabled={loading}
-                className="text-xs bg-blue-600 text-white px-2 py-1 rounded-md hover:bg-blue-700 cursor-pointer"
+                className="text-xs bg-blue-600 text-white px-2 py-1 rounded-md"
               >
                 {loading ? "..." : "Save"}
               </button>
@@ -77,7 +103,7 @@ const MaterialCard = ({ material }: Props) => {
                   setIsEditing(false);
                   setQuantity(material.quantity);
                 }}
-                className="text-xs text-gray-500 cursor-pointer"
+                className="text-xs text-gray-500"
               >
                 Cancel
               </button>
@@ -86,24 +112,41 @@ const MaterialCard = ({ material }: Props) => {
         </div>
       </div>
 
-      {/* Failure tags */}
-      <div className="mt-4">
+      {/* DIVIDER */}
+      <div className="my-4 h-px bg-linear-to-r from-transparent via-gray-200 to-transparent" />
+
+      {/* FAILURE ZONE */}
+      <div className="relative">
         {hasFailures ? (
           <div className="flex flex-wrap gap-2">
             {failureTypes.map((type, idx) => (
               <span
                 key={`${type}-${idx}`}
-                className="text-xs font-medium bg-red-50 text-red-600 border border-red-100 px-2.5 py-1 rounded-full"
+                className="
+                text-xs font-semibold
+                px-2.5 py-1
+                rounded-full
+                bg-red-50 text-red-600
+                border border-red-100
+                hover:bg-red-100
+                transition
+              "
               >
                 {type}
               </span>
             ))}
           </div>
         ) : (
-          <p className="text-xs text-gray-400 mt-2">
-            No failure types recorded
-          </p>
+          <div className="flex items-center gap-2 text-xs text-gray-400">
+            <span className="h-1.5 w-1.5 rounded-full bg-gray-300" />
+            No failure reports detected
+          </div>
         )}
+      </div>
+
+      {/* BOTTOM MICRO INFO STRIP */}
+      <div className="mt-4 flex items-center justify-between text-[11px] text-gray-400">
+        <span>Inventory module</span>
       </div>
     </div>
   );
