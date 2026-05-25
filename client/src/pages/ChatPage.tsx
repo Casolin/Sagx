@@ -155,7 +155,7 @@ const ChatPage = () => {
   }, [userId, currentUserId]);
 
   return (
-    <div className="h-[calc(100vh-60px)] flex overflow-hidden bg-gray-100">
+    <div className="min-h-[calc(100dvh-60px)] flex overflow-hidden bg-gray-100">
       <div
         id="chat-sidebar"
         className="h-full w-0 md:w-max transition-all duration-300 overflow-hidden bg-white absolute top-0 left-0 z-10 md:relative"
