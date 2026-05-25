@@ -98,24 +98,37 @@ export default function CreateAlertPage() {
   };
 
   return (
-    <div className="p-6 min-h-screen bg-white">
-      <div className="mx-auto">
-        <div className="flex items-center gap-3 mb-6">
-          <AlertTriangle className="text-orange-500" />
-          <h1 className="text-2xl font-bold">Create Alert</h1>
+    <div className="min-h-screen bg-linear-to-b from-zinc-50 to-zinc-100 px-6 py-10">
+      <div className="max-w-3xl mx-auto">
+        {/* HEADER */}
+        <div className="flex items-center gap-3 mb-8">
+          <div className="p-2 rounded-xl bg-orange-100 text-orange-600">
+            <AlertTriangle size={20} />
+          </div>
+
+          <div>
+            <h1 className="text-2xl font-semibold tracking-tight">
+              Create Alert
+            </h1>
+            <p className="text-sm text-zinc-500">
+              Report a machine issue or anomaly
+            </p>
+          </div>
         </div>
 
+        {/* FORM CARD */}
         <form
           onSubmit={handleSubmit}
-          className="bg-white border border-gray-300 rounded-2xl p-6 space-y-2"
+          className="bg-white border border-zinc-200 rounded-3xl shadow-sm p-8 space-y-6"
         >
+          {/* MACHINE */}
           <div>
-            <label className="text-sm text-gray-600">Machine</label>
+            <label className="text-xs font-medium text-zinc-500">Machine</label>
             <select
               name="machine"
               value={form.machine}
               onChange={handleChange}
-              className="w-full mt-1 border rounded-lg p-2"
+              className="w-full mt-2 px-4 py-3 rounded-2xl border border-zinc-200 bg-zinc-50 focus:bg-white focus:ring-2 focus:ring-orange-100 outline-none transition"
             >
               <option value="">Select machine</option>
               {machines.map((m) => (
@@ -126,71 +139,80 @@ export default function CreateAlertPage() {
             </select>
           </div>
 
-          <div>
-            <label className="text-sm text-gray-600">Type</label>
-            <select
-              name="type"
-              value={form.type}
-              onChange={handleChange}
-              className="w-full mt-1 border rounded-lg p-2"
-            >
-              <option value="FAILURE">Failure</option>
-              <option value="ANOMALY">Anomaly</option>
-              <option value="MAINTENANCE">Maintenance</option>
-              <option value="MACHINE_FAILURE">Machine Failure</option>
-            </select>
+          {/* GRID */}
+          <div className="grid md:grid-cols-2 gap-5">
+            <div>
+              <label className="text-xs font-medium text-zinc-500">Type</label>
+              <select
+                name="type"
+                value={form.type}
+                onChange={handleChange}
+                className="w-full mt-2 px-4 py-3 rounded-2xl border border-zinc-200 bg-zinc-50 focus:bg-white focus:ring-2 focus:ring-orange-100 outline-none transition"
+              >
+                <option value="FAILURE">Failure</option>
+                <option value="ANOMALY">Anomaly</option>
+                <option value="MAINTENANCE">Maintenance</option>
+                <option value="MACHINE_FAILURE">Machine Failure</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="text-xs font-medium text-zinc-500">
+                Priority
+              </label>
+              <select
+                name="priority"
+                value={form.priority}
+                onChange={handleChange}
+                className="w-full mt-2 px-4 py-3 rounded-2xl border border-zinc-200 bg-zinc-50 focus:bg-white focus:ring-2 focus:ring-orange-100 outline-none transition"
+              >
+                <option value="LOW">Low</option>
+                <option value="MEDIUM">Medium</option>
+                <option value="HIGH">High</option>
+                <option value="URGENT">Urgent</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="text-xs font-medium text-zinc-500">
+                Failure Type
+              </label>
+              <select
+                name="failureType"
+                value={form.failureType}
+                onChange={handleChange}
+                className="w-full mt-2 px-4 py-3 rounded-2xl border border-zinc-200 bg-zinc-50 focus:bg-white focus:ring-2 focus:ring-orange-100 outline-none transition"
+              >
+                <option value="UNKNOWN">Unknown</option>
+                <option value="ELECTRICAL">Electrical</option>
+                <option value="MECHANICAL">Mechanical</option>
+                <option value="HYDRAULIC">Hydraulic</option>
+                <option value="SENSOR">Sensor</option>
+                <option value="OVERHEAT">Overheat</option>
+                <option value="NONE">None</option>
+              </select>
+            </div>
           </div>
 
+          {/* MESSAGE */}
           <div>
-            <label className="text-sm text-gray-600">Failure Type</label>
-            <select
-              name="failureType"
-              value={form.failureType}
-              onChange={handleChange}
-              className="w-full mt-1 border rounded-lg p-2"
-            >
-              <option value="UNKNOWN">Unknown</option>
-              <option value="ELECTRICAL">Electrical</option>
-              <option value="MECHANICAL">Mechanical</option>
-              <option value="HYDRAULIC">Hydraulic</option>
-              <option value="SENSOR">Sensor</option>
-              <option value="OVERHEAT">Overheat</option>
-              <option value="NONE">None</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="text-sm text-gray-600">Priority</label>
-            <select
-              name="priority"
-              value={form.priority}
-              onChange={handleChange}
-              className="w-full mt-1 border rounded-lg p-2"
-            >
-              <option value="LOW">Low</option>
-              <option value="MEDIUM">Medium</option>
-              <option value="HIGH">High</option>
-              <option value="URGENT">Urgent</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="text-sm text-gray-600">Message</label>
+            <label className="text-xs font-medium text-zinc-500">Message</label>
             <textarea
               name="message"
               value={form.message}
               onChange={handleChange}
-              rows={4}
-              className="w-full mt-1 border rounded-lg p-2"
-              placeholder="Description"
+              rows={5}
+              placeholder="Describe the issue..."
+              className="w-full mt-2 px-4 py-3 rounded-2xl border border-zinc-200 bg-zinc-50 focus:bg-white focus:ring-2 focus:ring-orange-100 outline-none transition resize-none"
             />
           </div>
 
-          <div className="flex justify-end gap-3 pt-3">
+          {/* ACTIONS */}
+          <div className="flex justify-end gap-4 pt-2">
             <button
               type="button"
               onClick={() => navigate("/alerts")}
-              className="px-4 py-2 rounded-lg border cursor-pointer"
+              className="px-5 py-3 rounded-2xl border border-zinc-300 hover:bg-zinc-50 transition"
             >
               Cancel
             </button>
@@ -198,7 +220,7 @@ export default function CreateAlertPage() {
             <button
               disabled={loading}
               type="submit"
-              className="px-4 py-2 rounded-lg bg-orange-500 text-white hover:bg-orange-600 disabled:opacity-50 cursor-pointer"
+              className="px-6 py-3 rounded-2xl bg-linear-to-r from-orange-500 to-orange-600 text-white font-medium hover:opacity-90 disabled:opacity-50 transition shadow-sm"
             >
               {loading ? "Creating..." : "Create Alert"}
             </button>
