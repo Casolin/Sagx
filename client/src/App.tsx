@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import { initSocket, disconnectSocket } from "./services/socket.service";
 import { useCallStore } from "./utils/call.store";
 import { CallPage } from "./pages/CallPage";
+import { startTokenAutoRefresh } from "./utils/tokenAutoRefresh";
 
 function App() {
   const { loading, user } = useAuth();
@@ -21,6 +22,12 @@ function App() {
     return () => {
       disconnectSocket();
     };
+  }, [user?._id]);
+
+  useEffect(() => {
+    if (!user?._id) return;
+
+    startTokenAutoRefresh();
   }, [user?._id]);
 
   if (loading) {
