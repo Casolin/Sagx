@@ -52,6 +52,11 @@ api.interceptors.response.use(
     }
 
     if (error.response?.status === 401 && !originalRequest._retry) {
+      if (error.config?.url?.includes("refresh-token")) {
+        localStorage.removeItem("accessToken");
+        window.location.href = "/login";
+        return Promise.reject(error);
+      }
       originalRequest._retry = true;
 
       if (isRefreshing) {
