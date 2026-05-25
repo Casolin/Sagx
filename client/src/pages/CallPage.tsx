@@ -223,6 +223,10 @@ export const CallPage = () => {
                 {incomingCall.caller.firstName} {incomingCall.caller.lastName}
               </p>
 
+              <p className="text-xs text-gray-400 uppercase tracking-wide">
+                Incoming call
+              </p>
+
               <div className="flex gap-10">
                 <button
                   onClick={rejectCall}
@@ -233,7 +237,7 @@ export const CallPage = () => {
 
                 <button
                   onClick={answerCall}
-                  className="p-4 rounded-full bg-green-500/20 text-green-400 hover:bg-green-500/30 transition"
+                  className="p-4 rounded-full bg-green-500/20 text-green-400 hover:bg-green-500/30 transition cursor-pointer"
                 >
                   <Phone />
                 </button>
