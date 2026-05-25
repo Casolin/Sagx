@@ -248,6 +248,8 @@ export const useCallStore = create<CallState>((set, get) => ({
 
     const sender = pc.getSenders().find((s) => s.track?.kind === "video");
 
+    const audioSender = pc.getSenders().find((s) => s.track?.kind === "audio");
+
     if (!sender) return;
 
     const dummyTrack = stream.getVideoTracks()[0];
@@ -270,8 +272,13 @@ export const useCallStore = create<CallState>((set, get) => ({
     });
 
     const screenTrack = screenStream.getVideoTracks()[0];
+    const screenAudioTrack = screenStream.getAudioTracks()[0];
 
     await sender.replaceTrack(screenTrack);
+
+    if (audioSender && screenAudioTrack) {
+      await audioSender.replaceTrack(screenAudioTrack);
+    }
 
     screenTrack.onended = async () => {
       const fallbackTrack = stream.getVideoTracks()[0];
