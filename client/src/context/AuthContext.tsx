@@ -23,10 +23,17 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
       try {
         const profile = await getProfile();
         setUser(profile.data);
-      } catch (err) {
+        /* eslint-disable @typescript-eslint/no-explicit-any */
+      } catch (err: any) {
         console.error("Auth bootstrap failed:", err);
-        setUser(null);
-        localStorage.removeItem("accessToken");
+
+        setTimeout(() => {
+          const token = localStorage.getItem("accessToken");
+
+          if (!token) {
+            setUser(null);
+          }
+        }, 1000);
       } finally {
         setLoading(false);
       }
