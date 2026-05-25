@@ -31,17 +31,24 @@ export const logout = async () => {
 };
 
 export const refreshToken = async () => {
-  const res = await api.post("/api/auth/refresh-token");
+  const res = await api.post(
+    "/api/auth/refresh-token",
+    {},
+    {
+      withCredentials: true,
+      headers: {
+        Authorization: undefined,
+      },
+    },
+  );
 
-  const newToken = res.data?.accessToken || res.data?.data?.accessToken;
+  const newToken = res.data?.accessToken;
 
   if (newToken) {
     localStorage.setItem("accessToken", newToken);
   }
 
-  return {
-    accessToken: newToken,
-  };
+  return { accessToken: newToken };
 };
 
 export const forgotPassword = async (data: ForgotPasswordDto) => {
