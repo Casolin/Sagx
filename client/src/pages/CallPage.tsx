@@ -32,6 +32,7 @@ export const CallPage = () => {
   const answerCall = useCallStore((s) => s.answerCall);
   const rejectCall = useCallStore((s) => s.rejectCall);
   const endCall = useCallStore((s) => s.endCall);
+  const cancelOutgoingCall = useCallStore((s) => s.cancelOutgoingCall);
 
   const remoteStream = useCallStore((s) => s.remoteStream);
 
@@ -337,9 +338,11 @@ export const CallPage = () => {
 
               <p className="text-white/70 text-sm">Calling...</p>
 
-              {/* CANCEL OUTGOING CALL (DO NOT END CALL) */}
               <button
-                onClick={() => window.location.reload()}
+                onClick={() => {
+                  cancelOutgoingCall();
+                  window.location.reload();
+                }}
                 className="p-3 rounded-full bg-white/5 hover:bg-white/10 transition cursor-pointer"
               >
                 <PhoneOff />

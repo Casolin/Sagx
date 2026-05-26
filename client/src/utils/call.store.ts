@@ -25,6 +25,8 @@ type CallState = {
   callBusyOpen: boolean;
   setCallBusyOpen: (v: boolean) => void;
 
+  cancelOutgoingCall: () => void;
+
   peer: Peer.Instance | null;
 
   stream: MediaStream | null;
@@ -313,6 +315,25 @@ export const useCallStore = create<CallState>((set, get) => ({
 
     set({
       isScreenSharing: true,
+    });
+  },
+
+  cancelOutgoingCall: () => {
+    const { peer, stream } = get();
+
+    peer?.destroy();
+
+    stream?.getTracks().forEach((track) => track.stop());
+
+    set({
+      peer: null,
+      stream: null,
+      remoteStream: null,
+      isCalling: false,
+      activeCallUserId: null,
+      isMuted: false,
+      isScreenSharing: false,
+      isMinimized: false,
     });
   },
 
