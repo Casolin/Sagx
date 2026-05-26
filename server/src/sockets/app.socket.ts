@@ -236,6 +236,31 @@ export const initAppSocket = (io: Server) => {
     });
 
     // =========================
+    // CANCEL OUTGOING CALL
+    // =========================
+    socket.on(SOCKET_EVENTS.CALL_CANCEL, ({ to }) => {
+      try {
+        if (!to || !userId) return;
+
+        const callerId = String(userId);
+        const receiverId = String(to);
+
+        io.to(receiverId).emit(SOCKET_EVENTS.CALL_CANCEL, {
+          from: callerId,
+        });
+
+        const pairedUser = usersInCall.get(callerId);
+
+        if (pairedUser === receiverId) {
+          usersInCall.delete(callerId);
+          usersInCall.delete(receiverId);
+        }
+      } catch (err) {
+        console.error("CANCEL_OUTGOING_CALL ERROR:", err);
+      }
+    });
+
+    // =========================
     // DISCONNECT
     // =========================
     socket.on("disconnect", () => {

@@ -143,6 +143,10 @@ export const useCallStore = create<CallState>((set, get) => ({
       set({ callBusyOpen: true });
       get().cleanup();
     });
+
+    socket.on(SOCKET_EVENTS.CALL_CANCEL, () => {
+      get().cleanup();
+    });
   },
 
   startCall: async (receiverId, currentUser) => {
@@ -319,22 +323,15 @@ export const useCallStore = create<CallState>((set, get) => ({
   },
 
   cancelOutgoingCall: () => {
-    const { peer, stream } = get();
+    const { socket, activeCallUserId } = get();
 
-    peer?.destroy();
+    if (socket && activeCallUserId) {
+      socket.emit(SOCKET_EVENTS.CALL_CANCEL, {
+        to: activeCallUserId,
+      });
+    }
 
-    stream?.getTracks().forEach((track) => track.stop());
-
-    set({
-      peer: null,
-      stream: null,
-      remoteStream: null,
-      isCalling: false,
-      activeCallUserId: null,
-      isMuted: false,
-      isScreenSharing: false,
-      isMinimized: false,
-    });
+    window.location.reload();
   },
 
   minimizeCall: () => {

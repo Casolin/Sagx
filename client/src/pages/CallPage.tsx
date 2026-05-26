@@ -341,7 +341,6 @@ export const CallPage = () => {
               <button
                 onClick={() => {
                   cancelOutgoingCall();
-                  window.location.reload();
                 }}
                 className="p-3 rounded-full bg-white/5 hover:bg-white/10 transition cursor-pointer"
               >
