@@ -244,7 +244,33 @@ export const useCallStore = create<CallState>((set, get) => ({
     if (!peer || !stream) return;
 
     const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-    if (isMobile) return;
+
+    // MOBILE
+    if (isMobile) {
+      try {
+        // eslint-disable-next-line
+        const ScreenRecorder = (window as any).Capacitor?.Plugins
+          ?.ScreenRecorder;
+
+        if (!ScreenRecorder) {
+          alert("Screen recorder plugin not installed");
+          return;
+        }
+
+        if (!isScreenSharing) {
+          await ScreenRecorder.start();
+          set({ isScreenSharing: true });
+        } else {
+          await ScreenRecorder.stop();
+          set({ isScreenSharing: false });
+        }
+
+        return;
+      } catch (e) {
+        console.log(e);
+        return;
+      }
+    }
 
     // eslint-disable-next-line
     const pc = (peer as any)._pc as RTCPeerConnection;
