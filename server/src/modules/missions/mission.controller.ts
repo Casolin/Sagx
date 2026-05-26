@@ -37,10 +37,20 @@ const releaseTechnician = async (mission: any) => {
 
   const UserModel = (await import("../users/user.model.js")).default;
 
-  await UserModel.findByIdAndUpdate(mission.assignedTo, {
-    $inc: { currentTasks: -1 },
-    $pull: { assignedMissions: mission._id },
-  });
+  const updatedUser = await UserModel.findByIdAndUpdate(
+    mission.assignedTo,
+    {
+      $inc: { currentTasks: -1 },
+      $pull: { assignedMissions: mission._id },
+    },
+    { new: true },
+  );
+
+  if (!updatedUser) return;
+
+  updatedUser.availability = updatedUser.currentTasks < updatedUser.maxTasks;
+
+  await updatedUser.save();
 };
 
 /* ---------------- CREATE ---------------- */
