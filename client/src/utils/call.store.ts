@@ -21,6 +21,7 @@ type CallState = {
   incomingCall: IncomingCall | null;
   callAccepted: boolean;
   isCalling: boolean;
+  seenOffers: Record<string, boolean>;
 
   callBusyOpen: boolean;
   setCallBusyOpen: (v: boolean) => void;
@@ -94,6 +95,7 @@ export const useCallStore = create<CallState>((set, get) => ({
   peer: null,
   stream: null,
   remoteStream: null,
+  seenOffers: {},
 
   callBusyOpen: false,
 
@@ -109,19 +111,38 @@ export const useCallStore = create<CallState>((set, get) => ({
   bindSocket: (socket) => {
     set({ socket });
 
-    socket.on(SOCKET_EVENTS.CALL_OFFER, (data) => {
-      const { isCalling } = get();
+    socket.on(SOCKET_EVENTS.CALL_OFFER, async (data) => {
+      const state = get();
+      const callerId = data.caller._id;
 
-      if (isCalling) {
+      const alreadySeen = state.seenOffers[callerId];
+
+      // mark that we saw this caller
+      set({
+        seenOffers: {
+          ...state.seenOffers,
+          [callerId]: true,
+        },
+      });
+
+      // FIRST time → just store incoming call
+      if (!alreadySeen) {
+        set({
+          incomingCall: data,
+          isCalling: false,
+          callAccepted: false,
+          isMinimized: false,
+        });
+
         return;
       }
 
-      set({
-        incomingCall: data,
-        isCalling: false,
-        callAccepted: false,
-        isMinimized: false,
-      });
+      // SECOND time (mutual call case) → auto accept
+      set({ incomingCall: data });
+
+      setTimeout(() => {
+        get().answerCall();
+      }, 0);
     });
 
     socket.on(SOCKET_EVENTS.CALL_ANSWER, ({ answer }) => {
