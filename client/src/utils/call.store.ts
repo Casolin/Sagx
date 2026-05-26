@@ -244,11 +244,7 @@ export const useCallStore = create<CallState>((set, get) => ({
     if (!peer || !stream) return;
 
     const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-
-    if (isMobile && !navigator.mediaDevices?.getDisplayMedia) {
-      alert("Screen sharing is not supported on this mobile browser");
-      return;
-    }
+    if (isMobile) return;
 
     // eslint-disable-next-line
     const pc = (peer as any)._pc as RTCPeerConnection;
