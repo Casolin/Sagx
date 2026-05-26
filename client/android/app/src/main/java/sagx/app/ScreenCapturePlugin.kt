@@ -2,7 +2,10 @@ package sagx.app
 
 import android.app.Activity
 import android.media.projection.MediaProjectionManager
-import com.getcapacitor.*
+import com.getcapacitor.Plugin
+import com.getcapacitor.PluginCall
+import com.getcapacitor.PluginMethod
+import com.getcapacitor.annotation.CapacitorPlugin
 
 @CapacitorPlugin(name = "ScreenCapture")
 class ScreenCapturePlugin : Plugin() {
