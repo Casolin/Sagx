@@ -6,6 +6,7 @@ import { initSocket, disconnectSocket } from "./services/socket.service";
 import { useCallStore } from "./utils/call.store";
 import { CallPage } from "./pages/CallPage";
 import { startTokenAutoRefresh } from "./utils/tokenAutoRefresh";
+import { CallBusyModal } from "./components/CallBusyModal";
 
 function App() {
   const { loading, user } = useAuth();
@@ -13,6 +14,8 @@ function App() {
   const incomingCall = useCallStore((s) => s.incomingCall);
   const callAccepted = useCallStore((s) => s.callAccepted);
   const isCalling = useCallStore((s) => s.isCalling);
+  const callBusyOpen = useCallStore((s) => s.callBusyOpen);
+  const setCallBusyOpen = useCallStore((s) => s.setCallBusyOpen);
 
   useEffect(() => {
     if (user?._id) {
@@ -42,6 +45,16 @@ function App() {
     };
   }, []);
 
+  useEffect(() => {
+    if (!callBusyOpen) return;
+
+    const timer = setTimeout(() => {
+      setCallBusyOpen(false);
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, [callBusyOpen, setCallBusyOpen]);
+
   if (loading) {
     return <Loader />;
   }
@@ -52,6 +65,15 @@ function App() {
     <>
       <AppRouter />
       {showCall && <CallPage />}
+      <>
+        <AppRouter />
+        {showCall && <CallPage />}
+
+        <CallBusyModal
+          open={callBusyOpen}
+          onClose={() => setCallBusyOpen(false)}
+        />
+      </>
     </>
   );
 }

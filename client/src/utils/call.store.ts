@@ -139,10 +139,7 @@ export const useCallStore = create<CallState>((set, get) => ({
 
     socket.on("CALL_BUSY", () => {
       set({ callBusyOpen: true });
-
-      setTimeout(() => {
-        get().cleanup();
-      }, 0);
+      get().cleanup();
     });
   },
 
