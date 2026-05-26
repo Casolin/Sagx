@@ -7,6 +7,8 @@ import { timeAgo } from "../utils/formatTime";
 import { getUserUpdates } from "../api/notification.api";
 import { SOCKET_EVENTS } from "../services/socket.events";
 import { getSocket } from "../services/socket.service";
+import { Download } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import {
   BarChart,
   Bar,
@@ -108,6 +110,7 @@ export default function Dashboard({ dark }: { dark?: boolean }) {
   const [loading, setLoading] = useState(true);
   const [messages, setMessages] = useState<Message[]>([]);
   const [updates, setUpdates] = useState<Activity[]>([]);
+  const navigate = useNavigate();
 
   const [isMobile, setIsMobile] = useState(false);
 
@@ -254,17 +257,35 @@ export default function Dashboard({ dark }: { dark?: boolean }) {
           </p>
         </div>
 
-        <div
-          className={`
-          px-4 py-2 rounded-2xl border text-sm font-medium
-          ${
-            dark
-              ? "bg-white/5 border-white/10 text-green-400"
-              : "bg-white/70 border-white text-green-600 backdrop-blur-xl"
-          }
-        `}
-        >
-          ● Live
+        <div className="flex flex-col md:flex-row items-center gap-3">
+          {/* LIVE BADGE */}
+          <div
+            className={`
+      px-4 py-2 rounded-2xl border text-sm font-medium flex
+      ${
+        dark
+          ? "bg-white/5 border-white/10 text-green-400"
+          : "bg-white/70 border-white text-green-600 backdrop-blur-xl"
+      }
+    `}
+          >
+            ● Live
+          </div>
+
+          {/* DOWNLOAD APP BUTTON */}
+          <button
+            onClick={() => navigate("/download")}
+            className="
+    flex items-center gap-2 px-3 py-2 rounded-full
+    bg-black text-white
+    border border-white/10
+    shadow-md
+    hover:scale-105 active:scale-95 transition cursor-pointer
+  "
+          >
+            <Download size={16} className="text-white" />
+            <span className="text-sm font-medium">Download</span>
+          </button>
         </div>
       </div>
 

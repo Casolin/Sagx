@@ -23,17 +23,34 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
       try {
         const profile = await getProfile();
         setUser(profile.data);
-        /* eslint-disable @typescript-eslint/no-explicit-any */
-      } catch (err: any) {
-        console.error("Auth bootstrap failed:", err);
+      } catch (err) {
+        console.log(err);
+        try {
+          const res = await fetch(
+            import.meta.env.VITE_SERVER_API + "/api/auth/refresh-token",
+            {
+              method: "POST",
+              credentials: "include",
+            },
+          );
 
-        setTimeout(() => {
-          const token = localStorage.getItem("accessToken");
+          if (!res.ok) throw new Error("Refresh failed");
 
-          if (!token) {
-            setUser(null);
-          }
-        }, 1000);
+          const data = await res.json();
+
+          const newToken = data.accessToken;
+
+          if (!newToken) throw new Error("No access token");
+
+          localStorage.setItem("accessToken", newToken);
+
+          const profile = await getProfile();
+          setUser(profile.data);
+        } catch (refreshErr) {
+          console.error("Refresh failed:", refreshErr);
+          setUser(null);
+          localStorage.removeItem("accessToken");
+        }
       } finally {
         setLoading(false);
       }
