@@ -12,7 +12,7 @@ export const CallBusyModal = ({
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" />
 
-        <Dialog.Content className="fixed left-1/2 top-1/2 w-[320px] -translate-x-1/2 -translate-y-1/2 rounded-xl bg-white p-6 shadow-xl">
+        <Dialog.Content className="fixed left-1/2 top-1/2 w-[320px] -translate-x-1/2 -translate-y-1/2 rounded-xl z-50 bg-white p-6 shadow-xl">
           <Dialog.Title className="text-lg font-semibold">
             User Busy
           </Dialog.Title>
