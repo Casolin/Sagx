@@ -109,7 +109,14 @@ export const useCallStore = create<CallState>((set, get) => ({
   bindSocket: (socket) => {
     set({ socket });
 
-    socket.on(SOCKET_EVENTS.CALL_OFFER, (data) => {
+    socket.on(SOCKET_EVENTS.CALL_OFFER, async (data) => {
+      const { isCalling, activeCallUserId } = get();
+
+      if (isCalling && activeCallUserId === data.caller._id) {
+        await get().answerCall();
+        return;
+      }
+
       set({
         incomingCall: data,
         isCalling: false,
