@@ -2,10 +2,13 @@ import { NavLink } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { menuByRole } from "../constants/menu";
 import { LogOut, Menu, ArrowLeftFromLine, Bell } from "lucide-react";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 
 import { useNotificationStore } from "../utils/notification.store";
 import { getNotifications } from "../api/notification.api";
+import { getSocket } from "../services/socket.service";
+import type { Message } from "../types/global.types";
 
 type Props = {
   open: boolean;
@@ -21,6 +24,7 @@ export default function Sidebar({
   setCollapsed,
 }: Props) {
   const { user, logoutUser } = useAuth();
+  const location = useLocation();
 
   const menu = user?.role ? menuByRole[user.role] || [] : [];
 
@@ -29,7 +33,6 @@ export default function Sidebar({
   const openNotifications = useNotificationStore((s) => s.openPanel);
 
   const unreadCount = notifications.filter((n) => !n.isRead).length;
-  const prevCountRef = useRef(unreadCount);
 
   useEffect(() => {
     const fetchNotifications = async () => {
@@ -47,16 +50,54 @@ export default function Sidebar({
   }, [setNotifications]);
 
   useEffect(() => {
-    if (unreadCount > prevCountRef.current) {
+    const socket = getSocket();
+
+    if (!socket || !user?._id) return;
+
+    const handleMessage = (message: Message) => {
+      const myId = user._id;
+
+      const senderId =
+        typeof message.sender === "object" && message.sender !== null
+          ? (message.sender as { _id: string })._id
+          : message.sender;
+
+      const receiverId =
+        typeof message.receiver === "object" && message.receiver !== null
+          ? (message.receiver as { _id: string })._id
+          : message.receiver;
+
+      if (senderId === myId) return;
+
+      const path = location.pathname;
+
+      let isSameConversation = false;
+
+      if (!message.roomId) {
+        const chatUserId = senderId === myId ? receiverId : senderId;
+
+        isSameConversation = path === `/chat/private/${chatUserId}`;
+      }
+
+      if (message.roomId) {
+        isSameConversation = path === `/chat/room/${message.roomId}`;
+      }
+
+      if (isSameConversation) return;
+
       const audio = new Audio("/notification.wav");
-
-      audio.volume = 0.08;
-
+      audio.volume = 0.05;
       audio.play().catch(() => {});
-    }
+    };
 
-    prevCountRef.current = unreadCount;
-  }, [unreadCount]);
+    socket.on("MESSAGE:PRIVATE", handleMessage);
+    socket.on("MESSAGE:ROOM", handleMessage);
+
+    return () => {
+      socket.off("MESSAGE:PRIVATE", handleMessage);
+      socket.off("MESSAGE:ROOM", handleMessage);
+    };
+  }, [user, location.pathname]);
 
   return (
     <>

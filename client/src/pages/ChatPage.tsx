@@ -158,7 +158,7 @@ const ChatPage = () => {
     <div className="h-[calc(100dvh-60px)] flex overflow-hidden bg-gray-100">
       <div
         id="chat-sidebar"
-        className="h-full w-0 md:w-max transition-all duration-300 overflow-hidden bg-white absolute top-0 left-0 z-10 md:relative"
+        className="h-full w-0 md:w-[320px] bg-white border-r border-zinc-200 flex flex-col overflow-y-auto transition-all duration-300 absolute md:relative top-0 left-0 z-50"
       >
         <ChatSidebar setSelectedUser={setSelectedUser} />
       </div>

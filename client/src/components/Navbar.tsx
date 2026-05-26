@@ -33,22 +33,22 @@ export default function Navbar({ setIsOpen }: Props) {
   const currentPage = pathname.startsWith("/missions")
     ? "Missions"
     : pathname.startsWith("/machines")
-      ? "Machines"
-      : pathname.startsWith("/materials")
-        ? "Materials"
-        : pathname.startsWith("/users")
-          ? "Users"
-          : pathname.startsWith("/alerts")
-            ? "Alerts"
-            : pathname.startsWith("/chat")
-              ? "Chat"
-              : pathname.startsWith("/friends")
-                ? "Friends"
-                : pathname.startsWith("/settings")
-                  ? "Settings"
-                  : pathname.startsWith("/profile")
-                    ? "Profile"
-                    : "";
+    ? "Machines"
+    : pathname.startsWith("/materials")
+    ? "Materials"
+    : pathname.startsWith("/users")
+    ? "Users"
+    : pathname.startsWith("/alerts")
+    ? "Alerts"
+    : pathname.startsWith("/chat")
+    ? "Chat"
+    : pathname.startsWith("/friends")
+    ? "Friends"
+    : pathname.startsWith("/settings")
+    ? "Settings"
+    : pathname.startsWith("/profile")
+    ? "Profile"
+    : "";
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -218,10 +218,17 @@ export default function Navbar({ setIsOpen }: Props) {
                 const sidebar = document.getElementById("chat-sidebar");
                 if (!sidebar) return;
 
-                const open = sidebar.classList.contains("w-0");
-                sidebar.classList.toggle("w-0", !open);
-                sidebar.classList.toggle("w-max", open);
-                setIsSidebarOpen(open);
+                const isOpen = sidebar.classList.contains("w-64");
+
+                if (isOpen) {
+                  sidebar.classList.remove("w-64");
+                  sidebar.classList.add("w-0");
+                  setIsSidebarOpen(false);
+                } else {
+                  sidebar.classList.remove("w-0");
+                  sidebar.classList.add("w-64");
+                  setIsSidebarOpen(true);
+                }
               }}
               className="md:hidden p-2.5 rounded-full bg-slate-900 text-white
             active:scale-95 transition"
