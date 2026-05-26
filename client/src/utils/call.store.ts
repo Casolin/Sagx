@@ -48,6 +48,8 @@ type CallState = {
   rejectCall: () => void;
   endCall: () => void;
 
+  listenersBound: boolean;
+
   toggleMute: () => void;
   toggleScreenShare: () => Promise<void>;
 
@@ -100,6 +102,7 @@ export const useCallStore = create<CallState>((set, get) => ({
   setCallBusyOpen: (v) => set({ callBusyOpen: v }),
 
   activeCallUserId: null,
+  listenersBound: false,
 
   isMuted: false,
   isScreenSharing: false,
@@ -107,7 +110,22 @@ export const useCallStore = create<CallState>((set, get) => ({
   isMinimized: false,
 
   bindSocket: (socket) => {
-    set({ socket });
+    if (get().listenersBound) {
+      set({ socket });
+      return;
+    }
+
+    set({
+      socket,
+      listenersBound: true,
+    });
+
+    socket.off(SOCKET_EVENTS.CALL_OFFER);
+    socket.off(SOCKET_EVENTS.CALL_ANSWER);
+    socket.off(SOCKET_EVENTS.CALL_REJECT);
+    socket.off(SOCKET_EVENTS.CALL_END);
+    socket.off(SOCKET_EVENTS.CALL_CANCEL);
+    socket.off("CALL_BUSY");
 
     socket.on(SOCKET_EVENTS.CALL_OFFER, (data) => {
       set({
@@ -121,7 +139,7 @@ export const useCallStore = create<CallState>((set, get) => ({
     socket.on(SOCKET_EVENTS.CALL_ANSWER, ({ answer }) => {
       const peer = get().peer;
 
-      if (!peer) return;
+      if (!peer || peer.destroyed) return;
 
       peer.signal(answer);
 
@@ -140,7 +158,10 @@ export const useCallStore = create<CallState>((set, get) => ({
     });
 
     socket.on("CALL_BUSY", () => {
-      set({ callBusyOpen: true });
+      set({
+        callBusyOpen: true,
+      });
+
       get().cleanup();
     });
 
@@ -154,6 +175,8 @@ export const useCallStore = create<CallState>((set, get) => ({
 
     if (!socket) return;
 
+    const shouldBeInitiator = currentUser._id < receiverId;
+
     const audioStream = await navigator.mediaDevices.getUserMedia({
       audio: true,
     });
@@ -166,17 +189,22 @@ export const useCallStore = create<CallState>((set, get) => ({
     ]);
 
     const peer = new Peer({
-      initiator: true,
+      initiator: shouldBeInitiator,
       trickle: false,
       stream,
     });
 
-    peer.on("signal", (offer) => {
-      socket.emit(SOCKET_EVENTS.CALL_OFFER, {
-        to: receiverId,
-        offer,
-        caller: currentUser,
-      });
+    peer.on("signal", (data) => {
+      socket.emit(
+        shouldBeInitiator
+          ? SOCKET_EVENTS.CALL_OFFER
+          : SOCKET_EVENTS.CALL_ANSWER,
+        {
+          to: receiverId,
+          offer: data,
+          caller: currentUser,
+        },
+      );
     });
 
     peer.on("stream", (remoteStream) => {

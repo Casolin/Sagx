@@ -18,9 +18,9 @@ function App() {
   const setCallBusyOpen = useCallStore((s) => s.setCallBusyOpen);
 
   useEffect(() => {
-    if (user?._id) {
-      initSocket(user._id);
-    }
+    if (!user?._id) return;
+
+    initSocket(user._id);
 
     return () => {
       disconnectSocket();
