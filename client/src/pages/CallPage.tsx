@@ -211,7 +211,7 @@ export const CallPage = () => {
         >
           <div
             onMouseDown={handleMouseDown}
-            className="bg-linear-to-b from-gray-950 via-gray-900 to-black backdrop-blur-xl border border-white/10 text-white px-4 py-3 rounded-2xl flex items-center gap-3 shadow-xl cursor-move select-none"
+            className="bg-zinc-900/90 backdrop-blur-xl border border-white/10 text-white px-4 py-3 rounded-2xl flex items-center gap-3 shadow-xl cursor-move select-none"
           >
             <PhoneCall size={16} className="opacity-80" />
 
@@ -235,7 +235,7 @@ export const CallPage = () => {
       ) : (
         <div
           ref={containerRef}
-          className="fixed inset-0 bg-black text-white flex items-center justify-center z-50"
+          className="fixed inset-0 bg-linear-to-b from-gray-950 via-gray-900 to-black text-white flex items-center justify-center z-50"
         >
           {/* VIDEO */}
           <video
