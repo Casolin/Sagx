@@ -2,7 +2,7 @@ import { AppRouter } from "./routes/AppRouter";
 import { useAuth } from "./hooks/useAuth";
 import Loader from "./components/Loader";
 import { useEffect } from "react";
-import { initSocket, disconnectSocket } from "./services/socket.service";
+import { initSocket } from "./services/socket.service";
 import { useCallStore } from "./utils/call.store";
 import { CallPage } from "./pages/CallPage";
 import { startTokenAutoRefresh } from "./utils/tokenAutoRefresh";

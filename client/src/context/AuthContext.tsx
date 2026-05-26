@@ -4,6 +4,7 @@ import type { User, AuthContextType } from "../types/global.types";
 import { getProfile } from "../api/user.api";
 import { login, logout } from "../api/auth.api";
 import { useCallStore } from "../utils/call.store";
+import { disconnectSocket } from "../services/socket.service";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -83,6 +84,7 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
   const logoutUser = async () => {
     try {
       useCallStore.getState().endCall();
+      disconnectSocket();
       await logout();
     } catch (err) {
       console.error(err);
