@@ -113,7 +113,12 @@ export const useCallStore = create<CallState>((set, get) => ({
       const { isCalling, activeCallUserId } = get();
 
       if (isCalling && activeCallUserId === data.caller._id) {
+        set({
+          incomingCall: data,
+        });
+
         await get().answerCall();
+
         return;
       }
 
