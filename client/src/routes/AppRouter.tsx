@@ -47,6 +47,7 @@ export const AppRouter = () => {
         }
       >
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/" element={<Dashboard />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/download" element={<DownloadMobile />} />
 
