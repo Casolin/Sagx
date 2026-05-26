@@ -87,6 +87,18 @@ export const initSocket = (userId: string) => {
     console.log("Friend Removed:", data);
   });
 
+  socket.on("CALL_BUSY", () => {
+    console.log("User is busy in call");
+
+    useCallStore.getState().setCallBusyOpen(true);
+  });
+
+  socket.on(SOCKET_EVENTS.CALL_CANCEL, ({ from }) => {
+    console.log("Call Cancelled by:", from);
+
+    useCallStore.getState().cleanup();
+  });
+
   socket.on(SOCKET_EVENTS.CALL_ANSWER, (data) => {
     console.log("Call Answered:", data);
   });
