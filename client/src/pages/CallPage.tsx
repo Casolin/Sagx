@@ -15,6 +15,8 @@ import {
   MonitorOff,
   Maximize,
   Minimize,
+  Volume2,
+  VolumeX,
 } from "lucide-react";
 
 import {
@@ -52,6 +54,8 @@ export const CallPage = () => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const containerRef = useRef<HTMLDivElement | null>(null);
+
+  const [isSpeakerOn, setIsSpeakerOn] = useState(false);
 
   const isIncoming = !!incomingCall;
   const isInCall = callAccepted;
@@ -130,31 +134,24 @@ export const CallPage = () => {
   useEffect(() => {
     if (!remoteStream) return;
 
-    const attachStream = async () => {
-      if (!videoRef.current) return;
+    if (isSpeakerOn && videoRef.current) {
+      videoRef.current.srcObject = remoteStream;
 
-      if (videoRef.current.srcObject !== remoteStream) {
-        videoRef.current.srcObject = remoteStream;
-      }
+      videoRef.current.muted = false;
+      videoRef.current.volume = 1;
 
-      try {
-        await videoRef.current.play();
-      } catch (err) {
-        // @ts-expect-error chat
-        console.log(err.message);
-      }
-    };
+      videoRef.current.play().catch(console.error);
+    }
 
-    setTimeout(() => {
-      attachStream();
-    }, 100);
+    if (!isSpeakerOn && audioRef.current) {
+      audioRef.current.srcObject = remoteStream;
 
-    window.addEventListener("focus", attachStream);
+      audioRef.current.muted = false;
+      audioRef.current.volume = 1;
 
-    return () => {
-      window.removeEventListener("focus", attachStream);
-    };
-  }, [remoteStream, isMinimized]);
+      audioRef.current.play().catch(console.error);
+    }
+  }, [remoteStream, isSpeakerOn]);
 
   useEffect(() => {
     if (!remoteStream) return;
@@ -294,6 +291,13 @@ export const CallPage = () => {
                 ) : (
                   <ScreenShare size={18} />
                 )}
+              </button>
+
+              <button
+                onClick={() => setIsSpeakerOn((prev) => !prev)}
+                className="p-3 rounded-full bg-white/5 hover:bg-white/10 transition cursor-pointer"
+              >
+                {isSpeakerOn ? <Volume2 size={18} /> : <VolumeX size={18} />}
               </button>
 
               <button
