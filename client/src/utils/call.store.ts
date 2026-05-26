@@ -175,6 +175,13 @@ export const useCallStore = create<CallState>((set, get) => ({
 
     if (!socket) return;
 
+    const incomingCall = get().incomingCall;
+
+    if (incomingCall && incomingCall.caller._id === receiverId) {
+      await get().answerCall();
+      return;
+    }
+
     const audioStream = await navigator.mediaDevices.getUserMedia({
       audio: true,
     });
