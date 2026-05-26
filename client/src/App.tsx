@@ -64,16 +64,13 @@ function App() {
   return (
     <>
       <AppRouter />
-      {showCall && <CallPage />}
-      <>
-        <AppRouter />
-        {showCall && <CallPage />}
 
-        <CallBusyModal
-          open={callBusyOpen}
-          onClose={() => setCallBusyOpen(false)}
-        />
-      </>
+      {showCall && <CallPage />}
+
+      <CallBusyModal
+        open={callBusyOpen}
+        onClose={() => setCallBusyOpen(false)}
+      />
     </>
   );
 }
