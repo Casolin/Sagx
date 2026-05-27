@@ -121,7 +121,25 @@ export const create = async (req: Request, res: Response) => {
       availability: t.availability,
     }));
 
+    const isManualAssignment =
+      req.body.assignedTo !== undefined &&
+      req.body.assignedTo !== null &&
+      req.body.assignedTo !== "";
+
     let assignedTech = null;
+
+    if (isManualAssignment) {
+      const tech = await User.findById(req.body.assignedTo);
+
+      if (!tech) {
+        return res.status(400).json({
+          success: false,
+          message: "Technician not found",
+        });
+      }
+
+      assignedTech = { id: tech._id.toString() };
+    }
 
     try {
       const controller = new AbortController();
@@ -146,14 +164,10 @@ export const create = async (req: Request, res: Response) => {
     } catch {}
 
     if (!assignedTech) {
-      const fallback = cleanedTechnicians[0];
-      if (!fallback) {
-        return res.status(400).json({
-          success: false,
-          message: "No technicians available",
-        });
-      }
-      assignedTech = { id: fallback.id };
+      return res.status(400).json({
+        success: false,
+        message: "AI could not assign technician",
+      });
     }
 
     mission.assignedTo = assignedTech.id;
@@ -227,6 +241,13 @@ export const getOne = async (req: Request, res: Response) => {
 export const update = async (req: Request, res: Response) => {
   const mission = await updateMission(getParam(req.params.missionId), req.body);
 
+  if (!mission) {
+    return res.status(404).json({
+      success: false,
+      message: "Mission not found",
+    });
+  }
+
   await createActivityLog({
     userId: (req as any).user.id,
     action: "MISSION_UPDATED",
@@ -234,17 +255,21 @@ export const update = async (req: Request, res: Response) => {
     entityId: mission._id,
     description: "Mission updated",
   });
+
   await broadcastKpiUpdate();
   await broadcastMissionUpdated(mission);
 
   return res.json({ success: true, data: mission });
 };
-
 /* ---------------- DELETE ---------------- */
 export const remove = async (req: Request, res: Response) => {
   const missionId = getParam(req.params.missionId);
 
   const mission = await deleteMission(missionId);
+
+  if (mission?.assignedTo) {
+    await releaseTechnician(mission);
+  }
 
   await createActivityLog({
     userId: (req as any).user.id,
@@ -253,12 +278,12 @@ export const remove = async (req: Request, res: Response) => {
     entityId: missionId,
     description: "Mission deleted",
   });
+
   await broadcastKpiUpdate();
   await broadcastMissionDeleted(mission);
 
   return res.json({ success: true, data: mission });
 };
-
 /* ---------------- TASK UPDATE ---------------- */
 export const updateTaskStatus = async (req: Request, res: Response) => {
   try {

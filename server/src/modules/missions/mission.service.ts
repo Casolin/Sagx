@@ -44,12 +44,49 @@ export const getMissionById = async (id: string) => {
 };
 
 export const updateMission = async (id: string, data: any) => {
-  const mission = await Mission.findByIdAndUpdate(id, data, {
+  const mission = await Mission.findById(id);
+
+  if (!mission) throw new AppError("Mission not found", 404);
+
+  const oldTech = mission.assignedTo?.toString();
+  const newTech = data.assignedTo?.toString();
+
+  const UserModel = (await import("../users/user.model.js")).default;
+
+  if (oldTech && newTech && oldTech !== newTech) {
+    const oldUser = await UserModel.findById(oldTech);
+
+    if (
+      oldUser?.assignedMissions?.some(
+        (m) => m.toString() === mission._id.toString(),
+      )
+    ) {
+      await UserModel.findByIdAndUpdate(oldTech, {
+        $inc: { currentTasks: -1 },
+        $pull: { assignedMissions: mission._id },
+      });
+    }
+
+    const newUser = await UserModel.findByIdAndUpdate(
+      newTech,
+      {
+        $inc: { currentTasks: 1 },
+        $addToSet: { assignedMissions: mission._id },
+      },
+      { new: true },
+    );
+
+    if (newUser) {
+      newUser.availability = newUser.currentTasks < newUser.maxTasks;
+      await newUser.save();
+    }
+  }
+
+  const updatedMission = await Mission.findByIdAndUpdate(id, data, {
     new: true,
   }).populate(basePopulate);
 
-  if (!mission) throw new AppError("Mission not found", 404);
-  return mission;
+  return updatedMission;
 };
 
 export const deleteMission = async (id: string) => {
