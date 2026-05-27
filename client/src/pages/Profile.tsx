@@ -213,7 +213,7 @@ export default function Profile({ dark }: { dark?: boolean }) {
 
   if (qrCodeUrl) {
     return (
-      <div className="flex flex-col items-center justify-center h-screen bg-gray-950 text-white">
+      <div className="fixed inset-0 z-50 flex flex-col items-center justify-center h-screen bg-gray-950 text-white">
         <h1 className="text-xl font-bold mb-4">Scan QR Code</h1>
 
         <img
@@ -285,7 +285,9 @@ export default function Profile({ dark }: { dark?: boolean }) {
                 {user.firstName} {user.lastName}
               </h2>
               <p
-                className={`text-sm ${dark ? "text-gray-400" : "text-gray-500"}`}
+                className={`text-sm ${
+                  dark ? "text-gray-400" : "text-gray-500"
+                }`}
               >
                 {user.email}
               </p>
@@ -295,8 +297,8 @@ export default function Profile({ dark }: { dark?: boolean }) {
                   user.role === "ADMIN"
                     ? "bg-orange-500/20 text-orange-400"
                     : user.role === "MANAGER"
-                      ? "bg-indigo-500/20 text-indigo-400"
-                      : "bg-gray-500/20 text-gray-400"
+                    ? "bg-indigo-500/20 text-indigo-400"
+                    : "bg-gray-500/20 text-gray-400"
                 }`}
               >
                 {user.role}
