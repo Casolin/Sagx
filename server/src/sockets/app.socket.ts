@@ -3,6 +3,7 @@ import { SOCKET_EVENTS } from "./socket.events.js";
 const activeCalls = new Map<string, { a: string; b: string }>();
 const ringingUsers = new Map<string, string>(); // caller → receiver
 const userSockets = new Map<string, Set<string>>();
+const callTimeouts = new Map<string, NodeJS.Timeout>();
 
 const pendingCalls = new Map<
   string,
@@ -186,6 +187,25 @@ export const initAppSocket = (io: Server) => {
 
       ringingUsers.set(callerId, receiverId);
 
+      const callKey = `${callerId}:${receiverId}`;
+
+      const timeout = setTimeout(() => {
+        const stillRinging = ringingUsers.get(callerId) === receiverId;
+        const stillNotAnswered =
+          !activeCalls.has(callerId) && !activeCalls.has(receiverId);
+
+        if (stillRinging && stillNotAnswered) {
+          ringingUsers.delete(callerId);
+
+          callTimeouts.delete(callKey);
+
+          emitToUser(io, callerId, SOCKET_EVENTS.CALL_END);
+          emitToUser(io, receiverId, SOCKET_EVENTS.CALL_END);
+        }
+      }, 30_000);
+
+      callTimeouts.set(callKey, timeout);
+
       const receiverSockets = userSockets.get(receiverId);
 
       if (receiverSockets && receiverSockets.size > 0) {
@@ -209,6 +229,15 @@ export const initAppSocket = (io: Server) => {
 
       activeCalls.set(userId, { a: userId, b: callerId });
       activeCalls.set(callerId, { a: userId, b: callerId });
+
+      const callKey = `${to}:${userId}`; // STEP 2a
+      const timeout = callTimeouts.get(callKey);
+      if (timeout) {
+        clearTimeout(timeout);
+        callTimeouts.delete(callKey);
+      }
+
+      ringingUsers.delete(to);
 
       ringingUsers.delete(userId);
       ringingUsers.delete(callerId);
@@ -242,6 +271,19 @@ export const initAppSocket = (io: Server) => {
       try {
         if (!to) return;
 
+        const userId = String(socket.handshake.auth?.userId);
+        const callKey = `${to}:${userId}`;
+
+        const timeout = callTimeouts.get(callKey);
+        if (timeout) {
+          clearTimeout(timeout);
+          callTimeouts.delete(callKey);
+        }
+
+        ringingUsers.delete(to);
+
+        emitToUser(io, String(to), SOCKET_EVENTS.CALL_REJECT);
+
         emitToUser(io, String(to), SOCKET_EVENTS.CALL_REJECT);
       } catch (err) {
         console.error("CALL_REJECT ERROR:", err);
@@ -272,6 +314,13 @@ export const initAppSocket = (io: Server) => {
     socket.on(SOCKET_EVENTS.CALL_CANCEL, ({ to }) => {
       const from = String(socket.handshake.auth?.userId);
 
+      const callKey = `${from}:${to}`; // STEP 4a
+      const timeout = callTimeouts.get(callKey);
+      if (timeout) {
+        clearTimeout(timeout);
+        callTimeouts.delete(callKey);
+      }
+
       // only cancel ringing
       if (ringingUsers.get(from) === to) {
         ringingUsers.delete(from);
@@ -297,6 +346,14 @@ export const initAppSocket = (io: Server) => {
 
         if (sockets.size === 0) {
           userSockets.delete(userId);
+        }
+      }
+
+      for (const [key, timeout] of callTimeouts.entries()) {
+        const [callerId, receiverId] = key.split(":");
+        if (callerId === userId || receiverId === userId) {
+          clearTimeout(timeout);
+          callTimeouts.delete(key);
         }
       }
 
