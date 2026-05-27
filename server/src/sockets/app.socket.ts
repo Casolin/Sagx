@@ -2,6 +2,17 @@ import { Server, Socket } from "socket.io";
 import { SOCKET_EVENTS } from "./socket.events.js";
 const activeCalls = new Map<string, { a: string; b: string }>();
 const ringingUsers = new Map<string, string>(); // caller → receiver
+const userSockets = new Map<string, Set<string>>();
+
+const emitToUser = (io: Server, userId: string, event: string, data?: any) => {
+  const sockets = userSockets.get(userId);
+
+  if (!sockets) return;
+
+  sockets.forEach((socketId) => {
+    io.to(socketId).emit(event, data);
+  });
+};
 
 export const initAppSocket = (io: Server) => {
   io.on("connection", (socket: Socket) => {
@@ -15,7 +26,14 @@ export const initAppSocket = (io: Server) => {
     if (userId) {
       socket.join(String(userId));
 
+      if (!userSockets.has(userId)) {
+        userSockets.set(userId, new Set());
+      }
+
+      userSockets.get(userId)!.add(socket.id);
+
       console.log("User joined room:", String(userId));
+      console.log("User socket added:", socket.id);
     }
 
     // =========================
@@ -152,7 +170,7 @@ export const initAppSocket = (io: Server) => {
 
       ringingUsers.set(callerId, receiverId);
 
-      io.to(receiverId).emit(SOCKET_EVENTS.CALL_OFFER, {
+      emitToUser(io, receiverId, SOCKET_EVENTS.CALL_OFFER, {
         offer,
         caller,
       });
@@ -172,7 +190,9 @@ export const initAppSocket = (io: Server) => {
       ringingUsers.delete(userId);
       ringingUsers.delete(callerId);
 
-      io.to(callerId).emit(SOCKET_EVENTS.CALL_ANSWER, { answer });
+      emitToUser(io, callerId, SOCKET_EVENTS.CALL_ANSWER, {
+        answer,
+      });
     });
 
     // =========================
@@ -184,7 +204,7 @@ export const initAppSocket = (io: Server) => {
 
         if (!to || !candidate) return;
 
-        io.to(String(to)).emit(SOCKET_EVENTS.CALL_ICE_CANDIDATE, {
+        emitToUser(io, String(to), SOCKET_EVENTS.CALL_ICE_CANDIDATE, {
           candidate,
         });
       } catch (err) {
@@ -199,7 +219,7 @@ export const initAppSocket = (io: Server) => {
       try {
         if (!to) return;
 
-        io.to(String(to)).emit(SOCKET_EVENTS.CALL_REJECT);
+        emitToUser(io, String(to), SOCKET_EVENTS.CALL_REJECT);
       } catch (err) {
         console.error("CALL_REJECT ERROR:", err);
       }
@@ -220,7 +240,7 @@ export const initAppSocket = (io: Server) => {
       activeCalls.delete(call.a);
       activeCalls.delete(call.b);
 
-      io.to(other).emit(SOCKET_EVENTS.CALL_END);
+      emitToUser(io, other, SOCKET_EVENTS.CALL_END);
     });
 
     // =========================
@@ -233,7 +253,9 @@ export const initAppSocket = (io: Server) => {
       if (ringingUsers.get(from) === to) {
         ringingUsers.delete(from);
 
-        io.to(to).emit(SOCKET_EVENTS.CALL_CANCEL, { from });
+        emitToUser(io, to, SOCKET_EVENTS.CALL_CANCEL, {
+          from,
+        });
       }
     });
 
@@ -242,6 +264,31 @@ export const initAppSocket = (io: Server) => {
     // =========================
     socket.on("disconnect", () => {
       console.log("User disconnected:", socket.id);
+
+      if (!userId) return;
+
+      const sockets = userSockets.get(userId);
+
+      if (sockets) {
+        sockets.delete(socket.id);
+
+        if (sockets.size === 0) {
+          userSockets.delete(userId);
+        }
+      }
+
+      const call = activeCalls.get(userId);
+
+      if (call) {
+        const other = call.a === userId ? call.b : call.a;
+
+        activeCalls.delete(call.a);
+        activeCalls.delete(call.b);
+
+        emitToUser(io, other, SOCKET_EVENTS.CALL_END);
+      }
+
+      ringingUsers.delete(userId);
     });
   });
 };
