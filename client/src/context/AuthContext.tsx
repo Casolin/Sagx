@@ -5,6 +5,7 @@ import { getProfile } from "../api/user.api";
 import { login, logout } from "../api/auth.api";
 import { useCallStore } from "../utils/call.store";
 import { disconnectSocket } from "../services/socket.service";
+import { refreshToken } from "../api/auth.api";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -14,42 +15,21 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     const initAuth = async () => {
-      const token = localStorage.getItem("accessToken");
-
-      if (!token) {
-        setUser(null);
-        setLoading(false);
-        return;
-      }
-
       try {
         const profile = await getProfile();
         setUser(profile.data);
       } catch (err) {
         console.log(err);
         try {
-          const res = await fetch(
-            import.meta.env.VITE_SERVER_API + "/api/auth/refresh-token",
-            {
-              method: "POST",
-              credentials: "include",
-            },
-          );
+          const res = await refreshToken();
 
-          if (!res.ok) throw new Error("Refresh failed");
+          if (!res?.accessToken) throw new Error("No access token");
 
-          const data = await res.json();
-
-          const newToken = data.accessToken;
-
-          if (!newToken) throw new Error("No access token");
-
-          localStorage.setItem("accessToken", newToken);
+          localStorage.setItem("accessToken", res.accessToken);
 
           const profile = await getProfile();
           setUser(profile.data);
-        } catch (refreshErr) {
-          console.error("Refresh failed:", refreshErr);
+        } catch {
           setUser(null);
           localStorage.removeItem("accessToken");
         }
