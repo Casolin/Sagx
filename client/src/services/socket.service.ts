@@ -6,9 +6,13 @@ import { useCallStore } from "../utils/call.store";
 let socket: Socket | null = null;
 
 export const initSocket = (userId: string) => {
-  if (socket) return socket;
+  if (socket) {
+    socket.disconnect();
+    socket = null;
+  }
 
   socket = io(import.meta.env.VITE_SERVER_API, {
+    forceNew: true,
     withCredentials: true,
     auth: {
       userId,
@@ -24,8 +28,6 @@ export const initSocket = (userId: string) => {
 
     useCallStore.getState().bindSocket(socket!);
   });
-
-  socket.emit("join_room", userId);
 
   socket.on(SOCKET_EVENTS.NOTIFICATION_NEW, (notification) => {
     useNotificationStore.getState().addNotification(notification);
