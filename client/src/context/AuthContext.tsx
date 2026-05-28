@@ -14,49 +14,25 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const wait = (ms: number) => new Promise((res) => setTimeout(res, ms));
-
-    const retry = async <T,>(
-      fn: () => Promise<T>,
-      attempts = 6,
-      delay = 3000,
-    ): Promise<T> => {
-      let lastErr: unknown;
-
-      for (let i = 0; i < attempts; i++) {
-        try {
-          return await fn();
-        } catch (err) {
-          lastErr = err;
-          await wait(delay);
-        }
-      }
-
-      throw lastErr;
-    };
-
     const initAuth = async () => {
       try {
-        const profile = await retry(getProfile, 6, 3000);
+        const profile = await getProfile();
         setUser(profile.data);
-        return;
       } catch (err) {
         console.log(err);
-      }
+        try {
+          const res = await refreshToken();
 
-      try {
-        const res = await retry(refreshToken, 3, 3000);
+          if (!res?.accessToken) throw new Error("No access token");
 
-        if (!res?.accessToken) throw new Error("No access token");
+          localStorage.setItem("accessToken", res.accessToken);
 
-        localStorage.setItem("accessToken", res.accessToken);
-
-        const profile = await retry(getProfile, 6, 3000);
-        setUser(profile.data);
-        return;
-      } catch {
-        setUser(null);
-        localStorage.removeItem("accessToken");
+          const profile = await getProfile();
+          setUser(profile.data);
+        } catch {
+          setUser(null);
+          localStorage.removeItem("accessToken");
+        }
       } finally {
         setLoading(false);
       }
