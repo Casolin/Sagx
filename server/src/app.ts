@@ -57,6 +57,7 @@ app.use("/api/alerts", alertRoutes);
 app.use("/api/machines", machineRoutes);
 
 app.get("/host", (req, res) => {
+  console.log("CRON HIT /host at", new Date().toISOString());
   res.status(200).json({
     status: "ok",
   });
