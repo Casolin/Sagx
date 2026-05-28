@@ -305,6 +305,12 @@ export const useCallStore = create<CallState>((set, get) => ({
         await sender.replaceTrack(dummyTrack);
       }
 
+      const originalAudioTrack = stream.getAudioTracks()[0];
+
+      if (audioSender && originalAudioTrack) {
+        await audioSender.replaceTrack(originalAudioTrack);
+      }
+
       set({
         isScreenSharing: false,
       });
