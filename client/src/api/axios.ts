@@ -100,8 +100,7 @@ api.interceptors.response.use(
       } catch (err) {
         processQueue(err, null);
 
-        localStorage.removeItem("accessToken");
-        window.location.href = "/login";
+        console.log("Refresh failed, but NOT logging out immediately");
 
         return Promise.reject(err);
       } finally {

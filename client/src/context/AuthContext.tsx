@@ -18,11 +18,12 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
       try {
         const profile = await getProfile();
         setUser(profile.data);
-      } catch {
+      } catch (err) {
+        console.log(err);
         try {
           const res = await refreshToken();
 
-          if (!res?.accessToken) throw new Error();
+          if (!res?.accessToken) throw new Error("No access token");
 
           localStorage.setItem("accessToken", res.accessToken);
 
