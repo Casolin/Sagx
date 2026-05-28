@@ -56,6 +56,12 @@ app.use("/api/alerts", alertRoutes);
 
 app.use("/api/machines", machineRoutes);
 
+app.get("/host", (req, res) => {
+  res.status(200).json({
+    status: "ok",
+  });
+});
+
 app.get("/", (req, res) => {
   res.send("API is running");
 });
