@@ -245,13 +245,14 @@ export const update = async (req: Request, res: Response) => {
 
   missionEvents.updated(mission);
 
+  const oldTech = mission.assignedTo?._id.toString();
   const newTech = req.body.assignedTo?.toString();
 
-  if (
-    newTech &&
-    mission.assignedTo &&
-    mission.assignedTo._id.toString() === newTech
-  ) {
+  if (newTech && oldTech !== newTech) {
+    if (oldTech) {
+      emitToUser(oldTech, SOCKET_EVENTS.MISSION_DELETED, mission);
+    }
+
     const senderName = (req as any).user?.firstName?.trim() || "Someone";
 
     const notification = await createNotification({
@@ -263,7 +264,6 @@ export const update = async (req: Request, res: Response) => {
     });
 
     emitToUser(newTech, SOCKET_EVENTS.NOTIFICATION_NEW, notification);
-
     emitToUser(newTech, SOCKET_EVENTS.MISSION_CREATED, mission);
   }
 
