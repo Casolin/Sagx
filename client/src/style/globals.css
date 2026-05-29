@@ -27,64 +27,87 @@
 }
 
 .Toastify__toast {
-  background: rgba(15, 15, 15, 0.92) !important;
+  background: rgba(18, 18, 20, 0.72) !important;
   color: #ffffff !important;
 
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 14px !important;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-left: 3px solid transparent;
+
+  border-radius: 16px !important;
 
   padding: 14px 16px;
   font-size: 14px;
   font-weight: 500;
-  letter-spacing: 0.2px;
+  letter-spacing: 0.1px;
 
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.45),
+    0 1px 0 rgba(255, 255, 255, 0.03) inset;
 
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
 
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.18s ease, box-shadow 0.18s ease,
+    border-color 0.18s ease;
 }
 
 .Toastify__toast:hover {
   transform: translateY(-2px);
+  box-shadow: 0 14px 35px rgba(0, 0, 0, 0.55),
+    0 1px 0 rgba(255, 255, 255, 0.04) inset;
 }
 
 .Toastify__toast-body {
   color: #ffffff !important;
   font-size: 13.5px;
+  line-height: 1.45;
+  opacity: 0.95;
 }
 
+/* progress bar (clean + subtle accent) */
 .Toastify__progress-bar {
-  background: linear-gradient(90deg, #ffffff, #a1a1aa) !important;
   height: 2px;
-  opacity: 0.7;
+  opacity: 0.85;
+  background: rgba(255, 255, 255, 0.12) !important;
 }
 
+/* left accent system */
 .Toastify__toast--success {
-  border-left: 3px solid #22c55e !important;
+  border-left-color: #22c55e !important;
 }
 
 .Toastify__toast--error {
-  border-left: 3px solid #ef4444 !important;
+  border-left-color: #ef4444 !important;
 }
 
 .Toastify__toast--warning {
-  border-left: 3px solid #facc15 !important;
+  border-left-color: #facc15 !important;
 }
 
 .Toastify__toast--info {
-  border-left: 3px solid #60a5fa !important;
+  border-left-color: #60a5fa !important;
 }
 
+/* close button */
 .Toastify__close-button {
   color: #ffffff !important;
-  opacity: 0.5;
-  transition: transform 0.2s ease, opacity 0.2s ease;
+  opacity: 0.45;
+  transition: opacity 0.15s ease, transform 0.15s ease;
 }
 
 .Toastify__close-button:hover {
   opacity: 1;
-  transform: scale(1.1);
+  transform: scale(1.08);
+}
+
+/* optional: better stacking rhythm */
+.Toastify__toast-container > div + div {
+  margin-top: 10px;
+  bottom: 20px !important;
+}
+
+@media (max-width: 768px) {
+  .Toastify__toast-container {
+    display: none !important;
+    pointer-events: none !important;
+  }
 }
