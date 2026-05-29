@@ -25,7 +25,6 @@ import AdminUsersPage from "../pages/AdminUsersPage";
 import EditUserPage from "../pages/EditUserPage";
 import AddUserPage from "../pages/AddUserPage";
 import MaterialsPage from "../pages/MaterialsPage";
-import { AddMaterialsPage } from "../pages/AddMaterialsPage";
 import CreateMachinePage from "../pages/CreateMachinePage";
 import { CallPage } from "../pages/CallPage";
 import DownloadMobile from "../pages/DownloadMobile";
@@ -119,15 +118,6 @@ export const AppRouter = () => {
           element={
             <RoleRoute allowedRoles={["ADMIN", "MANAGER"]}>
               <MaterialsPage />
-            </RoleRoute>
-          }
-        />
-
-        <Route
-          path="/materials/add"
-          element={
-            <RoleRoute allowedRoles={["ADMIN", "MANAGER"]}>
-              <AddMaterialsPage />
             </RoleRoute>
           }
         />
