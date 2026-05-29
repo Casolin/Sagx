@@ -4,11 +4,6 @@ import { createMachine } from "../api/machine.api";
 import { toast } from "react-toastify";
 import { useAuth } from "../hooks/useAuth";
 import { ArrowLeftToLine } from "lucide-react";
-import type {
-  FailureType,
-  MachineStatus,
-  MachineCondition,
-} from "../types/global.types";
 
 export default function CreateMachinePage() {
   const navigate = useNavigate();
@@ -16,19 +11,16 @@ export default function CreateMachinePage() {
 
   const isAdmin = user?.role === "ADMIN";
   const isManager = user?.role === "MANAGER";
-
   const canCreateMachine = isAdmin || isManager;
 
   const [loading, setLoading] = useState(false);
 
+  // only editable fields
   const [form, setForm] = useState({
     name: "",
     type: "",
     location: "",
     description: "",
-    failureType: "NONE" as FailureType,
-    status: "OK" as MachineStatus,
-    condition: "NORMAL" as MachineCondition,
   });
 
   if (!canCreateMachine) {
@@ -36,9 +28,7 @@ export default function CreateMachinePage() {
   }
 
   const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >,
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
@@ -55,6 +45,11 @@ export default function CreateMachinePage() {
       await createMachine({
         ...form,
         createdBy: user!._id,
+
+        // ✅ enforced defaults (NOT user-controlled)
+        status: "OK",
+        failureType: "NONE",
+        condition: "NORMAL",
       });
 
       toast.success("Machine created successfully");
@@ -79,7 +74,7 @@ export default function CreateMachinePage() {
             Machines
           </button>
 
-          <h1 className="text-sm font-semibold tracking-wide text-zinc-800">
+          <h1 className="text-sm font-semibold text-zinc-800">
             Create Machine
           </h1>
 
@@ -89,7 +84,6 @@ export default function CreateMachinePage() {
 
       {/* CONTENT */}
       <div className="max-w-3xl mx-auto px-6 py-8 space-y-6">
-        {/* MAIN CARD */}
         <div className="bg-white border border-zinc-200 rounded-2xl p-6 space-y-5">
           <div>
             <h2 className="text-sm font-semibold text-zinc-700">
@@ -100,92 +94,45 @@ export default function CreateMachinePage() {
             </p>
           </div>
 
-          {/* NAME */}
           <input
             name="name"
             placeholder="Machine name"
             value={form.name}
             onChange={handleChange}
-            className="w-full px-4 py-3 rounded-xl border border-zinc-200 bg-zinc-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-black/10"
+            className="w-full px-4 py-3 rounded-xl border bg-zinc-50"
           />
 
-          {/* TYPE */}
           <input
             name="type"
             placeholder="Machine type"
             value={form.type}
             onChange={handleChange}
-            className="w-full px-4 py-3 rounded-xl border border-zinc-200 bg-zinc-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-black/10"
+            className="w-full px-4 py-3 rounded-xl border bg-zinc-50"
           />
 
-          {/* LOCATION */}
           <input
             name="location"
             placeholder="Location (optional)"
             value={form.location}
             onChange={handleChange}
-            className="w-full px-4 py-3 rounded-xl border border-zinc-200 bg-zinc-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-black/10"
+            className="w-full px-4 py-3 rounded-xl border bg-zinc-50"
           />
 
-          {/* GRID OPTIONS */}
-          <div className="grid md:grid-cols-2 gap-4">
-            <select
-              name="failureType"
-              value={form.failureType}
-              onChange={handleChange}
-              className="px-3 py-2 rounded-xl border bg-zinc-50"
-            >
-              <option value="NONE">NONE</option>
-              <option value="ELECTRICAL">ELECTRICAL</option>
-              <option value="MECHANICAL">MECHANICAL</option>
-              <option value="HYDRAULIC">HYDRAULIC</option>
-              <option value="SENSOR">SENSOR</option>
-              <option value="OVERHEAT">OVERHEAT</option>
-              <option value="UNKNOWN">UNKNOWN</option>
-            </select>
-
-            <select
-              name="status"
-              value={form.status}
-              onChange={handleChange}
-              className="px-3 py-2 rounded-xl border bg-zinc-50"
-            >
-              <option value="OK">OK</option>
-              <option value="DOWN">DOWN</option>
-              <option value="MAINTENANCE">MAINTENANCE</option>
-            </select>
-          </div>
-
-          {/* CONDITION */}
-          <select
-            name="condition"
-            value={form.condition}
-            onChange={handleChange}
-            className="w-full px-3 py-2 rounded-xl border bg-zinc-50"
-          >
-            <option value="NORMAL">NORMAL</option>
-            <option value="ANOMALY">ANOMALY</option>
-            <option value="FAILURE">FAILURE</option>
-          </select>
-
-          {/* DESCRIPTION */}
           <textarea
             name="description"
             placeholder="Description (optional)"
             value={form.description}
             onChange={handleChange}
-            className="w-full px-4 py-3 rounded-xl border border-zinc-200 bg-zinc-50 h-28 focus:bg-white focus:outline-none focus:ring-2 focus:ring-black/10"
+            className="w-full px-4 py-3 rounded-xl border bg-zinc-50 h-28"
           />
         </div>
 
-        {/* ACTION CARD */}
+        {/* ACTIONS */}
         <div className="bg-white border border-zinc-200 rounded-2xl p-4 space-y-3">
-          <p className="text-sm font-medium text-zinc-700">Actions</p>
-
           <div className="flex gap-3">
             <button
               onClick={() => navigate("/machines")}
-              className="w-1/2 py-2.5 rounded-xl border hover:bg-zinc-50 transition cursor-pointer"
+              className="w-1/2 py-2.5 rounded-xl border hover:bg-zinc-50"
             >
               Cancel
             </button>
@@ -193,14 +140,14 @@ export default function CreateMachinePage() {
             <button
               onClick={handleSubmit}
               disabled={loading}
-              className="w-1/2 py-2.5 rounded-xl bg-black text-white hover:opacity-90 disabled:opacity-40 transition cursor-pointer"
+              className="w-1/2 py-2.5 rounded-xl bg-black text-white disabled:opacity-40"
             >
               {loading ? "Creating..." : "Create Machine"}
             </button>
           </div>
 
           <p className="text-xs text-zinc-400 text-center">
-            Machine will be added to the system immediately after creation
+            Machine will be added immediately
           </p>
         </div>
       </div>
