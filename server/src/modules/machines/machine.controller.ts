@@ -178,22 +178,15 @@ export const updateStatus = async (req: any, res: Response) => {
 
     const machineId = req.params.machineId;
 
-    const { machine, previousStatus, previousCondition } = await updateMachine(
-      machineId,
-      {
-        status: req.body.status,
-        condition: req.body.condition,
-        failureType: req.body.failureType,
-      },
-    );
-
+    // 1️⃣ Get open alerts FIRST (before updating machine)
     const openAlerts = await Alert.find({
-      machine: machine._id,
+      machine: machineId,
       status: { $ne: "RESOLVED" },
     }).sort({ createdAt: -1 });
 
     const activeAlert = openAlerts[0];
 
+    // 2️⃣ BLOCK invalid status changes
     if (
       (req.body.status === "DOWN" || req.body.status === "MAINTENANCE") &&
       !activeAlert
@@ -205,39 +198,30 @@ export const updateStatus = async (req: any, res: Response) => {
       });
     }
 
+    // 3️⃣ NOW update machine safely
+    const { machine, previousStatus, previousCondition } = await updateMachine(
+      machineId,
+      {
+        status: req.body.status,
+        condition: req.body.condition,
+        failureType: req.body.failureType,
+      },
+    );
+
     await broadcastKpiUpdate();
     await broadcastMachineUpdated(machine);
 
-    const status = machine.status;
-    const condition = machine.condition;
     const failureType = machine.failureType || "UNKNOWN";
 
-    let alertType: string | null = null;
-    let message = "";
-    let priority: MissionPriority = "MEDIUM";
-
-    if (status === "DOWN" && previousStatus !== "DOWN") {
-      alertType = "MACHINE_FAILURE";
-      message = `Machine ${machine.name} is DOWN`;
-      priority = "HIGH";
-    } else if (condition === "FAILURE" && previousCondition !== "FAILURE") {
-      alertType = "FAILURE";
-      message = `Failure detected in ${machine.name}`;
-      priority = "HIGH";
-    } else if (condition === "ANOMALY" && previousCondition !== "ANOMALY") {
-      alertType = "ANOMALY";
-      message = `Anomaly detected in ${machine.name}`;
-      priority = "HIGH";
-    } else if (status === "MAINTENANCE" && previousStatus !== "MAINTENANCE") {
-      alertType = "MAINTENANCE";
-      message = `Machine ${machine.name} under maintenance`;
-      priority = "MEDIUM";
+    // 4️⃣ If no alert → do nothing (NO mission creation)
+    if (!activeAlert) {
+      return res.json({
+        success: true,
+        data: machine,
+      });
     }
 
-    if (!alertType) {
-      return res.json({ success: true, data: machine });
-    }
-
+    // 5️⃣ Avoid duplicate missions
     const existingMission = await Mission.findOne({
       machine: machine._id,
       status: { $in: ["PENDING", "ASSIGNED", "IN_PROGRESS"] },
@@ -250,6 +234,7 @@ export const updateStatus = async (req: any, res: Response) => {
       });
     }
 
+    // 6️⃣ Materials
     let materials: any[] = [];
     try {
       materials = await resolveMaterials(failureType, machine.type);
@@ -257,18 +242,19 @@ export const updateStatus = async (req: any, res: Response) => {
       materials = [];
     }
 
-    const tasks = buildTasks(alertType, machine);
+    // 7️⃣ Tasks from alert type
+    const tasks = buildTasks(activeAlert.type || "FAILURE", machine);
 
-    if (activeAlert) {
-      activeAlert.status = "IN_PROGRESS";
-      await activeAlert.save();
-    }
+    // 8️⃣ Mark alert in progress
+    activeAlert.status = "IN_PROGRESS";
+    await activeAlert.save();
 
+    // 9️⃣ Create mission (linked to alert safely)
     const mission = await createMission(
       {
-        title: `${alertType} - ${machine.name}`,
-        description: message,
-        priority,
+        title: `${activeAlert.type} - ${machine.name}`,
+        description: activeAlert.message || "Auto generated mission",
+        priority: activeAlert.priority || "MEDIUM",
         machine: machine._id.toString(),
         requiredSkills: [machine.type, failureType],
         materials: materials.map((m) => ({
@@ -277,20 +263,20 @@ export const updateStatus = async (req: any, res: Response) => {
         })),
         tasks,
         machineType: machine.type,
-        condition,
+        condition: machine.condition,
         failureType,
-        ...(activeAlert && { alertId: activeAlert._id.toString() }),
+        alertId: activeAlert._id.toString(), // FIXED TYPE ISSUE
         source: "AUTO",
       },
       userId,
     );
 
-    if (activeAlert) {
-      activeAlert.missionId = mission._id;
-      activeAlert.status = "IN_PROGRESS";
-      await activeAlert.save();
-    }
+    // 🔟 Link alert → mission
+    activeAlert.missionId = mission._id;
+    activeAlert.status = "IN_PROGRESS";
+    await activeAlert.save();
 
+    // 1️⃣1️⃣ Assign technician (AI fallback included)
     const techniciansFromDB = await User.find({
       role: "TECHNICIAN",
       availability: true,
@@ -331,6 +317,7 @@ export const updateStatus = async (req: any, res: Response) => {
       }
     } catch {}
 
+    // fallback technician
     if (!assignedTech) {
       const fallback = cleanedTechnicians[0];
       if (!fallback) {
@@ -342,6 +329,7 @@ export const updateStatus = async (req: any, res: Response) => {
       assignedTech = { id: fallback.id };
     }
 
+    // 1️⃣2️⃣ Assign mission
     mission.assignedTo = assignedTech.id;
     mission.status = "ASSIGNED";
     await mission.save();
