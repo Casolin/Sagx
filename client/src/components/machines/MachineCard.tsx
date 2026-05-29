@@ -69,23 +69,23 @@ export default function MachineCard({ machine, refresh }: Props) {
     <>
       <div
         onClick={handleOpenEditPage}
-        className="group relative flex flex-col gap-2 rounded-2xl border border-gray-200 bg-white
-      p-3 shadow-sm hover:shadow-md transition cursor-pointer"
+        className="group relative flex flex-col justify-between rounded-2xl border border-gray-200 bg-white
+      p-4 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 cursor-pointer"
       >
         {/* HEADER */}
-        <div className="flex items-center justify-between">
+        <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
-            <h2 className="text-sm font-semibold text-gray-900 truncate group-hover:text-blue-600">
+            <h2 className="text-base font-semibold text-gray-900 truncate group-hover:text-blue-600 transition">
               {machine.name}
             </h2>
 
-            <p className="text-[11px] text-gray-400 truncate">
+            <p className="text-xs text-gray-400 mt-0.5">
               {machine.type || "No type"}
             </p>
           </div>
 
           <span
-            className={`text-[10px] px-2 py-0.5 rounded-full text-white ${
+            className={`shrink-0 text-[11px] px-2.5 py-1 rounded-full font-medium text-white ${
               statusStyle[machine.status]
             }`}
           >
@@ -93,44 +93,56 @@ export default function MachineCard({ machine, refresh }: Props) {
           </span>
         </div>
 
-        {/* META */}
-        <div className="flex flex-wrap items-center gap-2 text-[11px] text-gray-500">
-          <span
-            className={`px-2 py-0.5 rounded-md ${
-              conditionStyle[machine.condition]
-            }`}
-          >
-            {machine.condition}
-          </span>
+        {/* BODY */}
+        <div className="mt-3 space-y-2">
+          {/* CONDITION + FAILURE ROW */}
+          <div className="flex items-center justify-between text-xs">
+            <div className="flex items-center gap-2">
+              <span className="text-gray-400">Condition</span>
+              <span
+                className={`px-2 py-0.5 rounded-md font-medium ${
+                  conditionStyle[machine.condition]
+                }`}
+              >
+                {machine.condition}
+              </span>
+            </div>
 
-          {machine.failureType && (
-            <span className="truncate">• {machine.failureType}</span>
+            {machine.failureType && (
+              <span className="text-gray-500 truncate max-w-[50%] text-right">
+                {machine.failureType}
+              </span>
+            )}
+          </div>
+
+          {/* LOCATION */}
+          {machine.location && (
+            <div className="flex items-center gap-2 text-xs text-gray-500">
+              <span className="text-gray-400">Location:</span>
+              <span className="truncate">{machine.location}</span>
+            </div>
           )}
 
-          {machine.location && (
-            <span className="truncate">• {machine.location}</span>
+          {/* DESCRIPTION */}
+          {machine.description && (
+            <p className="text-xs text-gray-500 leading-relaxed line-clamp-2 mt-1">
+              {machine.description}
+            </p>
           )}
         </div>
 
-        {/* DESCRIPTION */}
-        {machine.description && (
-          <p className="text-[11px] text-gray-500 line-clamp-2">
-            {machine.description}
-          </p>
-        )}
-
-        {/* ACTIONS */}
+        {/* FOOTER */}
         {(canEdit || canDelete) && (
-          <div className="flex justify-end gap-1 pt-1">
+          <div className="mt-4 pt-3 border-t border-gray-100 flex justify-end gap-2">
             {canEdit && (
               <button
                 onClick={(e) => {
                   e.stopPropagation();
                   setOpenEdit(true);
                 }}
-                className="p-1.5 rounded-lg hover:bg-gray-100 text-blue-600"
+                className="p-2 rounded-xl hover:bg-blue-50 text-blue-600 transition"
               >
-                <SlidersHorizontal size={16} />
+                <SlidersHorizontal size={17} />
               </button>
             )}
 
@@ -140,9 +152,9 @@ export default function MachineCard({ machine, refresh }: Props) {
                   e.stopPropagation();
                   setOpenDelete(true);
                 }}
-                className="p-1.5 rounded-lg hover:bg-gray-100 text-red-500"
+                className="p-2 rounded-xl hover:bg-red-50 text-red-500 transition"
               >
-                <Trash2 size={16} />
+                <Trash2 size={17} />
               </button>
             )}
           </div>
