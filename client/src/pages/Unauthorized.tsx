@@ -1,27 +1,29 @@
+import { ShieldAlert, ArrowLeft } from "lucide-react";
+
 export default function Unauthorized() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-black via-red-950 to-black px-4">
-      <div className="relative text-center p-10 rounded-2xl border border-red-500/30 bg-black/60 backdrop-blur-md shadow-[0_0_40px_rgba(255,0,0,0.15)]">
-        {/* glow effect */}
-        <div className="absolute inset-0 blur-3xl opacity-30 bg-red-600 rounded-2xl" />
+    <div className="min-h-screen flex items-center justify-center bg-black px-6">
+      <div className="relative w-full max-w-md text-center rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md p-8 shadow-lg">
+        {/* subtle glow */}
+        <div className="absolute inset-0 rounded-2xl bg-red-500/10 blur-2xl opacity-40" />
 
         <div className="relative">
-          <div className="text-6xl mb-4">🚫</div>
+          <div className="flex justify-center mb-4 text-red-400">
+            <ShieldAlert size={42} />
+          </div>
 
-          <h1 className="text-3xl font-bold text-red-400 tracking-wide">
-            Unauthorized Access
-          </h1>
+          <h1 className="text-xl font-semibold text-white">Unauthorized</h1>
 
-          <p className="text-gray-300 mt-3 text-sm max-w-sm mx-auto">
-            You don’t have permission to view this page. If you think this is a
-            mistake, contact your administrator.
+          <p className="text-sm text-white/60 mt-2 leading-relaxed">
+            You don’t have permission to access this page.
           </p>
 
           <button
             onClick={() => window.history.back()}
-            className="mt-6 px-5 py-2 rounded-lg bg-red-600 hover:bg-red-500 transition text-white font-medium shadow-lg"
+            className="mt-6 inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-white/10 hover:bg-white/15 border border-white/10 text-white text-sm transition cursor-pointer"
           >
-            Go Back
+            <ArrowLeft size={16} />
+            Go back
           </button>
         </div>
       </div>
