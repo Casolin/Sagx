@@ -69,80 +69,68 @@ export default function MachineCard({ machine, refresh }: Props) {
     <>
       <div
         onClick={handleOpenEditPage}
-        className="group relative flex flex-col justify-between rounded-3xl border border-gray-200/70 bg-white
-      shadow-sm hover:shadow-[0_18px_50px_rgba(0,0,0,0.10)]
-      transition-all duration-300 hover:-translate-y-1 cursor-pointer"
+        className="group relative flex flex-col gap-2 rounded-2xl border border-gray-200 bg-white
+      p-3 shadow-sm hover:shadow-md transition cursor-pointer"
       >
-        <div className="p-5 flex flex-col gap-4">
-          {/* HEADER */}
-          <div className="flex items-start justify-between">
-            <div>
-              <h2 className="text-lg font-bold text-gray-900 group-hover:text-blue-600 transition">
-                {machine.name}
-              </h2>
+        {/* HEADER */}
+        <div className="flex items-center justify-between">
+          <div className="min-w-0">
+            <h2 className="text-sm font-semibold text-gray-900 truncate group-hover:text-blue-600">
+              {machine.name}
+            </h2>
 
-              <p className="text-xs text-gray-400 mt-1">
-                {machine.type || "No type"}
-              </p>
-            </div>
-
-            <span
-              className={`text-[11px] px-3 py-1 rounded-full font-semibold text-white shadow-sm ${
-                statusStyle[machine.status]
-              }`}
-            >
-              {machine.status}
-            </span>
-          </div>
-
-          {/* BODY */}
-          <div className="grid grid-cols-2 gap-3 text-sm">
-            <div className="rounded-xl border border-gray-100 bg-gray-50/60 p-3">
-              <p className="text-[11px] text-gray-400">Condition</p>
-              <span
-                className={`inline-block mt-1 px-2 py-1 rounded-md text-xs font-semibold ${
-                  conditionStyle[machine.condition]
-                }`}
-              >
-                {machine.condition}
-              </span>
-            </div>
-
-            <div className="rounded-xl border border-gray-100 bg-gray-50/60 p-3">
-              <p className="text-[11px] text-gray-400">Failure</p>
-              <p className="mt-1 font-medium text-gray-800 text-sm">
-                {machine.failureType || "-"}
-              </p>
-            </div>
-
-            {machine.location && (
-              <div className="col-span-2 rounded-xl border border-gray-100 bg-gray-50/60 p-3">
-                <p className="text-[11px] text-gray-400">Location</p>
-                <p className="mt-1 text-sm font-medium text-gray-700">
-                  {machine.location}
-                </p>
-              </div>
-            )}
-          </div>
-
-          {/* DESCRIPTION */}
-          {machine.description && (
-            <p className="text-xs text-gray-500 leading-relaxed border-t border-gray-100 pt-3">
-              {machine.description}
+            <p className="text-[11px] text-gray-400 truncate">
+              {machine.type || "No type"}
             </p>
+          </div>
+
+          <span
+            className={`text-[10px] px-2 py-0.5 rounded-full text-white ${
+              statusStyle[machine.status]
+            }`}
+          >
+            {machine.status}
+          </span>
+        </div>
+
+        {/* META */}
+        <div className="flex flex-wrap items-center gap-2 text-[11px] text-gray-500">
+          <span
+            className={`px-2 py-0.5 rounded-md ${
+              conditionStyle[machine.condition]
+            }`}
+          >
+            {machine.condition}
+          </span>
+
+          {machine.failureType && (
+            <span className="truncate">• {machine.failureType}</span>
           )}
 
-          {/* FOOTER */}
-          <div className="flex justify-end gap-2 border-t border-gray-100 pt-3">
+          {machine.location && (
+            <span className="truncate">• {machine.location}</span>
+          )}
+        </div>
+
+        {/* DESCRIPTION */}
+        {machine.description && (
+          <p className="text-[11px] text-gray-500 line-clamp-2">
+            {machine.description}
+          </p>
+        )}
+
+        {/* ACTIONS */}
+        {(canEdit || canDelete) && (
+          <div className="flex justify-end gap-1 pt-1">
             {canEdit && (
               <button
                 onClick={(e) => {
                   e.stopPropagation();
                   setOpenEdit(true);
                 }}
-                className="p-2 rounded-xl text-blue-600 hover:bg-blue-50 transition"
+                className="p-1.5 rounded-lg hover:bg-gray-100 text-blue-600"
               >
-                <SlidersHorizontal size={18} />
+                <SlidersHorizontal size={16} />
               </button>
             )}
 
@@ -152,15 +140,16 @@ export default function MachineCard({ machine, refresh }: Props) {
                   e.stopPropagation();
                   setOpenDelete(true);
                 }}
-                className="p-2 rounded-xl text-red-500 hover:bg-red-50 transition"
+                className="p-1.5 rounded-lg hover:bg-gray-100 text-red-500"
               >
-                <Trash2 size={18} />
+                <Trash2 size={16} />
               </button>
             )}
           </div>
-        </div>
+        )}
       </div>
 
+      {/* MODALS */}
       {canEdit && (
         <EditMachineStatusModal
           open={openEdit}
