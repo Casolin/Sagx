@@ -82,18 +82,20 @@ export default function EditMachinePage() {
     try {
       setLoading(true);
 
+      // call API
       await updateMachine(id, form);
 
       toast.success("Machine updated successfully");
       navigate("/machines");
       //eslint-disable-next-line
     } catch (err: any) {
+      // Show backend response
       const message =
         err?.response?.data?.message ||
         err?.message ||
         "Failed to update machine";
 
-      toast.error(message);
+      toast.error(message); // will show "Cannot set machine to DOWN/MAINTENANCE without an active alert"
     } finally {
       setLoading(false);
     }
