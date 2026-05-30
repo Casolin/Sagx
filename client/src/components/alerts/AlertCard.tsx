@@ -133,7 +133,9 @@ export default function AlertCard({ alert, refresh }: Props) {
               ? "bg-red-500"
               : alert.priority === "MEDIUM"
               ? "bg-yellow-500"
-              : "bg-green-500"
+              : alert.priority === "LOW"
+              ? "bg-green-500"
+              : "bg-orange-600"
           }`}
         />
 
