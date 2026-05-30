@@ -227,33 +227,22 @@ export const CallPage = () => {
         >
           <div
             onMouseDown={handleMouseDown}
-            className="
-            bg-black/60
-            backdrop-blur-2xl
-            border border-white/10
-            text-white
-            px-4 py-3
-            rounded-full
-            flex items-center gap-3
-            shadow-2xl
-            cursor-move
-            select-none
-          "
+            className="bg-zinc-900/90 backdrop-blur-xl border border-white/10 text-white px-4 py-3 rounded-2xl flex items-center gap-3 shadow-xl cursor-move select-none"
           >
-            <PhoneCall size={16} className="text-green-400" />
+            <PhoneCall size={16} className="opacity-80" />
 
-            <span className="text-sm font-medium">Call in progress</span>
+            <span className="text-sm opacity-90">Call in progress</span>
 
             <button
               onClick={restoreCall}
-              className="p-1 rounded-full hover:bg-white/10 transition cursor-pointer"
+              className="hover:opacity-70 cursor-pointer"
             >
               <Maximize2 size={16} />
             </button>
 
             <button
               onClick={endCall}
-              className="p-1 rounded-full hover:bg-red-500/10 text-red-400 transition cursor-pointer"
+              className="hover:opacity-70 text-red-400 cursor-pointer"
             >
               <PhoneOff size={16} />
             </button>
@@ -262,16 +251,7 @@ export const CallPage = () => {
       ) : (
         <div
           ref={containerRef}
-          className="
-          fixed inset-0
-          bg-linear-to-b
-          from-zinc-950
-          via-zinc-900
-          to-black
-          text-white
-          flex items-center justify-center
-          z-50
-        "
+          className="fixed inset-0 bg-linear-to-b from-gray-950 via-gray-900 to-black text-white flex items-center justify-center z-50"
         >
           {/* VIDEO */}
           <video
@@ -281,15 +261,7 @@ export const CallPage = () => {
             className={
               isVideoFull || isScreenSharing
                 ? "absolute inset-0 w-full h-full object-contain bg-black"
-                : `
-                absolute top-5 right-5
-                w-72 h-48
-                rounded-3xl
-                border border-white/10
-                bg-zinc-900
-                shadow-2xl
-                object-cover
-              `
+                : "absolute top-6 right-6 w-72 h-48 bg-zinc-900 rounded-2xl shadow-2xl border border-white/10 object-cover"
             }
           />
 
@@ -297,18 +269,7 @@ export const CallPage = () => {
           {isInCall && (
             <button
               onClick={toggleVideoFull}
-              className="
-              absolute top-5 right-5
-              bg-black/40
-              backdrop-blur-xl
-              border border-white/10
-              p-2.5
-              rounded-full
-              hover:bg-black/60
-              transition
-              z-50
-              cursor-pointer
-            "
+              className="absolute top-4 right-4 bg-black/40 backdrop-blur-md border border-white/10 p-2 rounded-full hover:bg-black/60 transition z-50 cursor-pointer"
             >
               {isVideoFull ? <Minimize size={18} /> : <Maximize size={18} />}
             </button>
@@ -316,42 +277,17 @@ export const CallPage = () => {
 
           {/* CONTROLS */}
           {isInCall && !isVideoFull && (
-            <div
-              className="
-              absolute bottom-8
-              flex items-center gap-3
-              bg-black/40
-              backdrop-blur-2xl
-              px-4 py-3
-              rounded-full
-              border border-white/10
-              shadow-xl
-            "
-            >
+            <div className="absolute bottom-6 flex items-center gap-3 bg-black/40 backdrop-blur-xl px-4 py-3 rounded-2xl border border-white/10">
               <button
                 onClick={toggleMute}
-                className="
-                p-3
-                rounded-full
-                bg-white/5
-                hover:bg-white/10
-                transition-all
-                cursor-pointer
-              "
+                className="p-3 rounded-full bg-white/5 hover:bg-white/10 transition cursor-pointer"
               >
                 {isMuted ? <MicOff size={18} /> : <Mic size={18} />}
               </button>
 
               <button
                 onClick={toggleScreenShare}
-                className="
-                p-3
-                rounded-full
-                bg-white/5
-                hover:bg-white/10
-                transition-all
-                cursor-pointer
-              "
+                className="p-3 rounded-full bg-white/5 hover:bg-white/10 transition cursor-pointer"
               >
                 {isScreenSharing ? (
                   <MonitorOff size={18} />
@@ -362,29 +298,14 @@ export const CallPage = () => {
 
               <button
                 onClick={minimizeCall}
-                className="
-                p-3
-                rounded-full
-                bg-white/5
-                hover:bg-white/10
-                transition-all
-                cursor-pointer
-              "
+                className="p-3 rounded-full bg-white/5 hover:bg-white/10 transition cursor-pointer"
               >
                 <Minimize2 size={18} />
               </button>
 
               <button
                 onClick={endCall}
-                className="
-                p-3
-                rounded-full
-                bg-red-500
-                text-white
-                hover:bg-red-600
-                transition-all
-                cursor-pointer
-              "
+                className="p-3 rounded-full bg-red-500/20 text-red-400 hover:bg-red-500/30 transition cursor-pointer"
               >
                 <PhoneOff size={18} />
               </button>
@@ -393,63 +314,31 @@ export const CallPage = () => {
 
           {/* INCOMING CALL */}
           {isIncoming && !isInCall && (
-            <div
-              className="
-              flex flex-col items-center gap-5
-              px-10 py-10
-              rounded-4xl
-              bg-white/3
-              backdrop-blur-2xl
-              border border-white/10
-            "
-            >
+            <div className="flex flex-col items-center gap-6">
               <img
                 src={incomingCall.caller.avatar || "/default-avatar.png"}
-                className="
-                w-28 h-28
-                rounded-full
-                object-cover
-                border-2 border-white/10
-                shadow-xl
-              "
+                className="w-24 h-24 rounded-full border border-white/10"
               />
 
-              <div className="text-center">
-                <p className="text-xl font-semibold">
-                  {incomingCall.caller.firstName} {incomingCall.caller.lastName}
-                </p>
+              <p className="text-sm text-white/80">
+                {incomingCall.caller.firstName} {incomingCall.caller.lastName}
+              </p>
 
-                <p className="text-sm text-white/50 mt-1">Incoming call</p>
-              </div>
+              <p className="text-xs text-gray-400 uppercase tracking-wide">
+                Incoming call
+              </p>
 
-              <div className="flex gap-6 mt-2">
+              <div className="flex gap-10">
                 <button
                   onClick={rejectCall}
-                  className="
-                  w-14 h-14
-                  rounded-full
-                  bg-white/10
-                  hover:bg-white/15
-                  flex items-center justify-center
-                  transition
-                  cursor-pointer
-                "
+                  className="p-4 rounded-full bg-white/5 hover:bg-white/10 transition cursor-pointer"
                 >
                   <X />
                 </button>
 
                 <button
                   onClick={answerCall}
-                  className="
-                  w-14 h-14
-                  rounded-full
-                  bg-green-500
-                  text-white
-                  hover:bg-green-600
-                  flex items-center justify-center
-                  transition
-                  cursor-pointer
-                "
+                  className="p-4 rounded-full bg-green-500/20 text-green-400 hover:bg-green-500/30 transition cursor-pointer"
                 >
                   <Phone />
                 </button>
@@ -459,33 +348,16 @@ export const CallPage = () => {
 
           {/* CALLING */}
           {isCalling && !isInCall && (
-            <div
-              className="
-              flex flex-col items-center gap-5
-              px-10 py-10
-              rounded-4xl
-              bg-white/3
-              backdrop-blur-2xl
-              border border-white/10
-            "
-            >
-              <PhoneCall size={48} className="text-white/90" />
+            <div className="flex flex-col items-center gap-6">
+              <PhoneCall size={40} className="opacity-80" />
 
-              <p className="text-white/70">Calling...</p>
+              <p className="text-white/70 text-sm">Calling...</p>
 
               <button
                 onClick={() => {
                   cancelOutgoingCall();
                 }}
-                className="
-                mt-2
-                p-4
-                rounded-full
-                bg-red-500
-                hover:bg-red-600
-                transition
-                cursor-pointer
-              "
+                className="p-3 rounded-full bg-white/5 hover:bg-white/10 transition cursor-pointer"
               >
                 <PhoneOff />
               </button>
