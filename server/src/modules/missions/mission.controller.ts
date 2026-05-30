@@ -237,6 +237,7 @@ export const update = async (req: Request, res: Response) => {
   try {
     const missionId = getParam(req.params.missionId);
 
+    // 1. Get OLD mission state FIRST (important)
     const oldMission = await Mission.findById(missionId);
 
     if (!oldMission) {
@@ -253,6 +254,7 @@ export const update = async (req: Request, res: Response) => {
     const wasCancelled = oldMission.status === "CANCELLED";
     const willBeCancelled = req.body.status === "CANCELLED";
 
+    // 2. Update mission
     const mission = await updateMission(missionId, req.body);
 
     if (!mission) {
