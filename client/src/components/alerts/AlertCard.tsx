@@ -130,7 +130,7 @@ export default function AlertCard({ alert, refresh }: Props) {
         <div
           className={`absolute left-0 top-0 h-full w-1 rounded-l-3xl ${
             alert.priority === "HIGH"
-              ? "bg-red-500"
+              ? "bg-red-400"
               : alert.priority === "MEDIUM"
               ? "bg-yellow-500"
               : alert.priority === "LOW"
