@@ -100,7 +100,7 @@ export default function UserCard({ user, onEdit, onDelete }: Props) {
             onClick={() => onEdit(user)}
             className="
             px-3 py-2 rounded-xl text-sm font-medium
-            bg-black text-white
+            bg-indigo-600 text-white
             hover:bg-indigo-100 transition
             cursor-pointer
           "
