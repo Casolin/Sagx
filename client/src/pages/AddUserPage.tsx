@@ -15,7 +15,7 @@ const emptyForm = {
   role: "TECHNICIAN" as UserRole,
   skills: [] as string[],
   experience: 0,
-  availability: true,
+  availability: true as boolean,
 };
 
 export default function AddUserPage() {
@@ -36,9 +36,9 @@ export default function AddUserPage() {
     }));
   };
 
+  // ---------------- SKILLS ----------------
   const addSkill = () => {
     const skill = skillInput.trim();
-
     if (!skill) return;
 
     setForm((prev) => ({
@@ -58,6 +58,7 @@ export default function AddUserPage() {
     }));
   };
 
+  // ---------------- SUBMIT ----------------
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -80,7 +81,6 @@ export default function AddUserPage() {
       <div className="sticky top-0 z-20 bg-white/80 backdrop-blur border-b border-zinc-200">
         <div className="max-w-5xl mx-auto px-6 py-4">
           <h1 className="text-sm font-semibold text-zinc-800">Create User</h1>
-
           <p className="text-xs text-zinc-500 mt-1">
             Add a new team member and assign their role
           </p>
@@ -98,7 +98,7 @@ export default function AddUserPage() {
               onChange={handleChange}
               placeholder="First name"
               className="w-full px-4 py-3 rounded-xl border border-zinc-200 bg-zinc-50
-            focus:bg-white focus:outline-none focus:ring-2 focus:ring-black/10"
+              focus:bg-white focus:outline-none focus:ring-2 focus:ring-black/10"
             />
 
             <input
@@ -107,7 +107,7 @@ export default function AddUserPage() {
               onChange={handleChange}
               placeholder="Last name"
               className="w-full px-4 py-3 rounded-xl border border-zinc-200 bg-zinc-50
-            focus:bg-white focus:outline-none focus:ring-2 focus:ring-black/10"
+              focus:bg-white focus:outline-none focus:ring-2 focus:ring-black/10"
             />
           </div>
 
@@ -118,7 +118,7 @@ export default function AddUserPage() {
             onChange={handleChange}
             placeholder="Email address"
             className="w-full px-4 py-3 rounded-xl border border-zinc-200 bg-zinc-50
-          focus:bg-white focus:outline-none focus:ring-2 focus:ring-black/10"
+            focus:bg-white focus:outline-none focus:ring-2 focus:ring-black/10"
           />
 
           {/* PASSWORD */}
@@ -129,10 +129,50 @@ export default function AddUserPage() {
             placeholder="Password"
             type="password"
             className="w-full px-4 py-3 rounded-xl border border-zinc-200 bg-zinc-50
-          focus:bg-white focus:outline-none focus:ring-2 focus:ring-black/10"
+            focus:bg-white focus:outline-none focus:ring-2 focus:ring-black/10"
           />
 
-          {/* SKILLS (CHIPS INPUT) */}
+          {/* EXPERIENCE */}
+          <div>
+            <p className="text-xs text-zinc-500 mb-1">Experience (years)</p>
+
+            <input
+              name="experience"
+              type="number"
+              value={form.experience}
+              onChange={(e) =>
+                setForm((prev) => ({
+                  ...prev,
+                  experience: Number(e.target.value),
+                }))
+              }
+              placeholder="Years of experience"
+              className="w-full px-4 py-3 rounded-xl border border-zinc-200 bg-zinc-50
+              focus:bg-white focus:outline-none focus:ring-2 focus:ring-black/10"
+            />
+          </div>
+
+          {/* AVAILABILITY (BOOLEAN FIXED) */}
+          <div>
+            <p className="text-xs text-zinc-500 mb-1">Availability</p>
+
+            <select
+              value={form.availability ? "true" : "false"}
+              onChange={(e) =>
+                setForm((prev) => ({
+                  ...prev,
+                  availability: e.target.value === "true",
+                }))
+              }
+              className="w-full px-4 py-3 rounded-xl border border-zinc-200 bg-zinc-50
+              focus:bg-white focus:outline-none focus:ring-2 focus:ring-black/10"
+            >
+              <option value="true">Available</option>
+              <option value="false">Unavailable</option>
+            </select>
+          </div>
+
+          {/* SKILLS */}
           <div>
             <p className="text-xs text-zinc-500 mb-1">Skills</p>
 
@@ -168,7 +208,6 @@ export default function AddUserPage() {
                   className="flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-100 border border-zinc-200 text-sm"
                 >
                   {skill}
-
                   <button
                     type="button"
                     onClick={() => removeSkill(skill)}
@@ -190,7 +229,7 @@ export default function AddUserPage() {
               value={form.role}
               onChange={handleChange}
               className="w-full px-4 py-3 rounded-xl border border-zinc-200 bg-zinc-50
-            focus:bg-white focus:outline-none focus:ring-2 focus:ring-black/10"
+              focus:bg-white focus:outline-none focus:ring-2 focus:ring-black/10"
             >
               {roles.map((role) => (
                 <option key={role} value={role}>
@@ -205,7 +244,7 @@ export default function AddUserPage() {
             <button
               type="button"
               onClick={() => navigate("/users")}
-              className="px-4 py-2 rounded-xl border border-zinc-200 text-sm text-zinc-600 hover:bg-zinc-50 transition cursor-pointer"
+              className="px-4 py-2 rounded-xl border border-zinc-200 text-sm text-zinc-600 hover:bg-zinc-50"
             >
               Cancel
             </button>
@@ -214,7 +253,7 @@ export default function AddUserPage() {
               type="submit"
               disabled={loading}
               onClick={handleSubmit}
-              className="px-4 py-2 rounded-xl bg-black text-white text-sm hover:opacity-90 disabled:opacity-40 transition cursor-pointer"
+              className="px-4 py-2 rounded-xl bg-black text-white text-sm hover:opacity-90 disabled:opacity-40"
             >
               {loading ? "Creating..." : "Create User"}
             </button>

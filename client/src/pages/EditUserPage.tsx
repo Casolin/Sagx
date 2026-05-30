@@ -251,18 +251,18 @@ export default function EditUserPage() {
             <p className="text-xs text-zinc-500 mb-1">Availability</p>
 
             <select
-              value={form.availability ? "AVAILABLE" : "UNAVAILABLE"}
+              value={form.availability ? "true" : "false"}
               onChange={(e) =>
                 setForm((prev) => ({
                   ...prev,
-                  availability: e.target.value === "AVAILABLE",
+                  availability: e.target.value === "true",
                 }))
               }
               className="w-full px-4 py-3 rounded-xl border border-zinc-200 bg-zinc-50
               focus:bg-white focus:outline-none focus:ring-2 focus:ring-black/10"
             >
-              <option value="AVAILABLE">Available</option>
-              <option value="UNAVAILABLE">Unavailable</option>
+              <option value="true">Available</option>
+              <option value="false">Unavailable</option>
             </select>
           </div>
 
