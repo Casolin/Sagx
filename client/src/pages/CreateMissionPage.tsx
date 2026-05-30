@@ -304,6 +304,7 @@ export default function CreateMissionPage({ refresh }: Props) {
             </select>
 
             <select
+              className="px-3 py-2 rounded-xl border bg-zinc-50"
               value={status}
               onChange={(e) => setStatus(e.target.value as MissionStatus)}
             >
