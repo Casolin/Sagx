@@ -33,12 +33,15 @@ const statusColor = (status: AlertStatus) => {
   switch (status) {
     case "RESOLVED":
       return "bg-green-100 text-green-700 border-green-200";
+
     case "IN_PROGRESS":
       return "bg-orange-100 text-orange-700 border-orange-200";
+
     case "CANCELLED":
-      return "bg-orange-100 text-orange-700 border-orange-200";
+      return "bg-red-100 text-red-700 border-red-200";
+
     default:
-      return "bg-[#ff7d81] text-white border-[#ff7d81]";
+      return "bg-blue-100 text-blue-700 border-blue-200";
   }
 };
 
