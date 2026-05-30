@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { notify } from "../../utils/toastify";
-
 import type { User } from "../../types/global.types";
 import ConfirmModal from "../ConfirmModal";
 
@@ -14,18 +13,11 @@ export default function UserCard({ user, onEdit, onDelete }: Props) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const roleColor = {
-    ADMIN: "bg-orange-500 text-white",
-    MANAGER: "bg-indigo-500 text-white",
-    TECHNICIAN: "bg-gray-800 text-white",
+  const roleStyle = {
+    ADMIN: "bg-black text-white",
+    MANAGER: "bg-zinc-800 text-white",
+    TECHNICIAN: "bg-zinc-200 text-zinc-900",
   }[user.role];
-
-  const statusColor =
-    {
-      ACTIVE: "bg-green-500 text-white",
-      INACTIVE: "bg-gray-400 text-white",
-      SUSPENDED: "bg-red-500 text-white",
-    }[user.status] || "bg-gray-300 text-black";
 
   const handleDelete = async () => {
     try {
@@ -43,76 +35,57 @@ export default function UserCard({ user, onEdit, onDelete }: Props) {
 
   return (
     <>
-      {/* CARD */}
       <div
         className="
-        group relative w-full
-        rounded-2xl border border-gray-200
-        bg-white p-5
-        flex flex-col sm:flex-row items-center justify-between
-        gap-4
-        transition-all duration-200
-        hover:shadow-lg hover:-translate-y-0.5
-      "
+          group relative w-full
+          rounded-2xl border border-zinc-200
+          bg-white p-5
+          flex items-center justify-between
+          gap-4
+          transition-all duration-200
+          hover:border-zinc-300
+        "
       >
-        {/* subtle accent line */}
-        <div className="absolute left-0 top-0 h-full w-0.75 bg-linear-to-b from-indigo-500 via-blue-500 to-cyan-400 rounded-l-2xl opacity-0 group-hover:opacity-100 transition" />
-
         {/* LEFT */}
-        <div className="flex items-center gap-4 w-full sm:w-auto">
+        <div className="flex items-center gap-4">
           {/* avatar */}
           <div className="relative">
             <img
               src={user.avatar}
-              className="w-12 h-12 rounded-full border object-cover"
-            />
-            <span
-              className={`absolute -bottom-1 -right-1 w-3 h-3 rounded-full border-2 border-white ${
-                user.status === "ACTIVE"
-                  ? "bg-green-500"
-                  : user.status === "SUSPENDED"
-                    ? "bg-red-500"
-                    : "bg-gray-400"
-              }`}
+              className="w-11 h-11 rounded-full object-cover border border-zinc-200"
             />
           </div>
 
           {/* info */}
           <div className="min-w-0">
-            <h3 className="font-semibold text-gray-900 group-hover:text-indigo-600 transition">
+            <h3 className="font-medium text-zinc-900">
               {user.firstName} {user.lastName}
             </h3>
 
-            <p className="text-sm text-gray-500 truncate max-w-60">
+            <p className="text-sm text-zinc-500 truncate max-w-64">
               {user.email}
             </p>
 
-            <div className="flex flex-wrap gap-2 mt-2">
+            {/* role only (minimal + clean) */}
+            <div className="mt-2">
               <span
-                className={`text-[11px] px-2.5 py-1 rounded-full font-medium ${roleColor}`}
+                className={`text-[11px] px-2.5 py-1 rounded-full font-medium ${roleStyle}`}
               >
                 {user.role}
-              </span>
-
-              <span
-                className={`text-[11px] px-2.5 py-1 rounded-full font-medium ${statusColor}`}
-              >
-                {user.status}
               </span>
             </div>
           </div>
         </div>
 
         {/* RIGHT ACTIONS */}
-        <div className="flex items-center gap-2 sm:ml-auto">
+        <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition">
           <button
             onClick={() => onEdit(user)}
             className="
-            px-3 py-2 rounded-xl text-sm font-medium
-            bg-indigo-50 text-indigo-600
-            hover:bg-indigo-100 transition
-            cursor-pointer
-          "
+              px-3 py-2 rounded-xl text-sm font-medium
+              border border-zinc-200 text-zinc-700
+              hover:bg-zinc-100 transition
+            "
           >
             Edit
           </button>
@@ -120,11 +93,10 @@ export default function UserCard({ user, onEdit, onDelete }: Props) {
           <button
             onClick={() => setOpen(true)}
             className="
-            px-3 py-2 rounded-xl text-sm font-medium
-            bg-red-50 text-red-600
-            hover:bg-red-100 transition
-            cursor-pointer
-          "
+              px-3 py-2 rounded-xl text-sm font-medium
+              border border-zinc-200 text-red-600
+              hover:bg-red-50 transition
+            "
           >
             Delete
           </button>
