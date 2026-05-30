@@ -19,7 +19,6 @@ import Alert from "../alert/alert.model.js";
 import { resolveMaterials } from "../materials/material.service.js";
 import { createMission } from "../missions/mission.service.js";
 import User from "../users/user.model.js";
-import type { MissionPriority } from "../missions/mission.types.js";
 
 import Mission from "../missions/mission.model.js";
 

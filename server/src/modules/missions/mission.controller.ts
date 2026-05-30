@@ -11,6 +11,8 @@ import {
   deleteMission,
 } from "./mission.service.js";
 
+import { broadcastMachineUpdated } from "../../utils/machine.helper.js";
+
 import { emitToUser } from "../../sockets/socket.service.js";
 import { SOCKET_EVENTS } from "../../sockets/socket.events.js";
 import { consumeMaterials } from "../materials/material.service.js";
@@ -408,11 +410,19 @@ export const updateTaskStatus = async (req: Request, res: Response) => {
       }
 
       for (const id of machineIds) {
-        await MachineModel.findByIdAndUpdate(id, {
-          status: "OK",
-          condition: "NORMAL",
-          failureType: "NONE",
-        });
+        const machine = await MachineModel.findByIdAndUpdate(
+          id,
+          {
+            status: "OK",
+            condition: "NORMAL",
+            failureType: "NONE",
+          },
+          { new: true },
+        );
+
+        if (machine) {
+          await broadcastMachineUpdated(machine);
+        }
       }
 
       if (mission.alertId) {
