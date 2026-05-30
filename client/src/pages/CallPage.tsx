@@ -216,6 +216,7 @@ export const CallPage = () => {
     <>
       <audio ref={audioRef} autoPlay playsInline style={{ display: "none" }} />
 
+      {/* MINIMIZED */}
       {isMinimized && isInCall ? (
         <div
           style={{
@@ -227,39 +228,32 @@ export const CallPage = () => {
           <div
             onMouseDown={handleMouseDown}
             className="
-            group
-            flex items-center gap-3
-            px-4 py-3
-            rounded-3xl
-            bg-white/10
+            bg-black/60
             backdrop-blur-2xl
             border border-white/10
-            shadow-[0_8px_40px_rgba(0,0,0,.4)]
             text-white
+            px-4 py-3
+            rounded-full
+            flex items-center gap-3
+            shadow-2xl
             cursor-move
             select-none
           "
           >
-            <div className="relative">
-              <div className="absolute inset-0 bg-green-500 rounded-full blur-md opacity-50" />
-              <div className="relative w-3 h-3 rounded-full bg-green-400 animate-pulse" />
-            </div>
+            <PhoneCall size={16} className="text-green-400" />
 
-            <div>
-              <p className="text-sm font-medium">Call in progress</p>
-              <p className="text-xs text-white/50">Connected</p>
-            </div>
+            <span className="text-sm font-medium">Call in progress</span>
 
             <button
               onClick={restoreCall}
-              className="ml-2 p-2 rounded-xl hover:bg-white/10 transition cursor-pointer"
+              className="p-1 rounded-full hover:bg-white/10 transition cursor-pointer"
             >
               <Maximize2 size={16} />
             </button>
 
             <button
               onClick={endCall}
-              className="p-2 rounded-xl text-red-400 hover:bg-red-500/10 transition cursor-pointer"
+              className="p-1 rounded-full hover:bg-red-500/10 text-red-400 transition cursor-pointer"
             >
               <PhoneOff size={16} />
             </button>
@@ -270,20 +264,15 @@ export const CallPage = () => {
           ref={containerRef}
           className="
           fixed inset-0
-          overflow-hidden
-          flex items-center justify-center
-          bg-black
+          bg-linear-to-b
+          from-zinc-950
+          via-zinc-900
+          to-black
           text-white
+          flex items-center justify-center
           z-50
         "
         >
-          {/* BACKGROUND */}
-          <div className="absolute inset-0">
-            <div className="absolute -top-40 -left-40 w-125 h-125 rounded-full bg-violet-600/20 blur-[180px]" />
-            <div className="absolute -bottom-40 -right-40 w-125 h-125 rounded-full bg-cyan-500/20 blur-[180px]" />
-            <div className="absolute top-1/2 left-1/2 w-100 h-100 -translate-x-1/2 -translate-y-1/2 rounded-full bg-pink-500/10 blur-[160px]" />
-          </div>
-
           {/* VIDEO */}
           <video
             ref={videoRef}
@@ -291,23 +280,14 @@ export const CallPage = () => {
             playsInline
             className={
               isVideoFull || isScreenSharing
-                ? `
-                absolute inset-0
-                w-full h-full
-                object-contain
-                bg-black
-              `
+                ? "absolute inset-0 w-full h-full object-contain bg-black"
                 : `
-                absolute
-                top-6
-                right-6
-                w-80
-                h-52
-                rounded-[28px]
+                absolute top-5 right-5
+                w-72 h-48
+                rounded-3xl
                 border border-white/10
+                bg-zinc-900
                 shadow-2xl
-                bg-black/60
-                backdrop-blur-xl
                 object-cover
               `
             }
@@ -318,39 +298,20 @@ export const CallPage = () => {
             <button
               onClick={toggleVideoFull}
               className="
-              absolute top-6 right-6 z-50
-              p-3
-              rounded-full
-              bg-white/10
+              absolute top-5 right-5
+              bg-black/40
               backdrop-blur-xl
               border border-white/10
-              hover:bg-white/20
+              p-2.5
+              rounded-full
+              hover:bg-black/60
               transition
+              z-50
               cursor-pointer
             "
             >
               {isVideoFull ? <Minimize size={18} /> : <Maximize size={18} />}
             </button>
-          )}
-
-          {/* STATUS */}
-          {isInCall && (
-            <div
-              className="
-              absolute
-              top-6
-              left-6
-              px-5
-              py-3
-              rounded-3xl
-              bg-white/10
-              backdrop-blur-2xl
-              border border-white/10
-            "
-            >
-              <p className="font-medium">Connected</p>
-              <p className="text-xs text-white/60">Voice Call</p>
-            </div>
           )}
 
           {/* CONTROLS */}
@@ -359,126 +320,118 @@ export const CallPage = () => {
               className="
               absolute bottom-8
               flex items-center gap-3
+              bg-black/40
+              backdrop-blur-2xl
               px-4 py-3
               rounded-full
-              bg-white/10
-              backdrop-blur-2xl
               border border-white/10
-              shadow-2xl
+              shadow-xl
             "
             >
               <button
                 onClick={toggleMute}
                 className="
-                p-4
+                p-3
                 rounded-full
-                bg-white/10
-                hover:bg-white/20
-                hover:scale-110
-                active:scale-95
+                bg-white/5
+                hover:bg-white/10
                 transition-all
                 cursor-pointer
               "
               >
-                {isMuted ? <MicOff size={20} /> : <Mic size={20} />}
+                {isMuted ? <MicOff size={18} /> : <Mic size={18} />}
               </button>
 
               <button
                 onClick={toggleScreenShare}
                 className="
-                p-4
+                p-3
                 rounded-full
-                bg-white/10
-                hover:bg-white/20
-                hover:scale-110
-                active:scale-95
+                bg-white/5
+                hover:bg-white/10
                 transition-all
                 cursor-pointer
               "
               >
                 {isScreenSharing ? (
-                  <MonitorOff size={20} />
+                  <MonitorOff size={18} />
                 ) : (
-                  <ScreenShare size={20} />
+                  <ScreenShare size={18} />
                 )}
               </button>
 
               <button
                 onClick={minimizeCall}
                 className="
-                p-4
+                p-3
                 rounded-full
-                bg-white/10
-                hover:bg-white/20
-                hover:scale-110
-                active:scale-95
+                bg-white/5
+                hover:bg-white/10
                 transition-all
                 cursor-pointer
               "
               >
-                <Minimize2 size={20} />
+                <Minimize2 size={18} />
               </button>
 
               <button
                 onClick={endCall}
                 className="
-                p-4
+                p-3
                 rounded-full
                 bg-red-500
+                text-white
                 hover:bg-red-600
-                hover:scale-110
-                active:scale-95
-                shadow-lg
-                shadow-red-500/30
                 transition-all
                 cursor-pointer
               "
               >
-                <PhoneOff size={20} />
+                <PhoneOff size={18} />
               </button>
             </div>
           )}
 
-          {/* INCOMING */}
+          {/* INCOMING CALL */}
           {isIncoming && !isInCall && (
-            <div className="relative flex flex-col items-center">
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-72 h-72 rounded-full bg-violet-500/20 blur-[120px]" />
+            <div
+              className="
+              flex flex-col items-center gap-5
+              px-10 py-10
+              rounded-4xl
+              bg-white/3
+              backdrop-blur-2xl
+              border border-white/10
+            "
+            >
+              <img
+                src={incomingCall.caller.avatar || "/default-avatar.png"}
+                className="
+                w-28 h-28
+                rounded-full
+                object-cover
+                border-2 border-white/10
+                shadow-xl
+              "
+              />
+
+              <div className="text-center">
+                <p className="text-xl font-semibold">
+                  {incomingCall.caller.firstName} {incomingCall.caller.lastName}
+                </p>
+
+                <p className="text-sm text-white/50 mt-1">Incoming call</p>
               </div>
 
-              <div className="relative">
-                <div className="absolute inset-0 rounded-full bg-green-500/30 blur-3xl animate-pulse" />
-
-                <img
-                  src={incomingCall.caller.avatar || "/default-avatar.png"}
-                  className="
-                  relative
-                  w-40 h-40
-                  rounded-full
-                  object-cover
-                  border-4 border-white/10
-                  shadow-2xl
-                "
-                />
-              </div>
-
-              <h2 className="mt-8 text-4xl font-bold">
-                {incomingCall.caller.firstName} {incomingCall.caller.lastName}
-              </h2>
-
-              <p className="mt-3 text-white/60 tracking-wide">Incoming Call</p>
-
-              <div className="flex gap-8 mt-10">
+              <div className="flex gap-6 mt-2">
                 <button
                   onClick={rejectCall}
                   className="
-                  w-16 h-16
+                  w-14 h-14
                   rounded-full
-                  bg-red-500
-                  hover:bg-red-600
-                  hover:scale-110
-                  transition-all
+                  bg-white/10
+                  hover:bg-white/15
                   flex items-center justify-center
+                  transition
                   cursor-pointer
                 "
                 >
@@ -488,15 +441,13 @@ export const CallPage = () => {
                 <button
                   onClick={answerCall}
                   className="
-                  w-20 h-20
+                  w-14 h-14
                   rounded-full
                   bg-green-500
+                  text-white
                   hover:bg-green-600
-                  hover:scale-110
-                  transition-all
                   flex items-center justify-center
-                  shadow-[0_0_40px_rgba(34,197,94,.5)]
-                  animate-pulse
+                  transition
                   cursor-pointer
                 "
                 >
@@ -508,40 +459,31 @@ export const CallPage = () => {
 
           {/* CALLING */}
           {isCalling && !isInCall && (
-            <div className="relative flex flex-col items-center">
-              <div className="absolute w-72 h-72 rounded-full bg-violet-500/20 blur-[120px]" />
+            <div
+              className="
+              flex flex-col items-center gap-5
+              px-10 py-10
+              rounded-4xl
+              bg-white/3
+              backdrop-blur-2xl
+              border border-white/10
+            "
+            >
+              <PhoneCall size={48} className="text-white/90" />
 
-              <div
-                className="
-                relative
-                w-40 h-40
-                rounded-full
-                bg-white/10
-                backdrop-blur-2xl
-                border border-white/10
-                flex items-center justify-center
-              "
-              >
-                <PhoneCall size={56} />
-              </div>
-
-              <h2 className="mt-8 text-4xl font-bold">Calling...</h2>
-
-              <p className="mt-3 text-white/60">Waiting for answer</p>
+              <p className="text-white/70">Calling...</p>
 
               <button
                 onClick={() => {
                   cancelOutgoingCall();
                 }}
                 className="
-                mt-10
-                w-16 h-16
+                mt-2
+                p-4
                 rounded-full
                 bg-red-500
                 hover:bg-red-600
-                hover:scale-110
-                transition-all
-                flex items-center justify-center
+                transition
                 cursor-pointer
               "
               >
