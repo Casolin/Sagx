@@ -266,7 +266,6 @@ export default function EditMissionPage() {
               <option value="PENDING">PENDING</option>
               <option value="ASSIGNED">ASSIGNED</option>
               <option value="IN_PROGRESS">IN_PROGRESS</option>
-              <option value="COMPLETED">COMPLETED</option>
               <option value="CANCELLED">CANCELLED</option>
             </select>
           </div>

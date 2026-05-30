@@ -234,80 +234,88 @@ export const getOne = async (req: Request, res: Response) => {
 
 /* ---------------- UPDATE ---------------- */
 export const update = async (req: Request, res: Response) => {
-  const mission = await updateMission(getParam(req.params.missionId), req.body);
+  try {
+    const missionId = getParam(req.params.missionId);
 
-  if (!mission) {
-    return res.status(404).json({
-      success: false,
-      message: "Mission not found",
-    });
-  }
+    const oldMission = await Mission.findById(missionId);
 
-  missionEvents.updated(mission);
+    if (!oldMission) {
+      return res.status(404).json({
+        success: false,
+        message: "Mission not found",
+      });
+    }
 
-  const newTech = req.body.assignedTo?.toString();
+    const wasAssignedTo = oldMission.assignedTo
+      ? oldMission.assignedTo.toString()
+      : null;
 
-  if (
-    newTech &&
-    mission.assignedTo &&
-    mission.assignedTo._id.toString() === newTech
-  ) {
-    const senderName = (req as any).user?.firstName?.trim() || "Someone";
+    const wasCancelled = oldMission.status === "CANCELLED";
+    const willBeCancelled = req.body.status === "CANCELLED";
 
-    const notification = await createNotification({
-      userId: newTech,
-      title: "Mission Reassigned",
-      message: `${senderName} reassigned a mission to you`,
-      type: "MISSION",
-      relatedId: mission._id,
-    });
+    const mission = await updateMission(missionId, req.body);
 
-    emitToUser(newTech, SOCKET_EVENTS.NOTIFICATION_NEW, notification);
+    if (!mission) {
+      return res.status(404).json({
+        success: false,
+        message: "Mission not found after update",
+      });
+    }
 
-    emitToUser(newTech, SOCKET_EVENTS.MISSION_CREATED, mission);
-  }
+    missionEvents.updated(mission);
 
-  /* ============================
-     🔥 ADD THIS BLOCK (IMPORTANT)
-     ============================ */
-  if (
-    mission.assignedTo &&
-    (req.body.status === "COMPLETED" || req.body.status === "CANCELLED")
-  ) {
-    const UserModel = (await import("../users/user.model.js")).default;
+    if (willBeCancelled && wasAssignedTo && !wasCancelled) {
+      const UserModel = (await import("../users/user.model.js")).default;
 
-    const assignedToId =
-      typeof mission.assignedTo === "string"
-        ? mission.assignedTo
-        : mission.assignedTo._id?.toString() || mission.assignedTo;
-
-    // prevent double mismatch
-    const user = await UserModel.findById(assignedToId);
-
-    const stillAssigned = user?.assignedMissions?.some(
-      (m: any) => m.toString() === mission._id.toString(),
-    );
-
-    if (stillAssigned) {
-      await UserModel.findByIdAndUpdate(assignedToId, {
+      await UserModel.findByIdAndUpdate(wasAssignedTo, {
         $inc: { currentTasks: -1 },
         $pull: { assignedMissions: mission._id },
       });
+
+      const user = await UserModel.findById(wasAssignedTo);
+
+      if (user) {
+        user.availability = user.currentTasks < user.maxTasks;
+        await user.save();
+      }
+
+      if (mission.alertId) {
+        await Alert.findByIdAndUpdate(mission.alertId, {
+          status: "CANCELLED",
+        });
+      }
     }
 
-    // availability fix
-    const updatedUser = await UserModel.findById(assignedToId);
-    if (updatedUser) {
-      await UserModel.findByIdAndUpdate(assignedToId, {
-        availability:
-          (updatedUser.currentTasks ?? 0) < (updatedUser.maxTasks ?? 5),
+    const newTech = req.body.assignedTo?.toString();
+
+    if (newTech && wasAssignedTo && newTech !== wasAssignedTo) {
+      const senderName = (req as any).user?.firstName?.trim() || "Someone";
+
+      const notification = await createNotification({
+        userId: newTech,
+        title: "Mission Reassigned",
+        message: `${senderName} reassigned a mission to you`,
+        type: "MISSION",
+        relatedId: mission._id,
       });
+
+      emitToUser(newTech, SOCKET_EVENTS.NOTIFICATION_NEW, notification);
+
+      emitToUser(newTech, SOCKET_EVENTS.MISSION_CREATED, mission);
     }
+
+    await broadcastKpiUpdate();
+
+    return res.json({
+      success: true,
+      data: mission,
+    });
+  } catch (error: any) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
-
-  await broadcastKpiUpdate();
-
-  return res.json({ success: true, data: mission });
 };
 /* ---------------- DELETE ---------------- */
 export const remove = async (req: Request, res: Response) => {
