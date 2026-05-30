@@ -232,7 +232,10 @@ export const removeTwoFactorController = async (
 
 export const getUsersListController = async (req: Request, res: Response) => {
   try {
-    const users = await getAllUsers();
+    const currentUserId = (req as any).user.id;
+
+    const users = await getAllUsers(currentUserId);
+
     res.json({
       success: true,
       data: users,

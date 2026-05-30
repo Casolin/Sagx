@@ -82,9 +82,10 @@ export const verifyTwoFactor = async (userId: string, token: string) => {
   return isValid;
 };
 
-export const getAllUsers = async () => {
-  const users = await User.find().select("-password"); // Exclude password from the response
-  return users;
+export const getAllUsers = async (currentUserId: string) => {
+  return await User.find({
+    _id: { $ne: currentUserId },
+  }).select("-password");
 };
 
 export const updateUser = async (userId: string, updatedFields: any) => {
