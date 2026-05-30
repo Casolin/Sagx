@@ -33,7 +33,7 @@ const AlertSchema = new mongoose.Schema(
 
     status: {
       type: String,
-      enum: ["OPEN", "IN_PROGRESS", "RESOLVED"],
+      enum: ["OPEN", "IN_PROGRESS", "RESOLVED", "CANCELLED"],
       default: "OPEN",
     },
 
