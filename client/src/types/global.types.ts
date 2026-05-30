@@ -321,7 +321,7 @@ export type AlertType =
   | "MAINTENANCE"
   | "MACHINE_FAILURE";
 
-export type AlertStatus = "OPEN" | "IN_PROGRESS" | "RESOLVED";
+export type AlertStatus = "OPEN" | "IN_PROGRESS" | "RESOLVED" | "CANCELLED";
 
 export type PopulatedMachine = {
   _id: ID;

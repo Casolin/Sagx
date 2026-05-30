@@ -35,8 +35,10 @@ const statusColor = (status: AlertStatus) => {
       return "bg-green-100 text-green-700 border-green-200";
     case "IN_PROGRESS":
       return "bg-orange-100 text-orange-700 border-orange-200";
+    case "CANCELLED":
+      return "bg-orange-100 text-orange-700 border-orange-200";
     default:
-      return "bg-red-100 text-red-700 border-red-200";
+      return "bg-[#ff7d81] text-white border-[#ff7d81]";
   }
 };
 
@@ -127,8 +129,8 @@ export default function AlertCard({ alert, refresh }: Props) {
             alert.priority === "HIGH"
               ? "bg-red-500"
               : alert.priority === "MEDIUM"
-                ? "bg-yellow-500"
-                : "bg-green-500"
+              ? "bg-yellow-500"
+              : "bg-green-500"
           }`}
         />
 
