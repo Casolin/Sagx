@@ -101,7 +101,7 @@ export default function UserCard({ user, onEdit, onDelete }: Props) {
             className="
             px-3 py-2 rounded-xl text-sm font-medium
             bg-indigo-600 text-white
-            hover:bg-indigo-100 transition
+            hover:bg-indigo-400 transition
             cursor-pointer
           "
           >
@@ -113,7 +113,7 @@ export default function UserCard({ user, onEdit, onDelete }: Props) {
             className="
             px-3 py-2 rounded-xl text-sm font-medium
             bg-red-600 text-white
-            hover:bg-red-100 transition
+            hover:bg-red-400 transition
             cursor-pointer
           "
           >
