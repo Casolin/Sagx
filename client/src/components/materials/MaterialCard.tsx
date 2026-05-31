@@ -1,6 +1,8 @@
 import { useState } from "react";
 import type { Material } from "../../types/global.types";
-import { updateMaterialStock } from "../../api/material.api";
+import { updateMaterialStock, deleteMaterial } from "../../api/material.api";
+import { Trash2 } from "lucide-react";
+import ConfirmModal from "../ConfirmModal";
 
 interface Props {
   material: Material;
@@ -13,6 +15,8 @@ const MaterialCard = ({ material }: Props) => {
   const [isEditing, setIsEditing] = useState(false);
   const [quantity, setQuantity] = useState(material.quantity);
   const [loading, setLoading] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
 
   const handleSave = async () => {
     try {
@@ -30,6 +34,21 @@ const MaterialCard = ({ material }: Props) => {
     }
   };
 
+  const handleDelete = async () => {
+    try {
+      setDeleteLoading(true);
+
+      await deleteMaterial(material._id);
+
+      setDeleteOpen(false);
+    } catch (err) {
+      console.error(err);
+      alert("Failed to delete material");
+    } finally {
+      setDeleteLoading(false);
+    }
+  };
+
   return (
     <div
       className="
@@ -43,10 +62,8 @@ const MaterialCard = ({ material }: Props) => {
     >
       {/* LEFT ACCENT BAR */}
       <div className="absolute left-0 top-0 h-full w-1 bg-linear-to-b from-blue-500 via-cyan-400 to-indigo-500 opacity-80" />
-
       {/* FLOATING GLOW */}
       <div className="absolute -top-20 -right-20 w-40 h-40 bg-blue-100 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition" />
-
       {/* HEADER */}
       <div className="relative flex items-start justify-between gap-4">
         <div className="min-w-0">
@@ -111,10 +128,8 @@ const MaterialCard = ({ material }: Props) => {
           )}
         </div>
       </div>
-
       {/* DIVIDER */}
       <div className="my-4 h-px bg-linear-to-r from-transparent via-gray-200 to-transparent" />
-
       {/* FAILURE ZONE */}
       <div className="relative">
         {hasFailures ? (
@@ -143,11 +158,35 @@ const MaterialCard = ({ material }: Props) => {
           </div>
         )}
       </div>
-
       {/* BOTTOM MICRO INFO STRIP */}
       <div className="mt-4 flex items-center justify-between text-[11px] text-gray-400">
         <span>Inventory module</span>
+        <button
+          onClick={() => setDeleteOpen(true)}
+          className="
+    p-2 rounded-lg
+    text-gray-400
+    hover:text-red-600
+    hover:bg-red-50
+    transition
+  "
+          title="Delete material"
+        >
+          <Trash2 size={16} />
+        </button>
       </div>
+      <ConfirmModal
+        open={deleteOpen}
+        onOpenChange={setDeleteOpen}
+        title="Delete Material"
+        message={`Are you sure you want to delete "${material.name}"? This action cannot be undone.`}
+        confirmText="Delete"
+        cancelText="Cancel"
+        loading={deleteLoading}
+        variant="danger"
+        onConfirm={handleDelete}
+      />
+      ;
     </div>
   );
 };

@@ -28,3 +28,8 @@ export const updateMaterialStock = async (
 
   return res.data.data;
 };
+
+export const deleteMaterial = async (id: string): Promise<Material> => {
+  const res = await api.delete(`/api/materials/${id}`);
+  return res.data.data;
+};

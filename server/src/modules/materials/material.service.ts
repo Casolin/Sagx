@@ -38,6 +38,16 @@ export const updateMaterialStock = async (id: string, quantity: number) => {
   return material;
 };
 
+export const deleteMaterial = async (id: string) => {
+  const material = await Material.findByIdAndDelete(id);
+
+  if (!material) {
+    throw new AppError("Material not found", 404);
+  }
+
+  return material;
+};
+
 export const resolveMaterials = async (
   failureType: string,
   machineType: string,

@@ -4,6 +4,7 @@ import {
   getAllMaterials,
   getMaterialById,
   updateMaterialStock,
+  deleteMaterial,
 } from "./material.service.js";
 
 export const create = async (req: Request, res: Response) => {
@@ -88,6 +89,31 @@ export const updateStock = async (req: Request, res: Response) => {
     res.json({
       success: true,
       data: material,
+    });
+  } catch (err: any) {
+    res.status(err.statusCode || 400).json({
+      success: false,
+      message: err.message,
+    });
+  }
+};
+
+export const remove = async (req: Request, res: Response) => {
+  try {
+    const id = req.params.id;
+
+    if (!id || Array.isArray(id)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid material id",
+      });
+    }
+
+    const deleted = await deleteMaterial(id);
+
+    res.json({
+      success: true,
+      data: deleted,
     });
   } catch (err: any) {
     res.status(err.statusCode || 400).json({
