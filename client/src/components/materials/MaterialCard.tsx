@@ -191,7 +191,6 @@ const MaterialCard = ({ material }: Props) => {
         variant="danger"
         onConfirm={handleDelete}
       />
-      ;
     </div>
   );
 };
