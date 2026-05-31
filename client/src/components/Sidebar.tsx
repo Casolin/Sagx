@@ -111,7 +111,7 @@ export default function Sidebar({
 
       <div
         className={`
-        fixed md:static z-50 h-full flex flex-col
+        fixed md:static z-100 h-full flex flex-col
         bg-white border-r border-gray-200
         transition-all duration-300 overflow-hidden
         shadow-sm
