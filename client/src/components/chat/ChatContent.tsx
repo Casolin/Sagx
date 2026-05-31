@@ -36,13 +36,6 @@ const ChatContent = ({
   const scrollRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    if (!selectedUser && !roomId) {
-      setMessages([]);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedUser, roomId]);
-
-  useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
     el.scrollTop = el.scrollHeight;
