@@ -199,6 +199,8 @@ export const initAppSocket = (io: Server) => {
 
           callTimeouts.delete(callKey);
 
+          pendingCalls.delete(receiverId);
+
           emitToUser(io, callerId, SOCKET_EVENTS.CALL_END);
           emitToUser(io, receiverId, SOCKET_EVENTS.CALL_END);
         }
@@ -241,6 +243,8 @@ export const initAppSocket = (io: Server) => {
 
       ringingUsers.delete(userId);
       ringingUsers.delete(callerId);
+
+      pendingCalls.delete(userId);
 
       emitToUser(io, callerId, SOCKET_EVENTS.CALL_ANSWER, {
         answer,
@@ -324,6 +328,8 @@ export const initAppSocket = (io: Server) => {
       // only cancel ringing
       if (ringingUsers.get(from) === to) {
         ringingUsers.delete(from);
+
+        pendingCalls.delete(to);
 
         emitToUser(io, to, SOCKET_EVENTS.CALL_CANCEL, {
           from,
