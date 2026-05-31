@@ -62,6 +62,7 @@ const CreateMaterialModal = ({ open, onOpenChange, onCreated }: Props) => {
       });
 
       toast.success("Material added successfully");
+      window.location.reload();
 
       resetForm();
       onCreated();
