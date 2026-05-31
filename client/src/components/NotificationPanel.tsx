@@ -77,13 +77,13 @@ export default function NotificationPanel() {
   return (
     <>
       {open && (
-        <div onClick={closePanel} className="fixed inset-0 bg-black/20 z-120" />
+        <div onClick={closePanel} className="fixed inset-0 bg-black/20 z-50" />
       )}
 
       {/* PANEL */}
       <div
         className={`fixed top-0 left-0 h-full w-64 bg-white border-r border-gray-200 z-50 transition-transform duration-300 shadow-xl ${
-          open ? "translate-x-0" : "-translate-x-full z-120"
+          open ? "translate-x-0" : "-translate-x-full z-50"
         }`}
       >
         {/* HEADER */}

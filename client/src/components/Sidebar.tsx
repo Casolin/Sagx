@@ -104,14 +104,14 @@ export default function Sidebar({
       {/* mobile overlay */}
       {open && (
         <div
-          className="fixed inset-0 bg-black/30 md:hidden backdrop-blur-sm z-100"
+          className="fixed inset-0 bg-black/30 md:hidden backdrop-blur-sm z-30"
           onClick={() => setOpen(false)}
         />
       )}
 
       <div
         className={`
-        fixed md:static z-100 h-full flex flex-col
+        fixed md:static z-30 h-full flex flex-col
         bg-white border-r border-gray-200
         transition-all duration-300 overflow-hidden
         shadow-sm
