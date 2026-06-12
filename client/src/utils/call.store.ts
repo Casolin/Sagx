@@ -291,43 +291,41 @@ export const useCallStore = create<CallState>((set, get) => ({
 
     const dummyTrack = stream.getVideoTracks()[0];
 
-    // STOP SCREEN SHARE
+    // STOP screen share
     if (isScreenSharing) {
       if (dummyTrack) {
         await videoSender.replaceTrack(dummyTrack);
       }
-
       set({ isScreenSharing: false });
       return;
     }
 
     try {
-      let screenStream;
+      let screenStream: MediaStream;
 
-      //eslint-disable-next-line
       const electronAPI = (window as any).electronAPI;
 
+      // 🟡 ELECTRON PATH
       if (electronAPI?.getScreenStream) {
         screenStream = await electronAPI.getScreenStream();
-      } else {
+      }
+      // 🟢 BROWSER PATH
+      else {
         screenStream = await navigator.mediaDevices.getDisplayMedia({
           video: true,
           audio: false,
         });
       }
 
-      const [screenTrack] = screenStream.getVideoTracks();
+      const screenTrack = screenStream.getVideoTracks()[0];
 
-      if (!screenTrack) return;
+      if (!screenTrack) {
+        alert("Screen share failed: no video track detected");
+        return;
+      }
 
-      // IMPORTANT FIX: force track to be enabled + active
-      screenTrack.enabled = true;
+      await videoSender.replaceTrack(screenTrack);
 
-      const fixedTrack = new MediaStream([screenTrack]).getVideoTracks()[0];
-
-      await videoSender.replaceTrack(fixedTrack);
-
-      // IMPORTANT: handle stop properly
       screenTrack.onended = async () => {
         const fallback = stream.getVideoTracks()[0];
 
@@ -340,7 +338,11 @@ export const useCallStore = create<CallState>((set, get) => ({
 
       set({ isScreenSharing: true });
     } catch (err) {
-      console.log("SCREEN SHARE ERROR:", err);
+      console.error("SCREEN SHARE ERROR:", err);
+
+      alert(
+        "Screen share failed in Electron.\n\nFix: check Electron permissions or run as packaged app.",
+      );
     }
   },
 
