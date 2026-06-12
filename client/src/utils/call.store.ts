@@ -305,16 +305,19 @@ export const useCallStore = create<CallState>((set, get) => ({
 
       const electronAPI = (window as any).electronAPI;
 
-      // 🟡 ELECTRON PATH
-      if (electronAPI?.getScreenStream) {
-        screenStream = await electronAPI.getScreenStream();
-      }
-      // 🟢 BROWSER PATH
-      else {
-        screenStream = await navigator.mediaDevices.getDisplayMedia({
-          video: true,
-          audio: false,
-        });
+      try {
+        if (electronAPI?.getScreenStream) {
+          screenStream = await electronAPI.getScreenStream();
+        } else {
+          screenStream = await navigator.mediaDevices.getDisplayMedia({
+            video: true,
+            audio: false,
+          });
+        }
+      } catch (err) {
+        console.error("SCREEN SHARE ERROR:", err);
+        alert("Screen share failed (Electron or browser permission issue)");
+        return;
       }
 
       const screenTrack = screenStream.getVideoTracks()[0];
