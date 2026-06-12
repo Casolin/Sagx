@@ -320,11 +320,7 @@ export const useCallStore = create<CallState>((set, get) => ({
 
     let screenStream;
 
-    const electronAPI = (
-      window as unknown as {
-        electronAPI?: { getScreenStream?: () => Promise<MediaStream> };
-      }
-    ).electronAPI;
+    const electronAPI = window.electronAPI;
 
     if (electronAPI?.getScreenStream) {
       screenStream = await electronAPI.getScreenStream();
