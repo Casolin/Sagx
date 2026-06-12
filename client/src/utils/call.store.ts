@@ -320,8 +320,11 @@ export const useCallStore = create<CallState>((set, get) => ({
 
     let screenStream;
 
-    // eslint-disable-next-line
-    const electronAPI = (window as any).electronAPI;
+    const electronAPI = (
+      window as unknown as {
+        electronAPI?: { getScreenStream?: () => Promise<MediaStream> };
+      }
+    ).electronAPI;
 
     if (electronAPI?.getScreenStream) {
       screenStream = await electronAPI.getScreenStream();
