@@ -52,28 +52,25 @@ export default function Login() {
   return (
     <div className="flex h-screen overflow-hidden w-full">
       {/* LEFT SIDE - FORM */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-6 md:p-10 bg-white">
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-6 md:p-10">
         <div className="w-full bg-white rounded-3xl p-8 md:p-12">
           <form onSubmit={handleLogin} className="flex flex-col gap-5">
-            <img src="/logo.png" className="w-16 md:w-20 mx-auto" alt="Logo" />
+            <img src="/logo.png" className="w-24 mx-auto" alt="Logo" />
 
             <div className="text-center">
               <h2 className="text-4xl font-bold text-gray-900">Welcome Back</h2>
 
               <p className="text-base text-gray-500 mt-2">
-                Sign in to{" "}
-                <span className="font-semibold text-black">SAGX</span> and
-                continue managing missions
+                Sign in to continue managing your system
               </p>
             </div>
 
-            {/* EMAIL + PASSWORD */}
             {step === 1 && (
               <>
                 <input
                   className="w-full px-4 py-3.5 border border-gray-300 rounded-xl
                   focus:outline-none focus:ring-2 focus:ring-black focus:border-black transition"
-                  placeholder="Email address"
+                  placeholder="Email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   autoComplete="off"
@@ -88,10 +85,22 @@ export default function Login() {
                   onChange={(e) => setPassword(e.target.value)}
                   autoComplete="off"
                 />
+
+                <div className="flex justify-between items-center -mt-2">
+                  <span className="text-xs text-gray-400">
+                    Need help signing in?
+                  </span>
+
+                  <a
+                    href="/forgot-password"
+                    className="text-sm text-black font-medium hover:underline"
+                  >
+                    Forgot password
+                  </a>
+                </div>
               </>
             )}
 
-            {/* 2FA */}
             {step === 2 && (
               <input
                 className="w-full px-4 py-3.5 border border-gray-300 rounded-xl
@@ -103,7 +112,6 @@ export default function Login() {
               />
             )}
 
-            {/* BUTTON */}
             <button
               disabled={loading}
               type="submit"
@@ -113,30 +121,25 @@ export default function Login() {
               {loading ? "Processing..." : step === 1 ? "Login" : "Confirm"}
             </button>
 
-            {/* LINKS */}
-            <div className="text-center text-sm text-gray-500">
-              {step === 1 && (
-                <>
-                  Don’t have an account?{" "}
-                  <a
-                    href="/register"
-                    className="font-semibold text-black hover:underline"
-                  >
-                    Sign up
-                  </a>
-                </>
-              )}
+            <p className="text-center text-sm text-gray-500">
+              Don’t have an account?{" "}
+              <a
+                href="/register"
+                className="font-semibold text-black hover:underline"
+              >
+                Sign up
+              </a>
+            </p>
 
-              {step === 2 && (
-                <button
-                  type="button"
-                  onClick={handleBack}
-                  className="font-semibold text-black hover:underline"
-                >
-                  Back
-                </button>
-              )}
-            </div>
+            {step === 2 && (
+              <button
+                type="button"
+                onClick={handleBack}
+                className="text-sm text-gray-500 hover:text-black transition"
+              >
+                Back
+              </button>
+            )}
           </form>
         </div>
       </div>
@@ -144,21 +147,21 @@ export default function Login() {
       {/* RIGHT SIDE - IMAGE + TEXT */}
       <div
         className="hidden lg:flex w-1/2 bg-cover bg-center relative"
-        style={{ backgroundImage: "url('/authenticate4.jpg')" }}
+        style={{ backgroundImage: "url('/authenticate.jpg')" }}
       >
         <div className="absolute inset-0 bg-black/65 flex items-center">
-          <div className="max-w-lg px-16">
-            <span className="inline-block mb-4 px-3 py-1 rounded-full bg-white/10 border border-white/20 text-sm font-medium text-white">
+          <div className="max-w-lg px-16 text-white">
+            <span className="inline-block mb-4 px-3 py-1 rounded-full bg-white/10 border border-white/20 text-sm font-medium">
               Mission Management Platform
             </span>
 
-            <h2 className="text-6xl font-bold leading-tight text-white">
-              Welcome to SAGX
+            <h2 className="text-6xl font-bold leading-tight">
+              Welcome Back to SAGX
             </h2>
 
             <p className="mt-6 text-xl text-gray-200 leading-relaxed">
-              Plan missions, assign technicians, monitor progress, and manage
-              operations from one centralized workspace.
+              Access your dashboard, manage missions, and continue tracking your
+              operations seamlessly.
             </p>
           </div>
         </div>
