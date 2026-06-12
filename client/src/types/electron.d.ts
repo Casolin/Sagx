@@ -2,8 +2,9 @@ export {};
 
 declare global {
   interface Window {
-    electronAPI?: {
-      getScreenStream: () => Promise<MediaStream>;
+    electronAPI: {
+      getScreenSources: () => Promise<{ id: string; name: string }[]>;
+      createScreenStream: (id: string) => Promise<MediaStream>;
     };
   }
 }

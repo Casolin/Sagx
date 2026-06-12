@@ -293,7 +293,9 @@ export const useCallStore = create<CallState>((set, get) => ({
 
     const fallbackTrack = stream.getVideoTracks()[0];
 
+    // =========================
     // STOP SCREEN SHARE
+    // =========================
     if (isScreenSharing) {
       if (fallbackTrack) {
         await videoSender.replaceTrack(fallbackTrack);
@@ -304,37 +306,65 @@ export const useCallStore = create<CallState>((set, get) => ({
     }
 
     try {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const electronAPI = (window as any).electronAPI;
+      // =========================
+      // 1. GET SOURCES (Discord-style)
+      // =========================
+      const sources = await window.electronAPI?.getScreenSources?.();
 
-      const sources = await electronAPI.getScreenSources();
+      console.log("SCREEN SOURCES:", sources);
 
-      if (!sources || !sources.length) {
-        throw new Error("No sources found");
+      if (!sources || sources.length === 0) {
+        throw new Error("No screen sources available");
       }
 
       const selected = sources[0];
 
-      const screenStream = await electronAPI.getScreenStream(selected.id);
+      // =========================
+      // 2. CREATE SCREEN STREAM
+      // =========================
+      const screenStream = await window.electronAPI?.createScreenStream?.(
+        selected.id,
+      );
 
-      const screenTrack = screenStream.getVideoTracks()[0];
+      console.log("SCREEN STREAM:", screenStream);
 
-      if (!screenTrack) {
-        throw new Error("No video track");
+      if (
+        !screenStream ||
+        typeof (screenStream as MediaStream).getVideoTracks !== "function"
+      ) {
+        throw new Error("Invalid MediaStream returned");
       }
 
+      const screenTrack = (screenStream as MediaStream).getVideoTracks()[0];
+
+      if (!screenTrack) {
+        throw new Error("No video track found");
+      }
+
+      // =========================
+      // 3. REPLACE TRACK
+      // =========================
       await videoSender.replaceTrack(screenTrack);
 
+      // =========================
+      // 4. AUTO RESTORE
+      // =========================
       screenTrack.onended = async () => {
-        if (fallbackTrack) {
-          await videoSender.replaceTrack(fallbackTrack);
+        const fallback = stream.getVideoTracks()[0];
+
+        if (fallback) {
+          await videoSender.replaceTrack(fallback);
         }
+
         set({ isScreenSharing: false });
       };
 
       set({ isScreenSharing: true });
     } catch (err) {
       console.error("SCREEN SHARE ERROR:", err);
+
+      // ❌ NO ALERTS for PWA/web users
+      // only silent fail or console log
     }
   },
 
