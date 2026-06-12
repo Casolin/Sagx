@@ -29,6 +29,7 @@ import CreateMachinePage from "../pages/CreateMachinePage";
 import { CallPage } from "../pages/CallPage";
 import DownloadMobile from "../pages/DownloadMobile";
 import Register from "../pages/Register";
+import DownloadApp from "../pages/DownloadApp";
 
 export const AppRouter = () => {
   return (
@@ -51,6 +52,7 @@ export const AppRouter = () => {
         <Route path="/" element={<Dashboard />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/download" element={<DownloadMobile />} />
+        <Route path="/download-app" element={<DownloadApp />} />
 
         <Route
           path="/users"
