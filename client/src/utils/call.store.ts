@@ -289,104 +289,78 @@ export const useCallStore = create<CallState>((set, get) => ({
       return;
     }
 
-    // eslint-disable-next-line
+    //eslint-disable-next-line
     const pc = (peer as any)._pc as RTCPeerConnection;
 
-    const sender = pc.getSenders().find((s) => s.track?.kind === "video");
+    const senders = pc.getSenders();
 
-    const audioSender = pc.getSenders().find((s) => s.track?.kind === "audio");
+    const videoSender = senders.find(
+      (s) => s.track && s.track.kind === "video",
+    );
 
-    if (!sender) return;
+    const audioSender = senders.find(
+      (s) => s.track && s.track.kind === "audio",
+    );
+
+    if (!videoSender) return;
 
     const dummyTrack = stream.getVideoTracks()[0];
 
+    // STOP SCREEN SHARE
     if (isScreenSharing) {
       if (dummyTrack) {
-        await sender.replaceTrack(dummyTrack);
+        await videoSender.replaceTrack(dummyTrack);
       }
 
-      const originalAudioTrack = stream.getAudioTracks()[0];
-
-      if (audioSender && originalAudioTrack) {
-        await audioSender.replaceTrack(originalAudioTrack);
-      }
-
-      set({
-        isScreenSharing: false,
-      });
-
+      set({ isScreenSharing: false });
       return;
     }
 
-    let screenStream;
+    // GET SCREEN STREAM (Electron or Browser)
+    let screenStream: MediaStream;
 
-    const electronAPI = window.electronAPI;
+    //eslint-disable-next-line
+    const electronAPI = (window as any).electronAPI;
 
-    if (electronAPI?.getScreenStream) {
-      screenStream = await electronAPI.getScreenStream();
-    } else {
-      screenStream = await navigator.mediaDevices.getDisplayMedia({
-        video: true,
-        audio: true,
-      });
+    try {
+      if (electronAPI?.getScreenStream) {
+        screenStream = await electronAPI.getScreenStream();
+      } else {
+        screenStream = await navigator.mediaDevices.getDisplayMedia({
+          video: true,
+          audio: true,
+        });
+      }
+
+      const screenTrack = screenStream.getVideoTracks()[0];
+
+      if (!screenTrack) return;
+
+      await videoSender.replaceTrack(screenTrack);
+
+      // optional audio merge (keep your logic, but safe guard)
+      if (audioSender) {
+        const micTrack = stream.getAudioTracks()[0];
+
+        if (micTrack) {
+          await audioSender.replaceTrack(micTrack);
+        }
+      }
+
+      screenTrack.onended = async () => {
+        const fallback = stream.getVideoTracks()[0];
+
+        if (fallback) {
+          await videoSender.replaceTrack(fallback);
+        }
+
+        set({ isScreenSharing: false });
+      };
+
+      set({ isScreenSharing: true });
+    } catch (err) {
+      console.log("SCREEN SHARE ERROR:", err);
     }
-
-    const screenTrack = screenStream.getVideoTracks()[0];
-    const screenAudioTrack = screenStream.getAudioTracks()[0];
-
-    await sender.replaceTrack(screenTrack);
-    const audioContext = new AudioContext();
-
-    if (audioSender) {
-      const micTrack = stream.getAudioTracks()[0];
-
-      const destination = audioContext.createMediaStreamDestination();
-
-      if (micTrack) {
-        const micStream = new MediaStream([micTrack]);
-
-        const micSource = audioContext.createMediaStreamSource(micStream);
-
-        micSource.connect(destination);
-      }
-
-      if (screenAudioTrack) {
-        const screenAudioStream = new MediaStream([screenAudioTrack]);
-
-        const screenSource =
-          audioContext.createMediaStreamSource(screenAudioStream);
-
-        screenSource.connect(destination);
-      }
-
-      const mixedAudioTrack = destination.stream.getAudioTracks()[0];
-
-      await audioSender.replaceTrack(mixedAudioTrack);
-    }
-
-    screenTrack.onended = async () => {
-      const fallbackTrack = stream.getVideoTracks()[0];
-
-      if (fallbackTrack) {
-        await sender.replaceTrack(fallbackTrack);
-      }
-
-      const originalAudioTrack = stream.getAudioTracks()[0];
-
-      if (audioSender && originalAudioTrack) {
-        await audioSender.replaceTrack(originalAudioTrack);
-      }
-
-      await audioContext.close();
-
-      set({
-        isScreenSharing: false,
-      });
-    };
-
-    set({
-      isScreenSharing: true,
-    });
   },
 
   cancelOutgoingCall: () => {
