@@ -323,7 +323,9 @@ export const useCallStore = create<CallState>((set, get) => ({
       // IMPORTANT FIX: force track to be enabled + active
       screenTrack.enabled = true;
 
-      await videoSender.replaceTrack(screenTrack);
+      const fixedTrack = new MediaStream([screenTrack]).getVideoTracks()[0];
+
+      await videoSender.replaceTrack(fixedTrack);
 
       // IMPORTANT: handle stop properly
       screenTrack.onended = async () => {
