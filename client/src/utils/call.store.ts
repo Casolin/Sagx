@@ -301,29 +301,33 @@ export const useCallStore = create<CallState>((set, get) => ({
     }
 
     try {
-      let screenStream: MediaStream;
-
       const electronAPI = (window as any).electronAPI;
 
-      try {
-        if (electronAPI?.getScreenStream) {
-          screenStream = await electronAPI.getScreenStream();
-        } else {
-          screenStream = await navigator.mediaDevices.getDisplayMedia({
-            video: true,
-            audio: false,
-          });
-        }
-      } catch (err) {
-        console.error("SCREEN SHARE ERROR:", err);
-        alert("Screen share failed (Electron or browser permission issue)");
-        return;
+      let screenStream: MediaStream;
+
+      if (electronAPI?.getScreenSourceId) {
+        const sourceId = await electronAPI.getScreenSourceId();
+
+        screenStream = await navigator.mediaDevices.getUserMedia({
+          audio: false,
+          video: {
+            mandatory: {
+              chromeMediaSource: "desktop",
+              chromeMediaSourceId: sourceId,
+            },
+          } as any,
+        });
+      } else {
+        screenStream = await navigator.mediaDevices.getDisplayMedia({
+          video: true,
+          audio: false,
+        });
       }
 
       const screenTrack = screenStream.getVideoTracks()[0];
 
       if (!screenTrack) {
-        alert("Screen share failed: no video track detected");
+        alert("No screen track received");
         return;
       }
 
