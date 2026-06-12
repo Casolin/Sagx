@@ -289,13 +289,14 @@ export const useCallStore = create<CallState>((set, get) => ({
 
     if (!videoSender) return;
 
-    const dummyTrack = stream.getVideoTracks()[0];
+    const fallbackTrack = stream.getVideoTracks()[0];
 
-    // STOP screen share
+    // STOP screen share → restore camera/dummy
     if (isScreenSharing) {
-      if (dummyTrack) {
-        await videoSender.replaceTrack(dummyTrack);
+      if (fallbackTrack) {
+        await videoSender.replaceTrack(fallbackTrack);
       }
+
       set({ isScreenSharing: false });
       return;
     }
@@ -303,32 +304,15 @@ export const useCallStore = create<CallState>((set, get) => ({
     try {
       const electronAPI = (window as any).electronAPI;
 
-      let screenStream: MediaStream;
-
-      if (electronAPI?.getScreenSourceId) {
-        const sourceId = await electronAPI.getScreenSourceId();
-
-        screenStream = await navigator.mediaDevices.getUserMedia({
-          audio: false,
-          video: {
-            mandatory: {
-              chromeMediaSource: "desktop",
-              chromeMediaSourceId: sourceId,
-            },
-          } as any,
-        });
-      } else {
-        screenStream = await navigator.mediaDevices.getDisplayMedia({
-          video: true,
-          audio: false,
-        });
+      if (!electronAPI?.getScreenStream) {
+        throw new Error("Electron screen API not available");
       }
 
+      const screenStream = await electronAPI.getScreenStream();
       const screenTrack = screenStream.getVideoTracks()[0];
 
       if (!screenTrack) {
-        alert("No screen track received");
-        return;
+        throw new Error("No screen track found");
       }
 
       await videoSender.replaceTrack(screenTrack);
@@ -346,10 +330,6 @@ export const useCallStore = create<CallState>((set, get) => ({
       set({ isScreenSharing: true });
     } catch (err) {
       console.error("SCREEN SHARE ERROR:", err);
-
-      alert(
-        "Screen share failed in Electron.\n\nFix: check Electron permissions or run as packaged app.",
-      );
     }
   },
 
