@@ -177,7 +177,9 @@ export default function Dashboard({ dark }: { dark?: boolean }) {
   if (loading)
     return (
       <div
-        className={`p-6 text-center ${dark ? "text-gray-300" : "text-gray-500"}`}
+        className={`p-6 text-center ${
+          dark ? "text-gray-300" : "text-gray-500"
+        }`}
       >
         Loading dashboard...
       </div>
@@ -274,7 +276,7 @@ export default function Dashboard({ dark }: { dark?: boolean }) {
 
           {/* DOWNLOAD APP BUTTON */}
           <button
-            onClick={() => navigate("/download")}
+            onClick={() => navigate("/download-app")}
             className="
     flex items-center gap-2 px-3 py-2 rounded-full
     bg-black text-white
