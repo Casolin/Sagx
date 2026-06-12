@@ -318,10 +318,19 @@ export const useCallStore = create<CallState>((set, get) => ({
       return;
     }
 
-    const screenStream = await navigator.mediaDevices.getDisplayMedia({
-      video: true,
-      audio: true,
-    });
+    let screenStream;
+
+    // eslint-disable-next-line
+    const electronAPI = (window as any).electronAPI;
+
+    if (electronAPI?.getScreenStream) {
+      screenStream = await electronAPI.getScreenStream();
+    } else {
+      screenStream = await navigator.mediaDevices.getDisplayMedia({
+        video: true,
+        audio: true,
+      });
+    }
 
     const screenTrack = screenStream.getVideoTracks()[0];
     const screenAudioTrack = screenStream.getAudioTracks()[0];
