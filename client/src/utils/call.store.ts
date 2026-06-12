@@ -282,16 +282,18 @@ export const useCallStore = create<CallState>((set, get) => ({
 
     if (!peer || !stream) return;
 
-    // eslint-disable-next-line
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const pc = (peer as any)._pc as RTCPeerConnection;
 
-    const videoSender = pc.getSenders().find((s) => s.track?.kind === "video");
+    const videoSender = pc
+      .getSenders()
+      .find((s: RTCRtpSender) => s.track?.kind === "video");
 
     if (!videoSender) return;
 
     const fallbackTrack = stream.getVideoTracks()[0];
 
-    // STOP screen share → restore camera/dummy
+    // STOP SCREEN SHARE
     if (isScreenSharing) {
       if (fallbackTrack) {
         await videoSender.replaceTrack(fallbackTrack);
@@ -302,28 +304,31 @@ export const useCallStore = create<CallState>((set, get) => ({
     }
 
     try {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const electronAPI = (window as any).electronAPI;
 
-      if (!electronAPI?.getScreenStream) {
-        throw new Error("Electron screen API not available");
+      const sources = await electronAPI.getScreenSources();
+
+      if (!sources || !sources.length) {
+        throw new Error("No sources found");
       }
 
-      const screenStream = await electronAPI.getScreenStream();
+      const selected = sources[0];
+
+      const screenStream = await electronAPI.getScreenStream(selected.id);
+
       const screenTrack = screenStream.getVideoTracks()[0];
 
       if (!screenTrack) {
-        throw new Error("No screen track found");
+        throw new Error("No video track");
       }
 
       await videoSender.replaceTrack(screenTrack);
 
       screenTrack.onended = async () => {
-        const fallback = stream.getVideoTracks()[0];
-
-        if (fallback) {
-          await videoSender.replaceTrack(fallback);
+        if (fallbackTrack) {
+          await videoSender.replaceTrack(fallbackTrack);
         }
-
         set({ isScreenSharing: false });
       };
 
