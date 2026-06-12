@@ -282,103 +282,43 @@ export const useCallStore = create<CallState>((set, get) => ({
 
     if (!peer || !stream) return;
 
-    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-
-    if (isMobile && !navigator.mediaDevices?.getDisplayMedia) {
-      alert("Screen sharing is not supported on this mobile browser");
-      return;
-    }
-
-    // eslint-disable-next-line
     const pc = (peer as any)._pc as RTCPeerConnection;
+    if (!pc) return;
 
-    const sender = pc.getSenders().find((s) => s.track?.kind === "video");
+    const videoSender = pc.getSenders().find((s) => s.track?.kind === "video");
+    if (!videoSender) return;
 
-    const audioSender = pc.getSenders().find((s) => s.track?.kind === "audio");
+    try {
+      if (isScreenSharing) {
+        const camera = stream.getVideoTracks()[0];
+        if (camera) await videoSender.replaceTrack(camera);
 
-    if (!sender) return;
-
-    const dummyTrack = stream.getVideoTracks()[0];
-
-    if (isScreenSharing) {
-      if (dummyTrack) {
-        await sender.replaceTrack(dummyTrack);
+        set({ isScreenSharing: false });
+        return;
       }
 
-      const originalAudioTrack = stream.getAudioTracks()[0];
-
-      if (audioSender && originalAudioTrack) {
-        await audioSender.replaceTrack(originalAudioTrack);
-      }
-
-      set({
-        isScreenSharing: false,
+      const screenStream = await navigator.mediaDevices.getDisplayMedia({
+        video: true,
+        audio: false,
       });
 
-      return;
+      const screenTrack = screenStream.getVideoTracks()[0];
+      if (!screenTrack) return;
+
+      await videoSender.replaceTrack(screenTrack);
+
+      screenTrack.onended = async () => {
+        const camera = stream.getVideoTracks()[0];
+        if (camera) await videoSender.replaceTrack(camera);
+
+        set({ isScreenSharing: false });
+      };
+
+      set({ isScreenSharing: true });
+    } catch (e) {
+      console.error(e);
+      set({ isScreenSharing: false });
     }
-
-    const screenStream = await navigator.mediaDevices.getDisplayMedia({
-      video: true,
-      audio: true,
-    });
-
-    const screenTrack = screenStream.getVideoTracks()[0];
-    const screenAudioTrack = screenStream.getAudioTracks()[0];
-
-    await sender.replaceTrack(screenTrack);
-    const audioContext = new AudioContext();
-
-    if (audioSender) {
-      const micTrack = stream.getAudioTracks()[0];
-
-      const destination = audioContext.createMediaStreamDestination();
-
-      if (micTrack) {
-        const micStream = new MediaStream([micTrack]);
-
-        const micSource = audioContext.createMediaStreamSource(micStream);
-
-        micSource.connect(destination);
-      }
-
-      if (screenAudioTrack) {
-        const screenAudioStream = new MediaStream([screenAudioTrack]);
-
-        const screenSource =
-          audioContext.createMediaStreamSource(screenAudioStream);
-
-        screenSource.connect(destination);
-      }
-
-      const mixedAudioTrack = destination.stream.getAudioTracks()[0];
-
-      await audioSender.replaceTrack(mixedAudioTrack);
-    }
-
-    screenTrack.onended = async () => {
-      const fallbackTrack = stream.getVideoTracks()[0];
-
-      if (fallbackTrack) {
-        await sender.replaceTrack(fallbackTrack);
-      }
-
-      const originalAudioTrack = stream.getAudioTracks()[0];
-
-      if (audioSender && originalAudioTrack) {
-        await audioSender.replaceTrack(originalAudioTrack);
-      }
-
-      await audioContext.close();
-
-      set({
-        isScreenSharing: false,
-      });
-    };
-
-    set({
-      isScreenSharing: true,
-    });
   },
 
   cancelOutgoingCall: () => {
