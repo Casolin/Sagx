@@ -233,9 +233,39 @@ export default function Sidebar({
           })}
           <button
             onClick={toggle}
-            className="p-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-800 transition"
+            className="
+        relative flex items-center justify-center
+        w-10 h-10 rounded-full
+        bg-gray-100 dark:bg-gray-800
+        hover:scale-105 active:scale-95
+        transition-all duration-300
+      "
           >
-            {dark ? <Sun size={20} /> : <Moon size={20} />}
+            {/* SUN */}
+            <Sun
+              size={18}
+              className={`
+          absolute transition-all duration-300
+          ${
+            dark
+              ? "opacity-0 rotate-90 scale-75"
+              : "opacity-100 rotate-0 scale-100"
+          }
+        `}
+            />
+
+            {/* MOON */}
+            <Moon
+              size={18}
+              className={`
+          absolute transition-all duration-300
+          ${
+            dark
+              ? "opacity-100 rotate-0 scale-100"
+              : "opacity-0 -rotate-90 scale-75"
+          }
+        `}
+            />
           </button>
         </div>
 
