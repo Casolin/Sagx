@@ -10,10 +10,12 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (dark) {
       enable({
-        brightness: 100,
-        contrast: 95,
+        brightness: 95,
+        contrast: 90,
         sepia: 0,
         grayscale: 0,
+        darkSchemeBackgroundColor: "#111111",
+        darkSchemeTextColor: "#e6e6e6",
       });
       localStorage.setItem("theme", "dark");
     } else {

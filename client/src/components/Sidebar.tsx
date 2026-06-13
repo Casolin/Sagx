@@ -239,7 +239,7 @@ export default function Sidebar({
             className={`
         relative flex items-center
         w-14 h-7 rounded-full
-        transition-colors duration-300
+        transition-colors duration-300 mb-2
         ${dark ? "bg-indigo-600" : "bg-gray-300"}
       `}
           >
