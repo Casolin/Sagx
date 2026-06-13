@@ -23,6 +23,8 @@ const ChatNavbar = ({ selectedUser = null, roomId }: Props) => {
 
   const incomingCall = useCallStore((s) => s.incomingCall);
   const startCall = useCallStore((s) => s.startCall);
+  const isCalling = useCallStore((s) => s.isCalling);
+  const callAccepted = useCallStore((s) => s.callAccepted);
 
   const saveRoute = useCallback(() => {
     sessionStorage.setItem(LAST_ROUTE_KEY, location.pathname);
@@ -34,7 +36,10 @@ const ChatNavbar = ({ selectedUser = null, roomId }: Props) => {
   }, [incomingCall, saveRoute]);
 
   const handleStartCall = async () => {
+    if (isCalling || callAccepted) return;
+
     if (!selectedUser || !user) return;
+
     saveRoute();
     await startCall(selectedUser._id, user);
   };
