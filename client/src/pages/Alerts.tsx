@@ -21,7 +21,7 @@ export default function AlertsPage() {
   if (!canView) return null;
 
   return (
-    <div className="p-6 space-y-6 bg-white min-h-screen">
+    <div className="p-6 space-y-6 bg-[#f6f7fb] min-h-screen">
       <h1 className="text-4xl font-black tracking-tight">Alerts</h1>
       <AlertList />
     </div>

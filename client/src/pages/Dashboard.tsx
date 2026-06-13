@@ -243,11 +243,7 @@ export default function Dashboard({ dark }: { dark?: boolean }) {
     <div
       className={`
       min-h-screen p-6 md:p-8 space-y-8
-      ${
-        dark
-          ? "bg-[#030712] text-white"
-          : "bg-linear-to-br from-[#f8fafc] via-[#eef2ff] to-[#f1f5f9] text-gray-900"
-      }
+      ${dark ? "bg-[#030712] text-white" : "bg-[#f6f7fb] text-gray-900"}
     `}
     >
       <div className="flex items-center justify-between">

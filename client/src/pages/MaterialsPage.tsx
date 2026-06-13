@@ -32,7 +32,7 @@ const MaterialsPage = () => {
   }, []);
 
   return (
-    <div className="p-6 space-y-6 bg-white">
+    <div className="p-6 space-y-6 bg-[#f6f7fb]">
       <div className="flex items-center justify-between">
         <h1 className="text-4xl font-black tracking-tight">Materials</h1>
       </div>
