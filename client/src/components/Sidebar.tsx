@@ -232,45 +232,34 @@ export default function Sidebar({
             );
           })}
         </div>
-        <button
-          onClick={toggle}
-          className="
-        relative flex items-center justify-center
-        w-10 h-10 rounded-full
-        bg-gray-100 dark:bg-gray-800
-        hover:scale-105 active:scale-95
-        transition-all duration-300
-      "
-        >
-          {/* SUN */}
-          <Sun
-            size={18}
-            className={`
-          absolute transition-all duration-300
-          ${
-            dark
-              ? "opacity-0 rotate-90 scale-75"
-              : "opacity-100 rotate-0 scale-100"
-          }
-        `}
-          />
 
-          {/* MOON */}
-          <Moon
-            size={18}
-            className={`
-          absolute transition-all duration-300
-          ${
-            dark
-              ? "opacity-100 rotate-0 scale-100"
-              : "opacity-0 -rotate-90 scale-75"
-          }
-        `}
-          />
-        </button>
-
-        {/* FOOTER */}
         <div className="border-t border-gray-100 p-3">
+          <button
+            onClick={toggle}
+            className={`
+        relative flex items-center
+        w-14 h-7 rounded-full
+        transition-colors duration-300
+        ${dark ? "bg-indigo-600" : "bg-gray-300"}
+      `}
+          >
+            <div
+              className={`
+          absolute top-1 left-1
+          w-5 h-5 rounded-full
+          bg-white shadow-md
+          flex items-center justify-center
+          transition-all duration-300
+          ${dark ? "translate-x-7" : "translate-x-0"}
+        `}
+            >
+              {dark ? (
+                <Moon size={12} className="text-indigo-600" />
+              ) : (
+                <Sun size={12} className="text-yellow-500" />
+              )}
+            </div>
+          </button>
           {user && (
             <div className="flex items-center gap-3">
               {!collapsed && (
