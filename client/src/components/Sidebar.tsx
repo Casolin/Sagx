@@ -231,20 +231,21 @@ export default function Sidebar({
               </NavLink>
             );
           })}
-          <button
-            onClick={toggle}
-            className="
+        </div>
+        <button
+          onClick={toggle}
+          className="
         relative flex items-center justify-center
         w-10 h-10 rounded-full
         bg-gray-100 dark:bg-gray-800
         hover:scale-105 active:scale-95
         transition-all duration-300
       "
-          >
-            {/* SUN */}
-            <Sun
-              size={18}
-              className={`
+        >
+          {/* SUN */}
+          <Sun
+            size={18}
+            className={`
           absolute transition-all duration-300
           ${
             dark
@@ -252,12 +253,12 @@ export default function Sidebar({
               : "opacity-100 rotate-0 scale-100"
           }
         `}
-            />
+          />
 
-            {/* MOON */}
-            <Moon
-              size={18}
-              className={`
+          {/* MOON */}
+          <Moon
+            size={18}
+            className={`
           absolute transition-all duration-300
           ${
             dark
@@ -265,9 +266,8 @@ export default function Sidebar({
               : "opacity-0 -rotate-90 scale-75"
           }
         `}
-            />
-          </button>
-        </div>
+          />
+        </button>
 
         {/* FOOTER */}
         <div className="border-t border-gray-100 p-3">
