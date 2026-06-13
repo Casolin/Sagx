@@ -223,7 +223,7 @@ export const CallPage = () => {
             left: dragPosition.x,
             top: dragPosition.y,
           }}
-          className="fixed z-900"
+          className="fixed z-50"
         >
           <div
             onMouseDown={handleMouseDown}
@@ -251,7 +251,7 @@ export const CallPage = () => {
       ) : (
         <div
           ref={containerRef}
-          className="fixed inset-0 bg-linear-to-b from-gray-950 via-gray-900 to-black text-white flex items-center justify-center z-900"
+          className="fixed inset-0 bg-zinc-950 text-white flex items-center justify-center z-50"
         >
           {/* VIDEO */}
           <video
@@ -269,7 +269,7 @@ export const CallPage = () => {
           {isInCall && (
             <button
               onClick={toggleVideoFull}
-              className="absolute top-4 right-4 bg-black/40 backdrop-blur-md border border-white/10 p-2 rounded-full hover:bg-black/60 transition z-900 cursor-pointer"
+              className="absolute top-4 right-4 bg-black/40 backdrop-blur-md border border-white/10 p-2 rounded-full hover:bg-black/60 transition z-50 cursor-pointer"
             >
               {isVideoFull ? <Minimize size={18} /> : <Maximize size={18} />}
             </button>
