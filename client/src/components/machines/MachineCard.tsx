@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
-import { Trash2, SlidersHorizontal } from "lucide-react";
+import { Trash2, SlidersHorizontal, Cpu } from "lucide-react";
 import { useState } from "react";
+import { toast } from "react-toastify";
 
 import { useAuth } from "../../hooks/useAuth";
 import ConfirmModal from "../../components/ConfirmModal";
@@ -14,36 +15,48 @@ type Props = {
   refresh: () => void;
 };
 
-const statusDot = {
+const statusStyle = {
   OK: "bg-green-500",
-  DOWN: "bg-red-500 animate-pulse",
+  DOWN: "bg-red-500",
   MAINTENANCE: "bg-yellow-500",
 };
 
-const conditionBadge = {
-  NORMAL: "border-green-200 text-green-700 bg-green-50",
-  ANOMALY: "border-yellow-200 text-yellow-700 bg-yellow-50",
-  FAILURE: "border-red-200 text-red-700 bg-red-50",
+const conditionStyle = {
+  NORMAL: "text-green-600 bg-green-50",
+  ANOMALY: "text-yellow-600 bg-yellow-50",
+  FAILURE: "text-red-600 bg-red-50",
 };
 
 export default function MachineCard({ machine, refresh }: Props) {
   const navigate = useNavigate();
   const { user } = useAuth();
 
-  const isAdmin = user?.role === "ADMIN";
-  const isManager = user?.role === "MANAGER";
+  const role = user?.role;
+
+  const isAdmin = role === "ADMIN";
+  const isManager = role === "MANAGER";
+
   const canEdit = isAdmin || isManager;
+  const canDelete = isAdmin || isManager;
 
   const [openDelete, setOpenDelete] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  const handleOpenEditPage = () => {
+    if (!canEdit) return;
+    navigate(`/machines/${machine._id}/edit`);
+  };
+
   const handleDelete = async () => {
     try {
       setLoading(true);
       await deleteMachine(machine._id);
-      refresh();
+      toast.success("Machine deleted successfully");
       setOpenDelete(false);
+      refresh();
+    } catch {
+      toast.error("Failed to delete machine");
     } finally {
       setLoading(false);
     }
@@ -52,100 +65,110 @@ export default function MachineCard({ machine, refresh }: Props) {
   return (
     <>
       <div
-        onClick={() => navigate(`/machines/${machine._id}`)}
-        className="group relative rounded-xl border border-gray-200 bg-white p-4 shadow-sm hover:shadow-md transition hover:border-gray-300 cursor-pointer"
+        onClick={handleOpenEditPage}
+        className="group relative flex flex-col gap-2 rounded-xl border border-gray-200 bg-white p-3 shadow-sm hover:shadow-md hover:border-gray-300 transition cursor-pointer"
       >
         {/* HEADER */}
         <div className="flex items-start justify-between">
           {/* LEFT */}
-          <div className="min-w-0">
-            <h2 className="text-sm font-semibold text-gray-900 truncate group-hover:text-blue-600 transition">
-              {machine.name}
-            </h2>
+          <div className="flex items-center gap-2 min-w-0">
+            {/* MACHINE ICON */}
+            <div className="w-9 h-9 rounded-lg bg-gray-100 flex items-center justify-center">
+              <Cpu size={18} className="text-gray-600" />
+            </div>
 
-            <p className="text-xs text-gray-400 mt-0.5">
-              {machine.type || "No type"}
-            </p>
+            <div className="min-w-0">
+              <h2 className="text-sm font-semibold text-gray-900 truncate group-hover:text-blue-600 transition">
+                {machine.name}
+              </h2>
+
+              <p className="text-[11px] text-gray-400 truncate">
+                {machine.type || "No type"}
+              </p>
+            </div>
           </div>
 
           {/* STATUS */}
-          <div className="flex items-center gap-2 shrink-0">
-            <span
-              className={`w-2 h-2 rounded-full ${statusDot[machine.status]}`}
-            />
-            <span className="text-xs font-medium text-gray-700">
-              {machine.status}
-            </span>
-          </div>
+          <span
+            className={`text-[10px] px-2 py-1 rounded-full text-white font-medium ${
+              statusStyle[machine.status]
+            }`}
+          >
+            {machine.status}
+          </span>
         </div>
 
         {/* META */}
-        <div className="mt-3 flex flex-wrap gap-2 text-xs">
+        <div className="flex flex-wrap items-center gap-2 text-[11px] text-gray-500">
           <span
             className={`px-2 py-0.5 rounded-md border ${
-              conditionBadge[machine.condition]
+              conditionStyle[machine.condition]
             }`}
           >
             {machine.condition}
           </span>
 
-          {machine.location && (
-            <span className="text-gray-500">📍 {machine.location}</span>
+          {machine.failureType && (
+            <span className="truncate">• {machine.failureType}</span>
           )}
 
-          {machine.failureType && (
-            <span className="text-gray-500">⚠ {machine.failureType}</span>
+          {machine.location && (
+            <span className="truncate">• 📍 {machine.location}</span>
           )}
         </div>
 
         {/* DESCRIPTION */}
         {machine.description && (
-          <p className="mt-2 text-xs text-gray-500 line-clamp-2 leading-relaxed">
+          <p className="text-[11px] text-gray-500 line-clamp-2 leading-relaxed">
             {machine.description}
           </p>
         )}
 
-        {/* ACTIONS (clean bottom-right, not noisy) */}
-        {canEdit && (
-          <div className="mt-4 flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition">
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                setOpenEdit(true);
-              }}
-              className="flex items-center gap-1 text-xs px-2 py-1 rounded-md hover:bg-gray-100 text-gray-700"
-            >
-              <SlidersHorizontal size={14} />
-              Edit
-            </button>
+        {/* ACTIONS (same logic, better placement) */}
+        {(canEdit || canDelete) && (
+          <div className="flex justify-end gap-1 pt-1 opacity-0 group-hover:opacity-100 transition">
+            {canEdit && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setOpenEdit(true);
+                }}
+                className="p-1.5 rounded-lg hover:bg-gray-100 text-blue-600"
+              >
+                <SlidersHorizontal size={16} />
+              </button>
+            )}
 
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                setOpenDelete(true);
-              }}
-              className="flex items-center gap-1 text-xs px-2 py-1 rounded-md hover:bg-red-50 text-red-600"
-            >
-              <Trash2 size={14} />
-              Delete
-            </button>
+            {canDelete && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setOpenDelete(true);
+                }}
+                className="p-1.5 rounded-lg hover:bg-gray-100 text-red-500"
+              >
+                <Trash2 size={16} />
+              </button>
+            )}
           </div>
         )}
       </div>
 
-      {/* MODALS */}
-      <EditMachineStatusModal
-        open={openEdit}
-        onOpenChange={setOpenEdit}
-        machine={machine}
-        refresh={refresh}
-      />
+      {/* MODALS (UNCHANGED) */}
+      {canEdit && (
+        <EditMachineStatusModal
+          open={openEdit}
+          onOpenChange={setOpenEdit}
+          machine={machine}
+          refresh={refresh}
+        />
+      )}
 
       <ConfirmModal
         open={openDelete}
         onOpenChange={setOpenDelete}
         title="Delete Machine"
-        message="This action cannot be undone."
+        message="Are you sure you want to delete this machine? This action cannot be undone."
         confirmText="Delete"
         loading={loading}
         variant="danger"
