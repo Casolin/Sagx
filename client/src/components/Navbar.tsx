@@ -180,7 +180,7 @@ export default function Navbar({ setIsOpen, open }: Props) {
 
             <div className="flex flex-col leading-tight">
               <span className="text-sm font-semibold">{firstName}</span>
-              <span className="text-[11px] text-slate-500 dark:text-slate-400">
+              <span className="text-[11px] text-slate-500 dark:text-slate-500">
                 {user?.email}
               </span>
             </div>
