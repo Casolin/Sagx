@@ -150,7 +150,7 @@ export default function Navbar({ setIsOpen, open }: Props) {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search..."
-                className="w-full pl-10 pr-4 py-2 rounded-full bg-slate-100 dark:bg-white/10 text-sm outline-none"
+                className="w-full pl-10 pr-4 py-2 rounded-full bg-white/10 text-sm outline-none"
               />
             </div>
           </div>

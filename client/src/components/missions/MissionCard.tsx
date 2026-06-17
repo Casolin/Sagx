@@ -72,7 +72,7 @@ export default function MissionCard({ mission, refresh }: Props) {
     <>
       <div
         className="group relative rounded-3xl border border-gray-200/70 backdrop-blur-xl p-5 space-y-4
-      transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_40px_rgba(0,0,0,0.08)]"
+      transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_40px_rgba(0,0,0,0.08)] shadow-sm"
       >
         {/* HEADER */}
         <div className="flex items-start justify-between gap-3">
@@ -116,19 +116,19 @@ export default function MissionCard({ mission, refresh }: Props) {
 
         {/* INFO GRID */}
         <div className="grid grid-cols-3 gap-4 text-sm">
-          <div className="rounded-xl bg-gray-50 p-3">
+          <div className="rounded-xl p-3 bg-white/10">
             <p className="text-xs text-gray-400">Priority</p>
             <p className="font-semibold text-gray-800">{mission.priority}</p>
           </div>
 
-          <div className="rounded-xl bg-gray-50 p-3">
+          <div className="rounded-xl  p-3 bg-white/10">
             <p className="text-xs text-gray-400">Tasks</p>
             <p className="font-semibold text-gray-800">
               {mission.tasks?.length || 0}
             </p>
           </div>
 
-          <div className="rounded-xl bg-gray-50 p-3 col-span-1">
+          <div className="rounded-xl bg-white/10 p-3 col-span-1">
             <p className="text-xs text-gray-400">Skills</p>
             <p className="font-semibold text-gray-800 truncate">
               {mission.requiredSkills?.join(", ") || "-"}

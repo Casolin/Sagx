@@ -132,7 +132,7 @@ export default function Sidebar({
 
           {/* OTHERS */}
           <hr
-            className={`h-px border-0 ${dark ? "bg-white/10" : "bg-gray-200"}`}
+            className={`h-px border-0 ${dark ? "bg-gray-200" : "bg-gray-200"}`}
           />
           <div className="dark:border-gray-700 flex flex-col gap-1">
             {!collapsed && (

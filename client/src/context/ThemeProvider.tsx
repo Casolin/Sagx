@@ -10,7 +10,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (dark) {
       enable({
-        brightness: 110,
+        brightness: 100,
         contrast: 90,
         sepia: 0,
         grayscale: 0,
