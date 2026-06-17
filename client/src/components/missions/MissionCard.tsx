@@ -71,7 +71,7 @@ export default function MissionCard({ mission, refresh }: Props) {
   return (
     <>
       <div
-        className="group relative rounded-3xl border border-gray-200/70 bg-white/80 backdrop-blur-xl p-5 space-y-4
+        className="group relative rounded-3xl border border-gray-200/70 backdrop-blur-xl p-5 space-y-4
       transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_40px_rgba(0,0,0,0.08)]"
       >
         {/* HEADER */}

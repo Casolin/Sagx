@@ -5,7 +5,6 @@ import {
   Users,
   ClipboardList,
   User,
-  Bell,
   MessageCircle,
   Users2,
   PcCase,
@@ -21,7 +20,6 @@ export const menuByRole = {
     { label: "Users", path: "/users", icon: Users },
     { label: "Chat", path: "/chat", icon: MessageCircle },
     { label: "Friends", path: "/friends", icon: Users2 },
-    { label: "Notification", path: "#", icon: Bell, action: "notifications" },
     { label: "Profile", path: "/profile", icon: User },
   ],
   MANAGER: [
@@ -32,7 +30,6 @@ export const menuByRole = {
     { label: "Materials", path: "/materials", icon: PcCase },
     { label: "Chat", path: "/chat", icon: MessageCircle },
     { label: "Friends", path: "/friends", icon: Users2 },
-    { label: "Notification", path: "#", icon: Bell, action: "notifications" },
     { label: "Profile", path: "/profile", icon: User },
   ],
   TECHNICIAN: [
@@ -41,7 +38,6 @@ export const menuByRole = {
     { label: "Alerts", path: "/alerts", icon: AlertTriangle },
     { label: "Chat", path: "/chat", icon: MessageCircle },
     { label: "Friends", path: "/friends", icon: Users2 },
-    { label: "Notification", path: "#", icon: Bell, action: "notifications" },
     { label: "Profile", path: "/profile", icon: User },
   ],
 };

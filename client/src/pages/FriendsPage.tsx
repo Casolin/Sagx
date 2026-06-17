@@ -110,9 +110,9 @@ const FriendsPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-linear-to-b from-zinc-50 to-white text-black">
+    <div className="min-h-screen bg-[#f9f9f9] text-black">
       {/* HEADER */}
-      <div className="sticky top-0 z-10 backdrop-blur-xl bg-white/70 border-b border-zinc-200">
+      <div className="sticky top-0 z-10 backdrop-blur-xl bg-white border-b border-zinc-200">
         <div className="max-w-6xl mx-auto px-6 py-5 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 rounded-2xl bg-black text-white flex items-center justify-center shadow-sm">

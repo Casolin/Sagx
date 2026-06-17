@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+.font-montserrat {
+  font-family: "Montserrat", sans-serif;
+}
+
 @keyframes float {
   0% {
     transform: translateY(0px);

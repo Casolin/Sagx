@@ -85,7 +85,7 @@ const ChatNavbar = ({ selectedUser = null, roomId }: Props) => {
   };
 
   return (
-    <div className="h-20 bg-white/90 backdrop-blur-xl border-b border-gray-100 px-6 flex items-center justify-between">
+    <div className="h-20 bg-[#f9f9f9] backdrop-blur-xl border-b border-gray-200 px-6 flex items-center justify-between">
       <div className="flex items-center gap-4">
         {selectedUser && !isRoom && (
           <>

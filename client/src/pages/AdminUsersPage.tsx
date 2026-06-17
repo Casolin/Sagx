@@ -46,7 +46,7 @@ export default function AdminUsersPage() {
   };
 
   return (
-    <div className="p-6 space-y-6 bg-[#f6f7fb] min-h-screen">
+    <div className="p-6 space-y-6 bg-[#f9f9f9] min-h-screen">
       <h1 className="text-4xl font-black tracking-tight">Users</h1>
 
       {loading ? (

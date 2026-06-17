@@ -91,7 +91,7 @@ const MessageInput = ({ userId, roomId }: Props) => {
   const removeFile = () => setFile(null);
 
   return (
-    <div className="w-full px-4 py-3 bg-white/80 backdrop-blur-xl border-t border-gray-200 space-y-2">
+    <div className="w-full px-4 py-3 bg-[#f9f9f9] backdrop-blur-xl border-t border-gray-200 space-y-2">
       {/* FILE PREVIEW */}
       {file && (
         <div className="flex items-center gap-3 bg-gray-50 border border-gray-200 rounded-xl p-3 shadow-sm">
@@ -162,8 +162,8 @@ const MessageInput = ({ userId, roomId }: Props) => {
       sending
         ? "bg-indigo-500 opacity-60 cursor-wait"
         : text.trim() || file
-          ? "bg-indigo-600 hover:bg-indigo-700 text-white active:scale-95"
-          : "bg-gray-200 text-gray-400 cursor-not-allowed"
+        ? "bg-indigo-600 hover:bg-indigo-700 text-white active:scale-95"
+        : "bg-gray-200 text-gray-400 cursor-not-allowed"
     }
   `}
         >

@@ -50,7 +50,7 @@ const ChatContent = ({
   }
 
   return (
-    <div className="flex-1 flex flex-col h-full min-h-0 bg-[#f6f7fb]">
+    <div className="flex-1 flex flex-col h-full min-h-0 bg-white">
       {/* NAVBAR */}
       <ChatNavbar selectedUser={roomId ? null : selectedUser} roomId={roomId} />
 

@@ -130,7 +130,7 @@ export default function EditUserPage() {
   return (
     <div className="min-h-screen bg-zinc-50">
       {/* HEADER */}
-      <div className="sticky top-0 z-20 bg-white/80 backdrop-blur border-b border-zinc-200">
+      <div className="sticky top-0 z-20 backdrop-blur border-b border-zinc-200">
         <div className="max-w-5xl mx-auto px-6 py-4">
           <h1 className="text-sm font-semibold text-zinc-800">Edit User</h1>
 

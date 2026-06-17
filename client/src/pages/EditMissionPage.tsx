@@ -174,7 +174,7 @@ export default function EditMissionPage() {
   return (
     <div className="min-h-screen bg-zinc-50">
       {/* TOP BAR */}
-      <div className="sticky top-0 z-20 bg-white/80 backdrop-blur border-b border-zinc-200">
+      <div className="sticky top-0 z-20 backdrop-blur border-b border-zinc-200">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <button
             onClick={() => navigate("/missions")}

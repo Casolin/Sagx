@@ -7,8 +7,7 @@ import { timeAgo } from "../utils/formatTime";
 import { getUserUpdates } from "../api/notification.api";
 import { SOCKET_EVENTS } from "../services/socket.events";
 import { getSocket } from "../services/socket.service";
-import { Download } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+
 import {
   BarChart,
   Bar,
@@ -21,6 +20,8 @@ import {
   Cell,
   CartesianGrid,
 } from "recharts";
+import { Flag, Trophy, AlertTriangle, Power } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 
 /* =========================
    TYPES (NO ANY)
@@ -73,30 +74,48 @@ const STATUS_COLORS: Record<string, string> = {
 /* =========================
    KPI CARD
 ========================= */
+
 function KpiCard({
   title,
   value,
+  icon: Icon,
+  color = "#3b82f6",
   dark,
 }: {
   title: string;
   value: string | number;
+  icon: LucideIcon;
+  color?: string;
   dark?: boolean;
 }) {
   return (
     <div
-      className={`rounded-2xl border shadow-sm p-5 transition
+      className={`rounded-2xl border shadow-sm p-5 transition flex items-start justify-between
       ${dark ? "bg-gray-900 border-gray-800" : "bg-white border-gray-200"}`}
     >
-      <p className={`text-sm ${dark ? "text-gray-400" : "text-gray-500"}`}>
-        {title}
-      </p>
-      <h2
-        className={`text-3xl font-bold mt-2 ${
-          dark ? "text-white" : "text-gray-900"
-        }`}
+      <div>
+        <p className={`text-sm ${dark ? "text-gray-400" : "text-gray-500"}`}>
+          {title}
+        </p>
+
+        <h2
+          className={`text-3xl font-bold mt-2 ${
+            dark ? "text-white" : "text-gray-900"
+          }`}
+        >
+          {value}
+        </h2>
+      </div>
+
+      <div
+        className="p-3 rounded-xl"
+        style={{
+          backgroundColor: `${color}20`, // soft background
+          color,
+        }}
       >
-        {value}
-      </h2>
+        <Icon size={20} />
+      </div>
     </div>
   );
 }
@@ -110,7 +129,6 @@ export default function Dashboard({ dark }: { dark?: boolean }) {
   const [loading, setLoading] = useState(true);
   const [messages, setMessages] = useState<Message[]>([]);
   const [updates, setUpdates] = useState<Activity[]>([]);
-  const navigate = useNavigate();
 
   const [isMobile, setIsMobile] = useState(false);
 
@@ -243,7 +261,7 @@ export default function Dashboard({ dark }: { dark?: boolean }) {
     <div
       className={`
       min-h-screen p-6 md:p-8 space-y-8
-      ${dark ? "bg-[#030712] text-white" : "bg-[#f6f7fb] text-gray-900"}
+      ${dark ? "bg-[#030712] text-white" : "bg-[#f9f9f9] text-gray-900"}
     `}
     >
       <div className="flex items-center justify-between">
@@ -254,37 +272,6 @@ export default function Dashboard({ dark }: { dark?: boolean }) {
             Welcome back, {user?.firstName}
           </p>
         </div>
-
-        <div className="flex flex-col md:flex-row items-center gap-3">
-          {/* LIVE BADGE */}
-          <div
-            className={`
-      px-4 py-2 rounded-2xl border text-sm font-medium flex
-      ${
-        dark
-          ? "bg-white/5 border-white/10 text-green-400"
-          : "bg-white/70 border-white text-green-600 backdrop-blur-xl"
-      }
-    `}
-          >
-            ● Live
-          </div>
-
-          {/* DOWNLOAD APP BUTTON */}
-          <button
-            onClick={() => navigate("/download-app")}
-            className="
-    flex items-center gap-2 px-3 py-2 rounded-full
-    bg-black text-white
-    border border-white/10
-    shadow-md
-    hover:scale-105 active:scale-95 transition cursor-pointer
-  "
-          >
-            <Download size={16} className="text-white" />
-            <span className="text-sm font-medium">Download</span>
-          </button>
-        </div>
       </div>
 
       {user?.role !== "TECHNICIAN" && (
@@ -294,24 +281,32 @@ export default function Dashboard({ dark }: { dark?: boolean }) {
               dark={dark}
               title="Total Missions"
               value={data.missions?.total || 0}
+              icon={Flag}
+              color="#6366f1"
             />
 
             <KpiCard
               dark={dark}
               title="Completed"
               value={data.missions?.COMPLETED || 0}
+              icon={Trophy}
+              color="#10b981"
             />
 
             <KpiCard
               dark={dark}
               title="Open Alerts"
               value={data.alerts?.OPEN || 0}
+              icon={AlertTriangle}
+              color="#f59e0b"
             />
 
             <KpiCard
               dark={dark}
               title="Machines Down"
               value={data.machines?.status.DOWN || 0}
+              icon={Power}
+              color="#ef4444"
             />
           </div>
 
@@ -322,7 +317,7 @@ export default function Dashboard({ dark }: { dark?: boolean }) {
               ${
                 dark
                   ? "bg-[#111827]/70 border-white/10 backdrop-blur-xl"
-                  : "bg-white/80 border-white backdrop-blur-xl shadow-[0_10px_40px_rgba(0,0,0,0.06)]"
+                  : "bg-white border-white backdrop-blur-xl shadow-[0_10px_40px_rgba(0,0,0,0.06)]"
               }
             `}
             >
@@ -334,7 +329,7 @@ export default function Dashboard({ dark }: { dark?: boolean }) {
                 </p>
               </div>
 
-              <ResponsiveContainer width="100%" height={320}>
+              <ResponsiveContainer width="100%" height={230}>
                 <BarChart data={missionChartData}>
                   <CartesianGrid
                     strokeDasharray="3 3"
@@ -384,7 +379,7 @@ export default function Dashboard({ dark }: { dark?: boolean }) {
               ${
                 dark
                   ? "bg-[#111827]/70 border-white/10 backdrop-blur-xl"
-                  : "bg-white/80 border-white backdrop-blur-xl shadow-[0_10px_40px_rgba(0,0,0,0.06)]"
+                  : "bg-white border-white backdrop-blur-xl shadow-[0_10px_40px_rgba(0,0,0,0.06)]"
               }
             `}
             >
@@ -396,7 +391,7 @@ export default function Dashboard({ dark }: { dark?: boolean }) {
                 </p>
               </div>
 
-              <ResponsiveContainer width="100%" height={320}>
+              <ResponsiveContainer width="100%" height={230}>
                 <BarChart data={machineChartData}>
                   <CartesianGrid
                     strokeDasharray="3 3"
@@ -447,7 +442,7 @@ export default function Dashboard({ dark }: { dark?: boolean }) {
             ${
               dark
                 ? "bg-[#111827]/70 border-white/10 backdrop-blur-xl"
-                : "bg-white/80 border-white backdrop-blur-xl shadow-[0_10px_40px_rgba(0,0,0,0.06)]"
+                : "bg-white border-white backdrop-blur-xl shadow-[0_10px_40px_rgba(0,0,0,0.06)]"
             }
           `}
           >
@@ -459,7 +454,7 @@ export default function Dashboard({ dark }: { dark?: boolean }) {
               </p>
             </div>
 
-            <ResponsiveContainer width="100%" height={320}>
+            <ResponsiveContainer width="100%" height={230}>
               <PieChart>
                 <Pie
                   data={pieData}
@@ -484,26 +479,34 @@ export default function Dashboard({ dark }: { dark?: boolean }) {
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
           <KpiCard
             dark={dark}
-            title="My Missions"
-            value={data.myMissions?.total || 0}
+            title="Total Missions"
+            value={data.missions?.total || 0}
+            icon={Flag}
+            color="#6366f1"
           />
 
           <KpiCard
             dark={dark}
-            title="Active"
-            value={data.myMissions?.active || 0}
+            title="Completed"
+            value={data.missions?.COMPLETED || 0}
+            icon={Trophy}
+            color="#10b981"
           />
 
           <KpiCard
             dark={dark}
-            title="Pending Tasks"
-            value={data.myTasks?.pending || 0}
+            title="Open Alerts"
+            value={data.alerts?.OPEN || 0}
+            icon={AlertTriangle}
+            color="#f59e0b"
           />
 
           <KpiCard
             dark={dark}
-            title="Completed Tasks"
-            value={data.myTasks?.completed || 0}
+            title="Machines Down"
+            value={data.machines?.status.DOWN || 0}
+            icon={Power}
+            color="#ef4444"
           />
         </div>
       )}
@@ -514,21 +517,22 @@ export default function Dashboard({ dark }: { dark?: boolean }) {
         ${
           dark
             ? "bg-[#111827]/70 border-white/10 backdrop-blur-xl"
-            : "bg-white/80 border-white backdrop-blur-xl shadow-[0_10px_40px_rgba(0,0,0,0.06)]"
+            : "bg-white border-white backdrop-blur-xl shadow-[0_10px_40px_rgba(0,0,0,0.06)]"
         }
       `}
       >
-        <div>
-          <h2 className="text-xl font-bold mb-5">Latest Activities</h2>
+        <div className="flex flex-col md:flex-row gap-6">
+          <div className="w-full">
+            <h2 className="text-xl font-bold mb-5">Latest Activities</h2>
 
-          {updates.length === 0 ? (
-            <p className="text-sm text-gray-400">No recent activity</p>
-          ) : (
-            <div className="space-y-3">
-              {updates.slice(0, 3).map((u) => (
-                <div
-                  key={u._id}
-                  className={`
+            {updates.length === 0 ? (
+              <p className="text-sm text-gray-400">No recent activity</p>
+            ) : (
+              <div className="space-y-3">
+                {updates.slice(0, 3).map((u) => (
+                  <div
+                    key={u._id}
+                    className={`
                   flex justify-between items-start rounded-2xl px-4 py-4 transition-all
                   ${
                     dark
@@ -536,61 +540,65 @@ export default function Dashboard({ dark }: { dark?: boolean }) {
                       : "bg-gray-50 hover:bg-gray-100/80"
                   }
                 `}
-                >
-                  <div className="flex flex-col">
-                    <span className="font-semibold">{u.title}</span>
+                  >
+                    <div className="flex flex-col">
+                      <span className="font-semibold">{u.title}</span>
 
-                    <span className="text-sm text-gray-400 mt-1">
-                      {u.message}
+                      <span className="text-sm text-gray-400 mt-1">
+                        {u.message}
+                      </span>
+                    </div>
+
+                    <span className="text-xs text-gray-400 whitespace-nowrap">
+                      {timeAgo(u.createdAt)}
                     </span>
                   </div>
+                ))}
+              </div>
+            )}
+          </div>
+          <div className="hidden md:block w-0.5 bg-gray-100 p-0.5 rounded-full" />
 
-                  <span className="text-xs text-gray-400 whitespace-nowrap">
-                    {timeAgo(u.createdAt)}
-                  </span>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+          <div className="w-full">
+            <h2 className="text-xl font-bold mb-5">Latest Messages</h2>
 
-        <div>
-          <h2 className="text-xl font-bold mb-5">Latest Messages</h2>
-
-          {messages.length === 0 ? (
-            <p className="text-sm text-gray-400">No messages yet</p>
-          ) : (
-            <div className="space-y-3">
-              {messages.slice(0, 5).map((m) => (
-                <div
-                  key={m._id}
-                  className={`
+            {messages.length === 0 ? (
+              <p className="text-sm text-gray-400">No messages yet</p>
+            ) : (
+              <div className="space-y-3">
+                {messages.slice(0, 5).map((m) => (
+                  <div
+                    key={m._id}
+                    className={`
                   flex items-center gap-4 rounded-2xl px-4 py-3 transition-all
                   ${dark ? "hover:bg-white/4" : "hover:bg-gray-100/70"}
                 `}
-                >
-                  <img
-                    src={isPopulatedUser(m.sender) ? m.sender.avatar : ""}
-                    className="h-11 w-11 rounded-2xl border object-cover"
-                  />
+                  >
+                    <img
+                      src={isPopulatedUser(m.sender) ? m.sender.avatar : ""}
+                      className="h-11 w-11 rounded-2xl border object-cover"
+                    />
 
-                  <div className="flex flex-col min-w-0">
-                    <p className="text-sm font-semibold">
-                      {isPopulatedUser(m.sender) ? m.sender.firstName : "User"}
-                    </p>
+                    <div className="flex flex-col min-w-0">
+                      <p className="text-sm font-semibold">
+                        {isPopulatedUser(m.sender)
+                          ? m.sender.firstName
+                          : "User"}
+                      </p>
 
-                    <p className="text-sm text-gray-400 truncate">
-                      {m.content}
+                      <p className="text-sm text-gray-400 truncate">
+                        {m.content}
+                      </p>
+                    </div>
+
+                    <p className="ml-auto text-xs text-gray-400 whitespace-nowrap">
+                      {timeAgo(m.createdAt)}
                     </p>
                   </div>
-
-                  <p className="ml-auto text-xs text-gray-400 whitespace-nowrap">
-                    {timeAgo(m.createdAt)}
-                  </p>
-                </div>
-              ))}
-            </div>
-          )}
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
