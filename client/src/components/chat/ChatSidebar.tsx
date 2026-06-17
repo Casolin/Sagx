@@ -11,9 +11,10 @@ import type { SelectedUser } from "./ChatContent";
 
 interface Props {
   setSelectedUser: (user: SelectedUser) => void;
+  closeSidebar?: () => void;
 }
 
-const ChatSidebar = ({ setSelectedUser }: Props) => {
+const ChatSidebar = ({ setSelectedUser, closeSidebar }: Props) => {
   const navigate = useNavigate();
   const [friends, setFriends] = useState<Friend[]>([]);
   const [openCreateRoom, setOpenCreateRoom] = useState(false);
@@ -89,6 +90,7 @@ const ChatSidebar = ({ setSelectedUser }: Props) => {
                       avatar: user.avatar,
                     });
                     navigate(`/chat/private/${user._id}`);
+                    closeSidebar?.();
                   }}
                   className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-zinc-100 transition group"
                 >

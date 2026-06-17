@@ -4,7 +4,6 @@ import {
   AlertTriangle,
   Users,
   ClipboardList,
-  User,
   MessageCircle,
   Users2,
   PcCase,
@@ -20,7 +19,6 @@ export const menuByRole = {
     { label: "Users", path: "/users", icon: Users },
     { label: "Chat", path: "/chat", icon: MessageCircle },
     { label: "Friends", path: "/friends", icon: Users2 },
-    { label: "Profile", path: "/profile", icon: User },
   ],
   MANAGER: [
     { label: "Dashboard", path: "/dashboard", icon: LayoutDashboard },
@@ -30,7 +28,6 @@ export const menuByRole = {
     { label: "Materials", path: "/materials", icon: PcCase },
     { label: "Chat", path: "/chat", icon: MessageCircle },
     { label: "Friends", path: "/friends", icon: Users2 },
-    { label: "Profile", path: "/profile", icon: User },
   ],
   TECHNICIAN: [
     { label: "Dashboard", path: "/dashboard", icon: LayoutDashboard },
@@ -38,6 +35,5 @@ export const menuByRole = {
     { label: "Alerts", path: "/alerts", icon: AlertTriangle },
     { label: "Chat", path: "/chat", icon: MessageCircle },
     { label: "Friends", path: "/friends", icon: Users2 },
-    { label: "Profile", path: "/profile", icon: User },
   ],
 };

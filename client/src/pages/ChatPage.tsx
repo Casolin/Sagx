@@ -26,6 +26,8 @@ const ChatPage = () => {
   const [loading, setLoading] = useState(true);
   const [selectedUser, setSelectedUser] = useState<SelectedUser | null>(null);
 
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
   // load messages
   useEffect(() => {
     const fetchMessages = async () => {
@@ -46,7 +48,6 @@ const ChatPage = () => {
     fetchMessages();
   }, [userId, roomId]);
 
-  // socket listeners
   useEffect(() => {
     const socket = getSocket();
     if (!socket) return;
@@ -111,7 +112,6 @@ const ChatPage = () => {
     };
   }, [userId, roomId]);
 
-  // join room
   useEffect(() => {
     const socket = getSocket();
     if (!socket || !roomId) return;
@@ -119,7 +119,6 @@ const ChatPage = () => {
     socket.emit("join_room", roomId);
   }, [roomId]);
 
-  // selected user
   useEffect(() => {
     if (!userId) return;
 
@@ -155,14 +154,33 @@ const ChatPage = () => {
   }, [userId, currentUserId]);
 
   return (
-    <div className="h-[calc(100dvh-60px)] flex overflow-hidden bg-gray-100">
+    <div className="h-[calc(100dvh-60px)] flex overflow-hidden bg-gray-100 relative">
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black/30 md:hidden z-40"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
       <div
-        id="chat-sidebar"
-        className="h-full w-0 md:w-[320px] bg-white border-r border-zinc-200 flex flex-col overflow-y-auto transition-all duration-300 absolute md:relative top-0 left-0 z-50"
+        className={`
+          h-full w-[320px] bg-white border-r border-zinc-200
+          flex flex-col overflow-y-auto transition-transform duration-300
+          fixed md:relative top-0 left-0 z-50
+          ${
+            sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
+          }
+        `}
       >
-        <ChatSidebar setSelectedUser={setSelectedUser} />
+        <ChatSidebar
+          setSelectedUser={(user) => {
+            setSelectedUser(user);
+            setSidebarOpen(false);
+          }}
+        />
       </div>
 
+      {/* CHAT CONTENT */}
       <ChatContent
         messages={messages}
         setMessages={setMessages}
