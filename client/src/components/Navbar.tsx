@@ -164,7 +164,7 @@ export default function Navbar({ setIsOpen, open }: Props) {
           {currentPage === "Chat" && (
             <button
               onClick={toggleChatSidebar}
-              className="p-2 rounded-full bg-slate-100 dark:bg-white/10 hover:scale-105 transition"
+              className="md:hidden p-2 rounded-full bg-slate-100 dark:bg-white/10 hover:scale-105 transition"
               title="Toggle chat sidebar"
             >
               <MessageSquare size={18} />
