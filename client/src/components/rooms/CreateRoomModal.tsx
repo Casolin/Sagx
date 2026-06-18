@@ -58,7 +58,6 @@ const CreateRoomModal = ({ open, onOpenChange, onCreated }: Props) => {
       });
 
       toast.success("Room created successfully");
-      window.location.href = "/chat";
 
       onCreated();
       onOpenChange(false);
