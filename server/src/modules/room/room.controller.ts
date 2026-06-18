@@ -7,6 +7,8 @@ import {
   deleteRoomService,
 } from "./room.service.js";
 
+import Room from "./room.model.js";
+
 import { createNotification } from "../notification/notification.service.js";
 
 import { emitToUser } from "../../sockets/socket.service.js";
@@ -31,6 +33,12 @@ export const create = async (req: Request, res: Response) => {
     }
 
     const room = await createRoom(name, members, userId);
+
+    emitToUser(userId, SOCKET_EVENTS.ROOM_NEW, room);
+
+    members?.forEach((memberId: string) => {
+      emitToUser(memberId, SOCKET_EVENTS.ROOM_NEW, room);
+    });
 
     res.json({ success: true, data: room });
   } catch (err: any) {
@@ -104,6 +112,13 @@ export const leave = async (req: Request, res: Response) => {
 
     const room = await removeMember(roomId, userId);
 
+    if (!room) {
+      return res.status(404).json({
+        success: false,
+        message: "Room not found",
+      });
+    }
+
     const notification = await createNotification({
       userId,
       title: "Room Left",
@@ -114,9 +129,18 @@ export const leave = async (req: Request, res: Response) => {
 
     emitToUser(userId, SOCKET_EVENTS.NOTIFICATION_NEW, notification);
 
-    res.json({ success: true, data: room });
+    room.members
+      ?.filter((m: any) => m.toString() !== userId) // exclude self
+      .forEach((memberId: any) => {
+        emitToUser(memberId.toString(), SOCKET_EVENTS.ROOM_MEMBER_LEFT, {
+          roomId,
+          userId,
+        });
+      });
+
+    return res.json({ success: true, data: room });
   } catch (err: any) {
-    res.status(400).json({
+    return res.status(400).json({
       success: false,
       message: err.message,
     });
@@ -136,6 +160,15 @@ export const deleteRoom = async (req: Request, res: Response) => {
 
     const userId = (req as any).user.id;
 
+    const room = await Room.findById(roomId);
+
+    if (!room) {
+      return res.status(404).json({
+        success: false,
+        message: "Room not found",
+      });
+    }
+
     await deleteRoomService(roomId, userId);
 
     const notification = await createNotification({
@@ -148,9 +181,21 @@ export const deleteRoom = async (req: Request, res: Response) => {
 
     emitToUser(userId, SOCKET_EVENTS.NOTIFICATION_NEW, notification);
 
-    res.json({ success: true, message: "Room deleted successfully" });
+    const targets = new Set<string>();
+
+    targets.add(userId);
+    room.members?.forEach((m: any) => targets.add(m.toString()));
+
+    targets.forEach((memberId) => {
+      emitToUser(memberId, SOCKET_EVENTS.ROOM_DELETED, roomId);
+    });
+
+    return res.json({
+      success: true,
+      message: "Room deleted successfully",
+    });
   } catch (err: any) {
-    res.status(400).json({
+    return res.status(400).json({
       success: false,
       message: err.message,
     });

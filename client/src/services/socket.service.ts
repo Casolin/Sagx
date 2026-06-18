@@ -53,6 +53,18 @@ export const initSocket = (userId: string) => {
     console.log("Mission Deleted:", mission);
   });
 
+  socket.on(SOCKET_EVENTS.ROOM_NEW, (room) => {
+    console.log("🏠 Room Created:", room);
+  });
+
+  socket.on(SOCKET_EVENTS.ROOM_DELETED, (roomId) => {
+    console.log("🗑️ Room Deleted:", roomId);
+  });
+
+  socket.on(SOCKET_EVENTS.ROOM_MEMBER_LEFT, ({ roomId, userId }) => {
+    console.log("👋 Member Left Room:", roomId, userId);
+  });
+
   socket.on(SOCKET_EVENTS.MACHINE_CREATED, (machine) => {
     console.log("Machine Created:", machine);
   });
