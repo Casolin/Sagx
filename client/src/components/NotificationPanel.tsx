@@ -137,7 +137,7 @@ export default function NotificationPanel() {
                 </div>
 
                 {/* GROUP */}
-                <div className="bg-gray-50 rounded-xl p-1 space-y-1">
+                <div className="bg-gray-100 rounded-xl p-1 space-y-1">
                   {items.map((n: Notification) => (
                     <div
                       key={n._id}
