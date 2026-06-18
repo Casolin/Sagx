@@ -14,6 +14,12 @@ export default function UserCard({ user, onEdit, onDelete }: Props) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  const roleColor = {
+    ADMIN: "bg-orange-500 text-white",
+    MANAGER: "bg-indigo-500 text-white",
+    TECHNICIAN: "bg-gray-800 text-white",
+  }[user.role];
+
   const handleDelete = async () => {
     try {
       setLoading(true);
@@ -30,40 +36,40 @@ export default function UserCard({ user, onEdit, onDelete }: Props) {
 
   return (
     <>
+      {/* CARD */}
       <div
         className="
         group relative w-full
-        rounded-2xl
-        border border-zinc-800
-        bg-zinc-950
+        rounded-2xl border border-gray-100
+        bg-white/80 backdrop-blur-md
         p-5
-        flex items-center justify-between
-        gap-4
+        flex flex-col sm:flex-row items-center justify-between
+        gap-5
         transition-all duration-300
-        hover:border-zinc-600
-        hover:shadow-[0_0_30px_rgba(255,255,255,0.06)]
-        hover:-translate-y-1
+        hover:shadow-xl hover:-translate-y-1
+        hover:border-gray-200
       "
       >
-        {/* subtle top glow line */}
-        <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-white/20 to-transparent opacity-40" />
+        {/* left accent glow */}
+        <div className="absolute inset-y-0 left-0 w-1 bg-linear-to-b from-indigo-500 via-blue-500 to-cyan-400 rounded-l-2xl opacity-0 group-hover:opacity-100 transition" />
 
         {/* LEFT */}
-        <div className="flex items-center gap-4 min-w-0">
+        <div className="flex items-center gap-4 w-full sm:w-auto">
           {/* avatar */}
-          <div className="relative shrink-0">
+          <div className="relative">
             <img
               src={user.avatar}
-              className="w-11 h-11 rounded-full object-cover ring-1 ring-zinc-700"
+              className="w-12 h-12 rounded-full object-cover ring-2 ring-gray-100 group-hover:ring-indigo-200 transition"
             />
 
+            {/* status dot */}
             <span
-              className={`absolute -bottom-1 -right-1 w-3 h-3 rounded-full border border-zinc-900 ${
+              className={`absolute -bottom-1 -right-1 w-3 h-3 rounded-full ring-2 ring-white ${
                 user.status === "ACTIVE"
-                  ? "bg-white"
+                  ? "bg-emerald-500"
                   : user.status === "SUSPENDED"
-                  ? "bg-zinc-500"
-                  : "bg-zinc-700"
+                  ? "bg-red-500"
+                  : "bg-gray-400"
               }`}
             />
           </div>
@@ -71,37 +77,54 @@ export default function UserCard({ user, onEdit, onDelete }: Props) {
           {/* info */}
           <div className="min-w-0">
             <div className="flex items-center gap-2">
-              <h3 className="font-semibold text-white truncate group-hover:text-zinc-200 transition">
+              <h3 className="font-semibold text-gray-900 group-hover:text-indigo-600 transition">
                 {user.firstName} {user.lastName}
               </h3>
 
+              {/* subtle status pill */}
               <span
-                className="
-                text-[10px]
-                px-2 py-0.5
-                rounded-full
-                border border-zinc-700
-                text-zinc-300
-              "
+                className={`text-[10px] px-2 py-0.5 rounded-full font-medium uppercase tracking-wide ${
+                  user.status === "ACTIVE"
+                    ? "bg-emerald-50 text-emerald-600"
+                    : user.status === "SUSPENDED"
+                    ? "bg-red-50 text-red-600"
+                    : "bg-gray-100 text-gray-500"
+                }`}
               >
-                {user.role}
+                {user.status.toLowerCase()}
               </span>
             </div>
 
-            <p className="text-sm text-zinc-400 truncate">{user.email}</p>
+            <p className="text-sm text-gray-500 truncate max-w-64">
+              {user.email}
+            </p>
+
+            {/* role badge row */}
+            <div className="flex items-center gap-2 mt-2">
+              <span
+                className={`text-[11px] px-2.5 py-1 rounded-full font-medium shadow-sm border ${roleColor}`}
+              >
+                {user.role}
+              </span>
+
+              <span className="text-[11px] text-gray-400">
+                Member • Active account
+              </span>
+            </div>
           </div>
         </div>
 
         {/* RIGHT ACTIONS */}
-        <div className="flex items-center gap-2 shrink-0">
+        <div className="flex items-center gap-2 sm:ml-auto">
           <button
             onClick={() => onEdit(user)}
             className="
-            px-3 py-1.5 rounded-xl text-sm font-medium
-            border border-zinc-700
-            text-white
-            hover:bg-white hover:text-black
+            px-3 py-2 rounded-xl text-sm font-medium
+            bg-indigo-600 text-white
+            hover:bg-indigo-500
+            active:scale-95
             transition
+            shadow-sm
           "
           >
             Edit
@@ -110,11 +133,12 @@ export default function UserCard({ user, onEdit, onDelete }: Props) {
           <button
             onClick={() => setOpen(true)}
             className="
-            px-3 py-1.5 rounded-xl text-sm font-medium
-            border border-zinc-700
-            text-zinc-300
-            hover:bg-white hover:text-black
+            px-3 py-2 rounded-xl text-sm font-medium
+            bg-red-500 text-white
+            hover:bg-red-400
+            active:scale-95
             transition
+            shadow-sm
           "
           >
             Delete
