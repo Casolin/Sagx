@@ -8,9 +8,7 @@ import {
 } from "./room.service.js";
 
 import Room from "./room.model.js";
-
 import { createNotification } from "../notification/notification.service.js";
-
 import { emitToUser } from "../../sockets/socket.service.js";
 import { SOCKET_EVENTS } from "../../sockets/socket.events.js";
 
@@ -34,10 +32,12 @@ export const create = async (req: Request, res: Response) => {
 
     const room = await createRoom(name, members, userId);
 
-    emitToUser(userId, SOCKET_EVENTS.ROOM_NEW, room);
+    const targets = new Set<string>();
+    targets.add(userId);
+    members?.forEach((m: string) => targets.add(m.toString()));
 
-    members?.forEach((memberId: string) => {
-      emitToUser(memberId, SOCKET_EVENTS.ROOM_NEW, room);
+    targets.forEach((id) => {
+      emitToUser(id, SOCKET_EVENTS.ROOM_NEW, room);
     });
 
     res.json({ success: true, data: room });
@@ -88,6 +88,10 @@ export const join = async (req: Request, res: Response) => {
 
     emitToUser(userId, SOCKET_EVENTS.NOTIFICATION_NEW, notification);
 
+    room.members?.forEach((m: any) => {
+      emitToUser(m.toString(), SOCKET_EVENTS.ROOM_NEW, room);
+    });
+
     res.json({ success: true, data: room });
   } catch (err: any) {
     res.status(400).json({
@@ -129,18 +133,20 @@ export const leave = async (req: Request, res: Response) => {
 
     emitToUser(userId, SOCKET_EVENTS.NOTIFICATION_NEW, notification);
 
-    room.members?.forEach((memberId: any) => {
-      if (memberId.toString() !== userId) {
-        emitToUser(memberId.toString(), SOCKET_EVENTS.ROOM_MEMBER_LEFT, {
-          roomId,
-          userId,
-        });
-      }
+    const targets = new Set<string>();
+    targets.add(userId);
+    room.members?.forEach((m: any) => targets.add(m.toString()));
+
+    targets.forEach((id) => {
+      emitToUser(id, SOCKET_EVENTS.ROOM_MEMBER_LEFT, {
+        roomId,
+        userId,
+      });
     });
 
-    return res.json({ success: true, data: room });
+    res.json({ success: true, data: room });
   } catch (err: any) {
-    return res.status(400).json({
+    res.status(400).json({
       success: false,
       message: err.message,
     });
@@ -177,20 +183,21 @@ export const deleteRoom = async (req: Request, res: Response) => {
       relatedId: roomId,
     });
 
-    await deleteRoomService(roomId, userId);
-
     emitToUser(userId, SOCKET_EVENTS.NOTIFICATION_NEW, notification);
 
-    room.members?.forEach((memberId: any) => {
-      emitToUser(memberId.toString(), SOCKET_EVENTS.ROOM_DELETED, roomId);
+    const targets = new Set<string>();
+    targets.add(userId);
+    room.members?.forEach((m: any) => targets.add(m.toString()));
+
+    targets.forEach((id) => {
+      emitToUser(id, SOCKET_EVENTS.ROOM_DELETED, roomId);
     });
 
-    return res.json({
-      success: true,
-      message: "Room deleted successfully",
-    });
+    await deleteRoomService(roomId, userId);
+
+    res.json({ success: true, message: "Room deleted successfully" });
   } catch (err: any) {
-    return res.status(400).json({
+    res.status(400).json({
       success: false,
       message: err.message,
     });
