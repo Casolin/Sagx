@@ -8,7 +8,6 @@ import {
 } from "./room.service.js";
 
 import Room from "./room.model.js";
-import { roomEvents } from "./room.helper.js";
 
 import { createNotification } from "../notification/notification.service.js";
 
@@ -35,7 +34,11 @@ export const create = async (req: Request, res: Response) => {
 
     const room = await createRoom(name, members, userId);
 
-    await roomEvents.created(room);
+    emitToUser(userId, SOCKET_EVENTS.ROOM_NEW, room);
+
+    members?.forEach((memberId: string) => {
+      emitToUser(memberId, SOCKET_EVENTS.ROOM_NEW, room);
+    });
 
     res.json({ success: true, data: room });
   } catch (err: any) {
@@ -116,8 +119,6 @@ export const leave = async (req: Request, res: Response) => {
       });
     }
 
-    await roomEvents.memberLeft(room, userId);
-
     const notification = await createNotification({
       userId,
       title: "Room Left",
@@ -127,6 +128,15 @@ export const leave = async (req: Request, res: Response) => {
     });
 
     emitToUser(userId, SOCKET_EVENTS.NOTIFICATION_NEW, notification);
+
+    room.members?.forEach((memberId: any) => {
+      if (memberId.toString() !== userId) {
+        emitToUser(memberId.toString(), SOCKET_EVENTS.ROOM_MEMBER_LEFT, {
+          roomId,
+          userId,
+        });
+      }
+    });
 
     return res.json({ success: true, data: room });
   } catch (err: any) {
@@ -159,10 +169,6 @@ export const deleteRoom = async (req: Request, res: Response) => {
       });
     }
 
-    await deleteRoomService(roomId, userId);
-
-    await roomEvents.deleted(room);
-
     const notification = await createNotification({
       userId,
       title: "Room Deleted",
@@ -171,7 +177,13 @@ export const deleteRoom = async (req: Request, res: Response) => {
       relatedId: roomId,
     });
 
+    await deleteRoomService(roomId, userId);
+
     emitToUser(userId, SOCKET_EVENTS.NOTIFICATION_NEW, notification);
+
+    room.members?.forEach((memberId: any) => {
+      emitToUser(memberId.toString(), SOCKET_EVENTS.ROOM_DELETED, roomId);
+    });
 
     return res.json({
       success: true,

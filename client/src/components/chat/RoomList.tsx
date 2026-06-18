@@ -1,23 +1,12 @@
-import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-import { getMyRooms } from "../../api/room.api";
-
 import type { Room } from "../../types/global.types";
 
-const RoomList = () => {
+type Props = {
+  rooms: Room[];
+};
+
+const RoomList = ({ rooms }: Props) => {
   const navigate = useNavigate();
-
-  const [rooms, setRooms] = useState<Room[]>([]);
-
-  useEffect(() => {
-    const fetchRooms = async () => {
-      const data = await getMyRooms();
-      setRooms(data);
-    };
-
-    fetchRooms();
-  }, []);
 
   return (
     <div className="space-y-2">

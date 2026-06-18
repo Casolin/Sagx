@@ -6,8 +6,11 @@ import RoomList from "./RoomList";
 import { getFriends } from "../../api/friend.api";
 import CreateRoomModal from "../rooms/CreateRoomModal";
 
-import type { Friend } from "../../types/global.types";
+import type { Friend, Room } from "../../types/global.types";
 import type { SelectedUser } from "./ChatContent";
+import { getSocket } from "../../services/socket.service";
+import { SOCKET_EVENTS } from "../../services/socket.events";
+import { getMyRooms } from "../../api/room.api";
 
 interface Props {
   setSelectedUser: (user: SelectedUser) => void;
@@ -18,6 +21,7 @@ const ChatSidebar = ({ setSelectedUser, closeSidebar }: Props) => {
   const navigate = useNavigate();
   const [friends, setFriends] = useState<Friend[]>([]);
   const [openCreateRoom, setOpenCreateRoom] = useState(false);
+  const [rooms, setRooms] = useState<Room[]>([]);
 
   useEffect(() => {
     const fetchFriends = async () => {
@@ -29,6 +33,53 @@ const ChatSidebar = ({ setSelectedUser, closeSidebar }: Props) => {
       }
     };
     fetchFriends();
+  }, []);
+
+  useEffect(() => {
+    const load = async () => {
+      const data = await getMyRooms();
+      setRooms(data);
+    };
+
+    load();
+  }, []);
+
+  useEffect(() => {
+    const socket = getSocket();
+    if (!socket) return;
+
+    const handleRoomCreated = (room: Room) => {
+      setRooms((prev) => [room, ...prev]);
+    };
+
+    const handleRoomDeleted = (roomId: string) => {
+      setRooms((prev) => prev.filter((r) => r._id !== roomId));
+    };
+
+    const handleMemberLeft = (payload: { roomId: string; userId: string }) => {
+      setRooms((prev) =>
+        prev.map((room) =>
+          room._id === payload.roomId
+            ? {
+                ...room,
+                members: room.members.filter(
+                  (m: string) => m !== payload.userId,
+                ),
+              }
+            : room,
+        ),
+      );
+    };
+
+    socket.on(SOCKET_EVENTS.ROOM_NEW, handleRoomCreated);
+    socket.on(SOCKET_EVENTS.ROOM_DELETED, handleRoomDeleted);
+    socket.on(SOCKET_EVENTS.ROOM_MEMBER_LEFT, handleMemberLeft);
+
+    return () => {
+      socket.off(SOCKET_EVENTS.ROOM_NEW, handleRoomCreated);
+      socket.off(SOCKET_EVENTS.ROOM_DELETED, handleRoomDeleted);
+      socket.off(SOCKET_EVENTS.ROOM_MEMBER_LEFT, handleMemberLeft);
+    };
   }, []);
 
   return (
@@ -57,7 +108,7 @@ const ChatSidebar = ({ setSelectedUser, closeSidebar }: Props) => {
           </p>
 
           <div className="bg-zinc-50 border border-zinc-200 rounded-xl p-2">
-            <RoomList />
+            <RoomList rooms={rooms} />
           </div>
         </div>
 
