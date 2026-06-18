@@ -14,12 +14,6 @@ export default function UserCard({ user, onEdit, onDelete }: Props) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const roleColor = {
-    ADMIN: "bg-orange-500 text-white",
-    MANAGER: "bg-indigo-500 text-white",
-    TECHNICIAN: "bg-gray-800 text-white",
-  }[user.role];
-
   const handleDelete = async () => {
     try {
       setLoading(true);
@@ -36,22 +30,23 @@ export default function UserCard({ user, onEdit, onDelete }: Props) {
 
   return (
     <>
-      {/* CARD */}
       <div
         className="
         group relative w-full
-        rounded-2xl border border-slate-200/70
-        bg-white/80 backdrop-blur
+        rounded-2xl
+        border border-zinc-800
+        bg-zinc-950
         p-5
         flex items-center justify-between
         gap-4
         transition-all duration-300
-        hover:shadow-xl hover:-translate-y-1
-        hover:border-indigo-200
+        hover:border-zinc-600
+        hover:shadow-[0_0_30px_rgba(255,255,255,0.06)]
+        hover:-translate-y-1
       "
       >
-        {/* gradient accent */}
-        <div className="absolute left-0 top-0 h-full w-1 bg-linear-to-b from-indigo-500 via-blue-500 to-cyan-400 rounded-l-2xl opacity-80" />
+        {/* subtle top glow line */}
+        <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-white/20 to-transparent opacity-40" />
 
         {/* LEFT */}
         <div className="flex items-center gap-4 min-w-0">
@@ -59,16 +54,16 @@ export default function UserCard({ user, onEdit, onDelete }: Props) {
           <div className="relative shrink-0">
             <img
               src={user.avatar}
-              className="w-11 h-11 rounded-full object-cover ring-2 ring-white shadow-sm"
+              className="w-11 h-11 rounded-full object-cover ring-1 ring-zinc-700"
             />
 
             <span
-              className={`absolute -bottom-1 -right-1 w-3 h-3 rounded-full border-2 border-white ${
+              className={`absolute -bottom-1 -right-1 w-3 h-3 rounded-full border border-zinc-900 ${
                 user.status === "ACTIVE"
-                  ? "bg-emerald-500"
+                  ? "bg-white"
                   : user.status === "SUSPENDED"
-                  ? "bg-red-500"
-                  : "bg-gray-400"
+                  ? "bg-zinc-500"
+                  : "bg-zinc-700"
               }`}
             />
           </div>
@@ -76,18 +71,24 @@ export default function UserCard({ user, onEdit, onDelete }: Props) {
           {/* info */}
           <div className="min-w-0">
             <div className="flex items-center gap-2">
-              <h3 className="font-semibold text-slate-900 truncate group-hover:text-indigo-600 transition">
+              <h3 className="font-semibold text-white truncate group-hover:text-zinc-200 transition">
                 {user.firstName} {user.lastName}
               </h3>
 
               <span
-                className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${roleColor}`}
+                className="
+                text-[10px]
+                px-2 py-0.5
+                rounded-full
+                border border-zinc-700
+                text-zinc-300
+              "
               >
                 {user.role}
               </span>
             </div>
 
-            <p className="text-sm text-slate-500 truncate">{user.email}</p>
+            <p className="text-sm text-zinc-400 truncate">{user.email}</p>
           </div>
         </div>
 
@@ -97,8 +98,10 @@ export default function UserCard({ user, onEdit, onDelete }: Props) {
             onClick={() => onEdit(user)}
             className="
             px-3 py-1.5 rounded-xl text-sm font-medium
-            bg-indigo-50 text-indigo-600
-            hover:bg-indigo-100 transition
+            border border-zinc-700
+            text-white
+            hover:bg-white hover:text-black
+            transition
           "
           >
             Edit
@@ -108,8 +111,10 @@ export default function UserCard({ user, onEdit, onDelete }: Props) {
             onClick={() => setOpen(true)}
             className="
             px-3 py-1.5 rounded-xl text-sm font-medium
-            bg-red-50 text-red-600
-            hover:bg-red-100 transition
+            border border-zinc-700
+            text-zinc-300
+            hover:bg-white hover:text-black
+            transition
           "
           >
             Delete
