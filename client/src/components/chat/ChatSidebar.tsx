@@ -33,7 +33,7 @@ const ChatSidebar = ({ setSelectedUser, closeSidebar }: Props) => {
 
   return (
     <>
-      <div className="w-64 md:w-[320px] bg-[#f9f9f9] border-r border-zinc-200 flex flex-col h-full transition-all duration-300 overflow-hidden">
+      <div className="md:w-[320px] bg-[#f9f9f9] border-r border-zinc-200 flex flex-col h-full transition-all duration-300 overflow-hidden">
         {/* HEADER */}
         <div className="p-4 border-b border-zinc-200 flex items-center justify-between">
           <div>
