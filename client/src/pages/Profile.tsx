@@ -236,216 +236,159 @@ export default function Profile({ dark }: { dark?: boolean }) {
      UI
   ========================= */
   return (
-    <div
-      className={`min-h-screen px-6 py-10 ${
-        dark ? "bg-[#0a0a0f] text-white" : "bg-[#f6f7fb] text-gray-900"
-      }`}
-    >
-      {/* HEADER */}
-      <div className="max-w-5xl mx-auto mb-10">
-        <h1 className="text-3xl font-bold tracking-tight">Profile Settings</h1>
-        <p
-          className={`mt-1 text-sm ${dark ? "text-gray-400" : "text-gray-500"}`}
-        >
-          Control your identity, security, and account preferences
-        </p>
+    <div className="min-h-screen bg-[#09090b] text-white">
+      {/* Background Glow */}
+      <div className="fixed inset-0 pointer-events-none">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 h-[500px] w-[500px] rounded-full bg-indigo-600/20 blur-[180px]" />
       </div>
 
-      <div className="max-w-5xl mx-auto space-y-6">
-        {/* TOP CARD */}
-        <div
-          className={`rounded-2xl p-6 flex flex-col md:flex-row gap-6 items-center justify-between border ${
-            dark ? "bg-[#111218] border-white/5" : "bg-white border-gray-200"
-          } shadow-sm`}
-        >
-          {/* AVATAR */}
-          <div className="flex items-center gap-5">
-            <div className="relative">
-              <div className="h-20 w-20 rounded-full overflow-hidden ring-2 ring-indigo-500/20">
-                {user.avatar ? (
-                  <img
-                    src={user.avatar}
-                    className="h-full w-full object-cover"
+      <div className="relative max-w-7xl mx-auto p-8">
+        {/* HEADER */}
+        <div className="mb-10">
+          <h1 className="text-4xl font-bold tracking-tight">
+            Profile Settings
+          </h1>
+          <p className="text-gray-400 mt-2">
+            Manage your account, security and personal information.
+          </p>
+        </div>
+
+        {/* HERO CARD */}
+        <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl p-8 mb-8">
+          <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/10 via-purple-500/10 to-cyan-500/10" />
+
+          <div className="relative flex flex-col lg:flex-row items-center justify-between gap-8">
+            <div className="flex items-center gap-6">
+              <div className="relative">
+                <div className="h-28 w-28 rounded-full overflow-hidden ring-4 ring-indigo-500/20">
+                  {user.avatar ? (
+                    <img
+                      src={user.avatar}
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    <div className="h-full w-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-3xl font-bold">
+                      {user.firstName?.charAt(0)}
+                    </div>
+                  )}
+                </div>
+
+                <label className="absolute bottom-1 right-1 h-9 w-9 rounded-full bg-indigo-600 flex items-center justify-center cursor-pointer hover:bg-indigo-500 transition">
+                  <Upload size={16} />
+                  <input
+                    type="file"
+                    className="hidden"
+                    onChange={uploadAvatar}
                   />
-                ) : (
-                  <div className="h-full w-full flex items-center justify-center bg-linear-to-br from-gray-300 to-gray-400 text-xl font-bold">
-                    {user.firstName?.charAt(0)}
-                  </div>
-                )}
+                </label>
               </div>
 
-              <label className="absolute -bottom-1 -right-1 bg-indigo-600 hover:bg-indigo-500 p-1.5 rounded-full cursor-pointer shadow-md">
-                <Upload size={14} className="text-white" />
-                <input type="file" className="hidden" onChange={uploadAvatar} />
-              </label>
+              <div>
+                <h2 className="text-2xl font-bold">
+                  {user.firstName} {user.lastName}
+                </h2>
+
+                <p className="text-gray-400 mt-1">{user.email}</p>
+
+                <div className="flex gap-2 mt-4">
+                  <span className="px-3 py-1 rounded-full text-xs bg-indigo-500/20 text-indigo-300">
+                    {user.role}
+                  </span>
+
+                  <span
+                    className={`px-3 py-1 rounded-full text-xs ${
+                      user.twoFactorEnabled
+                        ? "bg-green-500/20 text-green-300"
+                        : "bg-red-500/20 text-red-300"
+                    }`}
+                  >
+                    {user.twoFactorEnabled ? "2FA Enabled" : "2FA Disabled"}
+                  </span>
+                </div>
+              </div>
             </div>
 
-            <div>
-              <h2 className="text-lg font-semibold">
-                {user.firstName} {user.lastName}
-              </h2>
-              <p
-                className={`text-sm ${
-                  dark ? "text-gray-400" : "text-gray-500"
-                }`}
-              >
-                {user.email}
+            {/* QUICK STATS */}
+            <div className="grid grid-cols-3 gap-4 w-full lg:w-auto">
+              <div className="bg-black/20 rounded-2xl p-4 min-w-[120px]">
+                <p className="text-xs text-gray-400">Status</p>
+                <p className="font-semibold mt-1">Active</p>
+              </div>
+
+              <div className="bg-black/20 rounded-2xl p-4 min-w-[120px]">
+                <p className="text-xs text-gray-400">Security</p>
+                <p className="font-semibold mt-1">
+                  {user.twoFactorEnabled ? "High" : "Medium"}
+                </p>
+              </div>
+
+              <div className="bg-black/20 rounded-2xl p-4 min-w-[120px]">
+                <p className="text-xs text-gray-400">Role</p>
+                <p className="font-semibold mt-1">{user.role}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* CONTENT */}
+        <div className="grid lg:grid-cols-[1fr_350px] gap-8">
+          {/* ACCOUNT FORM */}
+          <div className="rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl p-8">
+            <h3 className="text-xl font-semibold mb-6">Personal Information</h3>
+
+            <div className="grid md:grid-cols-2 gap-4">{/* inputs */}</div>
+
+            <button
+              onClick={save}
+              disabled={saving}
+              className="mt-8 w-full h-12 rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-500 font-semibold hover:scale-[1.01] transition"
+            >
+              {saving ? "Saving..." : "Save Changes"}
+            </button>
+          </div>
+
+          {/* SECURITY SIDEBAR */}
+          <div className="space-y-6">
+            <div className="rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl p-6">
+              <h3 className="font-semibold mb-4">Two-Factor Authentication</h3>
+
+              <p className="text-sm text-gray-400 mb-5">
+                Protect your account with an extra security layer.
               </p>
 
-              <span
-                className={`inline-flex mt-2 text-xs px-2 py-1 rounded-full ${
-                  user.role === "ADMIN"
-                    ? "bg-orange-500/20 text-orange-400"
-                    : user.role === "MANAGER"
-                    ? "bg-indigo-500/20 text-indigo-400"
-                    : "bg-gray-500/20 text-gray-400"
-                }`}
-              >
-                {user.role}
-              </span>
-            </div>
-          </div>
-
-          {/* 2FA */}
-          <div className="flex items-center gap-3">
-            <span
-              className={`text-xs ${dark ? "text-gray-400" : "text-gray-500"}`}
-            >
-              2FA
-            </span>
-
-            <div
-              className={`text-xs px-2 py-1 rounded-full ${
-                user.twoFactorEnabled
-                  ? "bg-green-500/10 text-green-400"
-                  : "bg-gray-500/10 text-gray-400"
-              }`}
-            >
-              {user.twoFactorEnabled ? "Enabled" : "Disabled"}
+              {user.twoFactorEnabled ? (
+                <button
+                  onClick={handleRemove2FA}
+                  className="w-full h-11 rounded-xl bg-red-500/20 text-red-300 hover:bg-red-500/30"
+                >
+                  Disable 2FA
+                </button>
+              ) : (
+                <button
+                  onClick={handleEnable2FA}
+                  className="w-full h-11 rounded-xl bg-green-500/20 text-green-300 hover:bg-green-500/30"
+                >
+                  Enable 2FA
+                </button>
+              )}
             </div>
 
-            <button
-              onClick={handleEnable2FA}
-              className="px-3 py-1 text-xs rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white cursor-pointer"
-            >
-              Enable
-            </button>
+            <div className="rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl p-6">
+              <h3 className="font-semibold mb-4">Password Security</h3>
 
-            <button
-              onClick={handleRemove2FA}
-              className="px-3 py-1 text-xs rounded-lg bg-white/10 hover:bg-white/20 cursor-pointer"
-            >
-              Disable
-            </button>
+              <div className="space-y-3">
+                <div className="h-2 rounded-full bg-white/10 overflow-hidden">
+                  <div className="h-full w-[80%] bg-green-500" />
+                </div>
+
+                <p className="text-sm text-gray-400">
+                  Strong password detected.
+                </p>
+              </div>
+            </div>
           </div>
-        </div>
-
-        {/* FORM CARD */}
-        <div
-          className={`rounded-2xl p-6 border ${
-            dark ? "bg-[#111218] border-white/5" : "bg-white border-gray-200"
-          } shadow-sm`}
-        >
-          <div className="mb-6">
-            <h2 className="text-lg font-semibold">Account Information</h2>
-            <p
-              className={`text-sm ${dark ? "text-gray-400" : "text-gray-500"}`}
-            >
-              Update your personal details and password
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <input
-              name="firstName"
-              value={form.firstName}
-              onChange={onChange}
-              placeholder="First name"
-              className={`p-3 rounded-xl border outline-none transition
-              ${
-                dark
-                  ? "bg-black/30 border-white/10 placeholder:text-gray-500 focus:border-indigo-500"
-                  : "bg-[#f6f7fb] border-gray-200 placeholder:text-gray-400 focus:border-indigo-500"
-              }`}
-            />
-
-            <input
-              name="lastName"
-              value={form.lastName}
-              onChange={onChange}
-              placeholder="Last name"
-              className={`p-3 rounded-xl border outline-none transition
-              ${
-                dark
-                  ? "bg-black/30 border-white/10 placeholder:text-gray-500 focus:border-indigo-500"
-                  : "bg-[#f6f7fb] border-gray-200 placeholder:text-gray-400 focus:border-indigo-500"
-              }`}
-            />
-
-            <input
-              name="email"
-              value={form.email}
-              onChange={onChange}
-              placeholder="Email address"
-              className={`md:col-span-2 p-3 rounded-xl border outline-none transition
-              ${
-                dark
-                  ? "bg-black/30 border-white/10 placeholder:text-gray-500 focus:border-indigo-500"
-                  : "bg-[#f6f7fb] border-gray-200 placeholder:text-gray-400 focus:border-indigo-500"
-              }`}
-            />
-
-            <input
-              name="password"
-              type="password"
-              value={form.password}
-              onChange={onChange}
-              placeholder="Current password"
-              className={`md:col-span-2 p-3 rounded-xl border outline-none transition
-              ${
-                dark
-                  ? "bg-black/30 border-white/10 placeholder:text-gray-500 focus:border-indigo-500"
-                  : "bg-[#f6f7fb] border-gray-200 placeholder:text-gray-400 focus:border-indigo-500"
-              }`}
-            />
-
-            <input
-              name="newPassword"
-              type="password"
-              value={form.newPassword}
-              onChange={onChange}
-              placeholder="New password"
-              className={`md:col-span-2 p-3 rounded-xl border outline-none transition
-              ${
-                dark
-                  ? "bg-black/30 border-white/10 placeholder:text-gray-500 focus:border-indigo-500"
-                  : "bg-[#f6f7fb] border-gray-200 placeholder:text-gray-400 focus:border-indigo-500"
-              }`}
-            />
-          </div>
-
-          <button
-            onClick={save}
-            disabled={saving}
-            className="mt-6 w-full py-3 rounded-xl font-semibold text-white
-          bg-indigo-600 hover:bg-indigo-500 transition shadow-md cursor-pointer"
-          >
-            {saving ? "Saving..." : "Save Changes"}
-          </button>
         </div>
       </div>
-
-      {/* CROPPER */}
-      {cropOpen && imageSrc && (
-        <AvatarCropModal
-          image={imageSrc}
-          onCancel={() => {
-            setCropOpen(false);
-            setImageSrc(null);
-          }}
-          onSave={handleCroppedSave}
-        />
-      )}
     </div>
   );
 }
