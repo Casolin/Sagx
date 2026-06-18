@@ -144,6 +144,13 @@ export const leave = async (req: Request, res: Response) => {
       });
     });
 
+    targets.add(userId);
+    room.members?.forEach((m: any) => targets.add(m.toString()));
+
+    targets.forEach((id) => {
+      emitToUser(id, SOCKET_EVENTS.ROOM_DELETED, roomId);
+    });
+
     res.json({ success: true, data: room });
   } catch (err: any) {
     res.status(400).json({
