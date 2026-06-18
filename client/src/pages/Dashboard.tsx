@@ -559,7 +559,7 @@ export default function Dashboard({ dark }: { dark?: boolean }) {
           </div>
           <div className="hidden md:block w-0.5 bg-gray-100 p-0.5 rounded-full" />
 
-          <div className="flex-3">
+          <div className="flex-3 min-w-0">
             <h2 className="text-xl font-bold mb-5">Latest Messages</h2>
 
             {messages.length === 0 ? (
@@ -570,28 +570,32 @@ export default function Dashboard({ dark }: { dark?: boolean }) {
                   <div
                     key={m._id}
                     className={`
-                  flex items-center gap-4 rounded-2xl px-4 py-3 transition-all
-                  ${dark ? "hover:bg-white/4" : "hover:bg-gray-100/70"}
-                `}
+            flex items-center gap-4 rounded-2xl px-4 py-3
+            transition-all
+            ${dark ? "hover:bg-white/5" : "hover:bg-gray-100/70"}
+          `}
                   >
+                    {/* avatar */}
                     <img
                       src={isPopulatedUser(m.sender) ? m.sender.avatar : ""}
-                      className="h-11 w-11 rounded-2xl border object-cover"
+                      className="h-11 w-11 rounded-xl border object-cover shrink-0"
                     />
 
-                    <div className="flex flex-col min-w-0">
-                      <p className="text-sm font-semibold">
+                    {/* text */}
+                    <div className="flex flex-col min-w-0 flex-1">
+                      <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">
                         {isPopulatedUser(m.sender)
                           ? m.sender.firstName
                           : "User"}
                       </p>
 
-                      <p className="text-sm text-gray-400 truncate">
+                      <p className="text-sm text-gray-500 truncate">
                         {m.content}
                       </p>
                     </div>
 
-                    <p className="ml-auto text-xs text-gray-400 whitespace-nowrap">
+                    {/* time */}
+                    <p className="ml-auto text-xs text-gray-400 whitespace-nowrap shrink-0">
                       {timeAgo(m.createdAt)}
                     </p>
                   </div>
