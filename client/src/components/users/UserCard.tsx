@@ -106,10 +106,6 @@ export default function UserCard({ user, onEdit, onDelete }: Props) {
               >
                 {user.role}
               </span>
-
-              <span className="text-[11px] text-gray-400">
-                Member • Active account
-              </span>
             </div>
           </div>
         </div>
