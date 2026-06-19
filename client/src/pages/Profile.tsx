@@ -126,6 +126,7 @@ export default function Profile({ dark }: { dark?: boolean }) {
       }));
 
       toast.success("Profile updated successfully");
+      window.location.reload();
     } catch (err: unknown) {
       const error = err as ApiError;
       toast.error(error?.response?.data?.message || "Update failed");
