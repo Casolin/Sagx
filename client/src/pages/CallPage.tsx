@@ -259,7 +259,7 @@ export const CallPage = () => {
         >
           {/* BACKGROUND */}
           <div
-            className="absolute inset-0 bg-center bg-cover scale-110 blur-md"
+            className="absolute inset-0 bg-center bg-cover scale-110 blur-sm"
             style={{ backgroundImage: "url('/userprofilecover.webp')" }}
           />
 
@@ -393,14 +393,14 @@ export const CallPage = () => {
               <div className="flex gap-10 mt-2">
                 <button
                   onClick={rejectCall}
-                  className="p-5 rounded-full bg-white/10 hover:bg-white/20 transition"
+                  className="p-5 rounded-full bg-white/10 hover:bg-white/20 transition cursor-pointer"
                 >
                   <X size={22} />
                 </button>
 
                 <button
                   onClick={answerCall}
-                  className="p-5 rounded-full bg-green-500/25 text-green-400 hover:bg-green-500/35 transition"
+                  className="p-5 rounded-full bg-green-500/25 text-green-400 hover:bg-green-500/35 transition cursor-pointer"
                 >
                   <Phone size={22} />
                 </button>
