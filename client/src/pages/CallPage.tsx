@@ -274,7 +274,7 @@ export const CallPage = () => {
               <div className="relative cursor-pointer">
                 <img
                   src={activeCallUser.avatar || "/default-avatar.png"}
-                  className="w-12 h-12 rounded-full object-cover border-2 border-white/20 shadow-lg"
+                  className="w-16 h-16 rounded-full object-cover border-2 border-white/20 shadow-lg"
                 />
 
                 {/* online dot */}
