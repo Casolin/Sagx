@@ -159,6 +159,7 @@ export default function Dashboard({ dark }: { dark?: boolean }) {
           user?.role === "TECHNICIAN" ? await getMyKpis() : await getKpis();
 
         setData(res?.data || res);
+        console.log(res);
       } finally {
         setLoading(false);
       }
@@ -494,8 +495,8 @@ export default function Dashboard({ dark }: { dark?: boolean }) {
           />
 
           <KpiCard
-            title="Pending Tasks"
-            value={data.myTasks?.pending || 0}
+            title="Active Tasks"
+            value={data.myTasks?.IN_PROGRESS || 0}
             icon={AlertTriangle}
             color="#f59e0b"
             dark={dark}
@@ -503,7 +504,7 @@ export default function Dashboard({ dark }: { dark?: boolean }) {
 
           <KpiCard
             title="Completed Tasks"
-            value={data.myTasks?.completed || 0}
+            value={data.myTasks?.COMPLETED || 0}
             icon={Trophy}
             color="#10b981"
             dark={dark}
