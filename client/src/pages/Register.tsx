@@ -54,7 +54,7 @@ export default function Register() {
       {/* LEFT SIDE */}
       <div
         className="hidden lg:flex w-1/2 bg-cover bg-center relative"
-        style={{ backgroundImage: "url('/authenticate4.jpg')" }}
+        style={{ backgroundImage: "url('/authenticate4.webp')" }}
       >
         <div className="absolute inset-0 bg-black/65 flex items-center">
           <div className="max-w-lg px-16">

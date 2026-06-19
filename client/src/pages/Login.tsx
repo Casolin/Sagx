@@ -147,7 +147,7 @@ export default function Login() {
       {/* RIGHT SIDE - IMAGE + TEXT */}
       <div
         className="hidden lg:flex w-1/2 bg-cover bg-center relative"
-        style={{ backgroundImage: "url('/authenticate.jpg')" }}
+        style={{ backgroundImage: "url('/authenticate.webp')" }}
       >
         <div className="absolute inset-0 bg-black/65 flex items-center">
           <div className="max-w-lg px-16 text-white">
