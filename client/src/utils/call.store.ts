@@ -31,6 +31,7 @@ type CallState = {
 
   stream: MediaStream | null;
   remoteStream: MediaStream | null;
+  cameraStream: MediaStream | null;
 
   activeCallUserId: string | null;
 
@@ -38,7 +39,11 @@ type CallState = {
   activeCallUser: CallUser | null;
 
   isMuted: boolean;
+  screenStream: MediaStream | null;
   isScreenSharing: boolean;
+
+  isCameraOn: boolean;
+  toggleCamera: () => Promise<void>;
 
   isMinimized: boolean;
 
@@ -99,6 +104,8 @@ export const useCallStore = create<CallState>((set, get) => ({
   peer: null,
   stream: null,
   remoteStream: null,
+  isCameraOn: false,
+  cameraStream: null,
 
   callBusyOpen: false,
 
@@ -111,6 +118,7 @@ export const useCallStore = create<CallState>((set, get) => ({
 
   isMuted: false,
   isScreenSharing: false,
+  screenStream: null,
 
   isMinimized: false,
 
@@ -307,6 +315,11 @@ export const useCallStore = create<CallState>((set, get) => ({
     const dummyTrack = stream.getVideoTracks()[0];
 
     if (isScreenSharing) {
+      const { screenStream } = get();
+
+      screenStream?.getTracks().forEach((track) => {
+        track.stop();
+      });
       if (dummyTrack) {
         await sender.replaceTrack(dummyTrack);
       }
@@ -327,6 +340,10 @@ export const useCallStore = create<CallState>((set, get) => ({
     const screenStream = await navigator.mediaDevices.getDisplayMedia({
       video: true,
       audio: true,
+    });
+
+    set({
+      screenStream,
     });
 
     const screenTrack = screenStream.getVideoTracks()[0];
@@ -363,6 +380,11 @@ export const useCallStore = create<CallState>((set, get) => ({
     }
 
     screenTrack.onended = async () => {
+      const { screenStream } = get();
+
+      screenStream?.getTracks().forEach((track) => {
+        track.stop();
+      });
       const fallbackTrack = stream.getVideoTracks()[0];
 
       if (fallbackTrack) {
@@ -379,12 +401,69 @@ export const useCallStore = create<CallState>((set, get) => ({
 
       set({
         isScreenSharing: false,
+        screenStream: null,
       });
     };
 
     set({
       isScreenSharing: true,
     });
+  },
+
+  toggleCamera: async () => {
+    const { peer, stream, isCameraOn } = get();
+
+    if (!peer || !stream) return;
+
+    const pc = (peer as Peer.Instance & { _pc: RTCPeerConnection })._pc;
+
+    const sender = pc.getSenders().find((s) => s.track?.kind === "video");
+
+    if (!sender) return;
+
+    if (!isCameraOn) {
+      const cameraStream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+      });
+
+      const cameraTrack = cameraStream.getVideoTracks()[0];
+
+      await sender.replaceTrack(cameraTrack);
+
+      cameraTrack.onended = async () => {
+        const dummyTrack = stream.getVideoTracks()[0];
+
+        if (dummyTrack) {
+          await sender.replaceTrack(dummyTrack);
+        }
+
+        set({
+          isCameraOn: false,
+        });
+      };
+
+      set({
+        isCameraOn: true,
+        cameraStream,
+      });
+    } else {
+      const { cameraStream } = get();
+
+      cameraStream?.getTracks().forEach((track) => {
+        track.stop();
+      });
+
+      const dummyTrack = stream.getVideoTracks()[0];
+
+      if (dummyTrack) {
+        await sender.replaceTrack(dummyTrack);
+      }
+
+      set({
+        isCameraOn: false,
+        cameraStream: null,
+      });
+    }
   },
 
   cancelOutgoingCall: () => {
@@ -436,11 +515,17 @@ export const useCallStore = create<CallState>((set, get) => ({
   },
 
   cleanup: () => {
-    const { peer, stream } = get();
+    const { peer, stream, cameraStream, screenStream } = get();
 
     peer?.destroy();
 
     stream?.getTracks().forEach((track) => {
+      track.stop();
+    });
+
+    screenStream?.getTracks().forEach((track) => track.stop());
+
+    cameraStream?.getTracks().forEach((track) => {
       track.stop();
     });
 
@@ -454,7 +539,10 @@ export const useCallStore = create<CallState>((set, get) => ({
       activeCallUserId: null,
       outgoingCallUser: null,
       isMuted: false,
+      isCameraOn: false,
+      cameraStream: null,
       isScreenSharing: false,
+      screenStream: null,
       isMinimized: false,
     });
   },
