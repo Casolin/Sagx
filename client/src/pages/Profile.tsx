@@ -263,7 +263,7 @@ export default function Profile({ dark }: { dark?: boolean }) {
 
           {/* PROFILE HEADER */}
           <div className="relative -mt-12 px-4">
-            <div className="rounded-2xl backdrop-blur-xl shadow-lg p-4 flex items-center justify-between bg-white border border-gray-200">
+            <div className="rounded-2xl backdrop-blur-xl shadow-lg p-4 flex flex-col md:flex-row items-center justify-between bg-white border border-gray-200">
               {/* LEFT */}
               <div className="flex items-end gap-4">
                 {/* AVATAR */}
@@ -318,7 +318,7 @@ export default function Profile({ dark }: { dark?: boolean }) {
               </div>
 
               {/* ACTIONS */}
-              <div className="flex gap-2">
+              <div className="flex flex-row mt-6 md:mt-0 sm:flex-row gap-2">
                 <button
                   onClick={handleEnable2FA}
                   className="px-3 py-1.5 text-xs rounded-lg bg-indigo-600 text-white hover:bg-indigo-500"

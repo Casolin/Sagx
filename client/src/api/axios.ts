@@ -9,7 +9,7 @@ type QueueItem = {
 };
 
 const api = axios.create({
-  baseURL: "",
+  baseURL: import.meta.env.VITE_SERVER_API,
   withCredentials: true,
 });
 
