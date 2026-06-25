@@ -7,7 +7,7 @@ import {
 } from "./auth.service.js";
 import { generateAccessToken, verifyRefreshToken } from "../../utils/jwt.js";
 import { sendEmail } from "../../utils/email.js";
-import { conversations } from "../ai/assistant/assistant.controller.js";
+import { conversations } from "../assistant/assistant.controller.js";
 
 export const register = async (req: Request, res: Response) => {
   try {
