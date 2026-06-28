@@ -1,8 +1,8 @@
 # 🚀 SagX
 
-SagX is a full stack mission management platform built for organizations that need structured, rule based workflows instead of manual task coordination.
+SagX is a full stack mission management platform designed for organizations that need structured, rule based workflows instead of manual task coordination.
 
-It also includes real time communication features like chat, voice and video calls, and screen sharing to support collaboration inside the system.
+It also includes real time communication features such as chat, voice and video calls, and screen sharing to support collaboration inside the system.
 
 ---
 
@@ -13,8 +13,8 @@ It also includes real time communication features like chat, voice and video cal
 <br>
 
 • 🔐 Secure authentication system  
-• 🔑 Two Factor Authentication  
-• 🔄 Refresh token session management  
+• 🔑 Two Factor Authentication (2FA)  
+• 🔄 Refresh token based session management  
 • 📋 Mission and task management system  
 • 💬 Real time chat system  
 • 📞 Voice and video calling  
@@ -25,11 +25,11 @@ It also includes real time communication features like chat, voice and video cal
 
 <br>
 
-## ⚙️ How the system works
+## ⚙️ Core Workflow Logic
 
 <br>
 
-SagX is not a basic CRUD app. It behaves like a real operational system with strict rules.
+SagX enforces real operational constraints similar to enterprise systems.
 
 <br>
 
@@ -37,53 +37,54 @@ SagX is not a basic CRUD app. It behaves like a real operational system with str
 • 🚫 Missing materials block execution and require manager approval  
 • ⚠️ Machine status cannot be changed to “down” without a valid alert  
 • 🧑‍🔧 Technicians must contact managers when resources are missing  
-• 🔁 Every action is validated before being accepted by the system  
+• 🔁 All actions are validated before being accepted by the system  
 
 ---
 
 <br>
 
-## 📡 Real time system
+## 📡 Real Time System
 
 <br>
 
-• 🌐 WebSocket communication across the entire app  
+• 🌐 WebSocket based communication  
 • 💬 Live chat between users  
 • 🔔 Real time alerts for missions, machines and materials  
-• ⚡ Instant updates without refreshing the page  
+• ⚡ Instant updates without page refresh  
+• 🔄 Synchronized state across all users  
 
 ---
 
 <br>
 
-## 📞 Call system
+## 📞 Call System
 
 <br>
 
 • 📞 Voice and video calls using WebRTC  
 • 🧠 Global call state managed with Zustand  
 • 🚫 Users cannot receive multiple calls at the same time  
-• 📵 Calls are blocked when a user is already busy  
+• 📵 Calls are blocked when user is already busy  
 • 🎛️ In call controls (mute, camera, screen share, minimize)  
 
 ---
 
 <br>
 
-## 🧠 State management
+## 🧠 State Management
 
 <br>
 
-• Zustand handles global state across the app  
-• Manages call state and session state  
-• Keeps real time updates synchronized everywhere  
-• Ensures consistent behavior across all modules  
+• Zustand handles global application state  
+• Manages call state across the entire system  
+• Keeps real time data synchronized  
+• Ensures consistent UI behavior across modules  
 
 ---
 
 <br>
 
-## 🛠️ Tech stack
+## 🛠️ Tech Stack
 
 <br>
 
@@ -106,7 +107,7 @@ SagX is not a basic CRUD app. It behaves like a real operational system with str
 
 <br>
 
-### Real time
+### Real Time Layer
 • Socket.io  
 • WebSockets  
 • WebRTC  
@@ -119,9 +120,15 @@ SagX is not a basic CRUD app. It behaves like a real operational system with str
 
 <br>
 
-SagX simulates real enterprise systems where everything depends on rules, resources and coordination between users.
+SagX simulates a real world enterprise workflow system where:
 
-It reflects how internal tools work in real companies where actions must be validated and cannot happen freely without constraints.
+• tasks depend on resource availability  
+• machine states are controlled by system alerts  
+• actions follow strict business rules  
+• communication is embedded into workflows  
+• real time coordination is required between users  
+
+It reflects how internal operational tools work in industries like logistics, telecom, and field operations.
 
 ---
 
@@ -131,4 +138,4 @@ It reflects how internal tools work in real companies where actions must be vali
 
 <br>
 
-Still being improved as part of a full stack portfolio project.
+Actively being improved as part of a full stack engineering portfolio project.
