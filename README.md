@@ -1,141 +1,98 @@
 # 🚀 SagX
 
-SagX is a full stack mission management platform designed for organizations that need structured, rule based workflows instead of manual task coordination.
+SagX is a full stack mission management system designed for structured enterprise workflows, real time collaboration, and rule based execution logic.
 
-It also includes real time communication features such as chat, voice and video calls, and screen sharing to support collaboration inside the system.
-
----
-
-<br>
-
-## ✨ Features
-
-<br>
-
-• 🔐 Secure authentication system  
-• 🔑 Two Factor Authentication (2FA)  
-• 🔄 Refresh token based session management  
-• 📋 Mission and task management system  
-• 💬 Real time chat system  
-• 📞 Voice and video calling  
-• 🖥️ Screen sharing  
-• 👥 Role based access control  
+It simulates real operational environments where tasks, machines, and resources must follow strict business constraints before execution.
 
 ---
 
-<br>
+## Features
 
-## ⚙️ Core Workflow Logic
-
-<br>
-
-SagX enforces real operational constraints similar to enterprise systems.
-
-<br>
-
-• 📦 A mission cannot start if required materials are missing  
-• 🚫 Missing materials block execution and require manager approval  
-• ⚠️ Machine status cannot be changed to “down” without a valid alert  
-• 🧑‍🔧 Technicians must contact managers when resources are missing  
-• 🔁 All actions are validated before being accepted by the system  
+• Secure authentication system  
+• Two Factor Authentication (2FA)  
+• Refresh token session management  
+• Mission and task management system  
+• Real time chat system  
+• Voice and video calling  
+• Screen sharing  
+• Role based access control (RBAC)  
 
 ---
 
-<br>
+## Workflow System
 
-## 📡 Real Time System
-
-<br>
-
-• 🌐 WebSocket based communication  
-• 💬 Live chat between users  
-• 🔔 Real time alerts for missions, machines and materials  
-• ⚡ Instant updates without page refresh  
-• 🔄 Synchronized state across all users  
+• Missions cannot start without required materials  
+• Missing materials block execution automatically  
+• Machine status cannot be set to “down” without a valid alert  
+• Technicians must contact managers when resources are missing  
+• All operations are validated before execution  
 
 ---
 
-<br>
+## Real Time System
 
-## 📞 Call System
-
-<br>
-
-• 📞 Voice and video calls using WebRTC  
-• 🧠 Global call state managed with Zustand  
-• 🚫 Users cannot receive multiple calls at the same time  
-• 📵 Calls are blocked when user is already busy  
-• 🎛️ In call controls (mute, camera, screen share, minimize)  
+• WebSocket based communication between users  
+• Live chat system  
+• Real time alerts for missions, machines, and materials  
+• Instant synchronization across the application  
 
 ---
 
-<br>
+## Call System
 
-## 🧠 State Management
+• WebRTC based voice and video calls  
+• Global call state managed with Zustand  
+• Users cannot receive multiple calls at the same time  
+• Calls are blocked when a user is already in a call  
+• In call controls: mute, camera toggle, screen share, minimize  
 
-<br>
+---
+
+## State Management
 
 • Zustand handles global application state  
-• Manages call state across the entire system  
-• Keeps real time data synchronized  
-• Ensures consistent UI behavior across modules  
+• Call state synchronization across the system  
+• Real time UI updates across all modules  
+• Consistent behavior between features  
 
 ---
 
-<br>
+## Tech Stack
 
-## 🛠️ Tech Stack
-
-<br>
-
-### Frontend
+Frontend  
 • React  
 • TypeScript  
 • Tailwind CSS  
 • Zustand  
 
-<br>
-
-### Backend
+Backend  
 • Node.js  
 • Express.js  
 
-<br>
-
-### Database
+Database  
 • MongoDB  
 
-<br>
-
-### Real Time Layer
+Real Time  
 • Socket.io  
 • WebSockets  
 • WebRTC  
 
 ---
 
-<br>
+## Purpose
 
-## 🎯 Purpose
+SagX simulates real enterprise workflow systems where:
 
-<br>
-
-SagX simulates a real world enterprise workflow system where:
-
-• tasks depend on resource availability  
-• machine states are controlled by system alerts  
+• execution depends on resource validation  
+• machine states depend on real system alerts  
 • actions follow strict business rules  
 • communication is embedded into workflows  
 • real time coordination is required between users  
 
-It reflects how internal operational tools work in industries like logistics, telecom, and field operations.
+It represents how internal operational tools work in real companies.
 
 ---
 
-<br>
+## Status
 
-## 📌 Status
-
-<br>
-
-Actively being improved as part of a full stack engineering portfolio project.
+Active development as part of a full stack engineering portfolio project.
