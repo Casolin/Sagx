@@ -1,49 +1,61 @@
-SagX
+🚀 SagX
 
-SagX is a full-stack mission management platform designed for organizations that require structured and rule-based workflows to replace manual coordination.
+A real-time mission management & collaboration system built for structured enterprise workflows.
 
-It combines task management, asset validation rules (machines/materials), and real-time communication tools into a single enterprise-style system.
+SagX is a full-stack platform that simulates internal enterprise operations where missions, machines, materials, and communication are tightly controlled by business rules.
 
-Key Features
-Authentication & Security
-Secure authentication system
-Refresh token-based session management
+It combines task orchestration + real-time collaboration + rule-based constraints in one system.
+
+⚡ Core Idea
+
+Not just a task manager.
+
+SagX enforces real operational logic:
+
+You can’t start a mission without required materials ❌
+Machine status can’t be changed without an alert ❌
+Users can’t be called if they’re already in a call ❌
+Managers must resolve material issues before execution ✔️
+
+This makes SagX behave like a real industrial workflow system, not a basic CRUD app.
+
+🧠 Key Features
+🔐 Auth & Security
+JWT authentication system
+Refresh token session handling
 Two-Factor Authentication (2FA)
 Role-Based Access Control (RBAC)
-Mission & Workflow System
-Mission assignment and tracking system
-Material validation before mission execution
-Rule-based workflow constraints:
-Technicians cannot start a mission without required materials
-System blocks execution and returns validation errors
-Requires manager approval or reassignment if materials are missing
-Machine status logic:
-Machine cannot be marked as “down” unless an alert exists for it
-Real-time alerts for missions, machines, and materials
-Real-Time Communication
-Real-time chat system using WebSockets
-Voice and video calls using WebRTC
-Screen sharing for collaboration
-In-call controls:
-mute / unmute microphone
-enable/disable camera
-minimize call while navigating the app
-Call state management:
-users cannot receive multiple simultaneous calls
-system prevents calling a user already in an active call
-State Management
-Zustand used for global state management
-Handles:
-call state across the entire application
-active user sessions
-real-time UI synchronization
-Tech Stack
+📋 Mission System (Smart Workflow Engine)
+Mission assignment & tracking
+Material validation before execution
+Machine-state enforcement rules
+Manager escalation flow when resources are missing
+Real-time alerts for:
+missions
+machines
+materials
+📡 Real-Time Collaboration
+💬 Live chat (WebSockets)
+📞 Voice & video calls (WebRTC)
+🖥️ Screen sharing for collaboration
+🔇 In-call controls (mute / camera / minimize UI)
+📞 Smart Call System
+Prevents multiple calls per user
+Blocks incoming calls during active sessions
+Real-time call state sync across the app
+Global call handling via Zustand
+🧩 State Architecture
+Zustand global state management
+Centralized call/session control
+Real-time UI sync across modules
+🛠️ Tech Stack
 
 Frontend
 
 React
 TypeScript
 Tailwind CSS
+Zustand
 
 Backend
 
@@ -54,20 +66,22 @@ Database
 
 MongoDB
 
-Real-Time Systems
+Realtime Layer
 
-WebSockets
 Socket.io
+WebSockets
 WebRTC
-Purpose
+🎯 Why this project exists
 
-SagX simulates a real-world enterprise workflow system combining task execution, asset validation, and real-time communication.
+SagX was built to simulate real enterprise workflow systems where:
 
-It is designed to reflect how internal operational tools work in organizations where:
+operations depend on resource validation
+actions follow strict business rules
+communication is embedded inside workflows
+real-time collaboration is essential
 
-tasks depend on resource availability
-actions are restricted by business rules
-communication is integrated directly into workflow execution
-Status
+It reflects how internal tools work in logistics, telecom, and industrial environments.
 
-This project is actively being improved as part of a full-stack development portfolio.
+🧪 Status
+
+Actively evolving into a production-grade full-stack system.
