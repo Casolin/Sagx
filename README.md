@@ -17,7 +17,7 @@ SagX is a full stack mission management platform designed for structured enterpr
 
 It replaces manual coordination with a controlled system where every action is validated in real time.
 
-The system simulates real operational environments where missions, machines, and resources must follow strict execution rules.
+The system simulates real operational environments where missions, machines, and resources follow strict execution rules.
 
 ---
 
@@ -35,8 +35,6 @@ The system simulates real operational environments where missions, machines, and
 ---
 
 <h2><b>WORKFLOW ENGINE</b></h2>
-
-SagX enforces strict operational rules similar to real enterprise systems.
 
 • 📦 Missions cannot start without required materials  
 • 🚫 Missing materials block execution automatically  
@@ -76,17 +74,20 @@ SagX enforces strict operational rules similar to real enterprise systems.
 
 <h2><b>TECH STACK</b></h2>
 
-<b>Frontend</b>  
-• React  
+<b>Languages</b>  
 • TypeScript  
-• Tailwind CSS  
-• Zustand  
+• JavaScript  
+• HTML  
+• CSS  
 
 <br>
 
-<b>Backend</b>  
+<b>Frameworks & Libraries</b>  
+• React  
 • Node.js  
 • Express.js  
+• Tailwind CSS  
+• Zustand  
 
 <br>
 
@@ -95,7 +96,7 @@ SagX enforces strict operational rules similar to real enterprise systems.
 
 <br>
 
-<b>Real Time</b>  
+<b>Real Time & Communication</b>  
 • Socket.io  
 • WebSockets  
 • WebRTC  
