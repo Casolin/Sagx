@@ -1,6 +1,6 @@
 # 🚀 SagX
 
-SagX is a full stack mission management platform built for organizations that need structured and rule based workflows instead of manual task coordination.
+SagX is a full stack mission management platform built for organizations that need structured, rule based workflows instead of manual task coordination.
 
 It also includes real time communication features like chat, voice and video calls, and screen sharing to support collaboration inside the system.
 
@@ -12,21 +12,14 @@ It also includes real time communication features like chat, voice and video cal
 
 <br>
 
-🔐 Secure authentication system  
-<br>
-🔑 Two Factor Authentication  
-<br>
-🔄 Refresh token session management  
-<br>
-📋 Mission and task management system  
-<br>
-💬 Real time chat  
-<br>
-📞 Voice and video calls  
-<br>
-🖥️ Screen sharing  
-<br>
-👥 Role based access control  
+• 🔐 Secure authentication system  
+• 🔑 Two Factor Authentication  
+• 🔄 Refresh token session management  
+• 📋 Mission and task management system  
+• 💬 Real time chat system  
+• 📞 Voice and video calling  
+• 🖥️ Screen sharing  
+• 👥 Role based access control  
 
 ---
 
@@ -36,19 +29,15 @@ It also includes real time communication features like chat, voice and video cal
 
 <br>
 
-SagX is not a simple CRUD app. It enforces real workflow logic.
+SagX is not a basic CRUD app. It behaves like a real operational system with strict rules.
 
 <br>
 
-📦 A mission cannot start if required materials are missing  
-<br>
-🚫 Missing materials block execution and require manager action  
-<br>
-⚠️ A machine cannot be marked as down without a valid alert  
-<br>
-🧑‍🔧 Technicians must contact managers when resources are missing  
-<br>
-🔁 Every action is validated before it is accepted by the system  
+• 📦 A mission cannot start if required materials are missing  
+• 🚫 Missing materials block execution and require manager approval  
+• ⚠️ Machine status cannot be changed to “down” without a valid alert  
+• 🧑‍🔧 Technicians must contact managers when resources are missing  
+• 🔁 Every action is validated before being accepted by the system  
 
 ---
 
@@ -58,13 +47,10 @@ SagX is not a simple CRUD app. It enforces real workflow logic.
 
 <br>
 
-🌐 WebSocket communication across the platform  
-<br>
-💬 Live chat between users  
-<br>
-🔔 Real time alerts for missions, machines and materials  
-<br>
-⚡ Instant updates without page refresh  
+• 🌐 WebSocket communication across the entire app  
+• 💬 Live chat between users  
+• 🔔 Real time alerts for missions, machines and materials  
+• ⚡ Instant updates without refreshing the page  
 
 ---
 
@@ -74,15 +60,11 @@ SagX is not a simple CRUD app. It enforces real workflow logic.
 
 <br>
 
-📞 Voice and video calls using WebRTC  
-<br>
-🧠 Global call state managed with Zustand  
-<br>
-🚫 Users cannot receive multiple calls at the same time  
-<br>
-📵 Calls are blocked when a user is busy  
-<br>
-🎛️ In call controls like mute, camera, screen share and minimize  
+• 📞 Voice and video calls using WebRTC  
+• 🧠 Global call state managed with Zustand  
+• 🚫 Users cannot receive multiple calls at the same time  
+• 📵 Calls are blocked when a user is already busy  
+• 🎛️ In call controls (mute, camera, screen share, minimize)  
 
 ---
 
@@ -92,9 +74,10 @@ SagX is not a simple CRUD app. It enforces real workflow logic.
 
 <br>
 
-Zustand is used for global state across the app.
-
-It keeps call state, session state and real time updates in sync so everything behaves consistently across the system.
+• Zustand handles global state across the app  
+• Manages call state and session state  
+• Keeps real time updates synchronized everywhere  
+• Ensures consistent behavior across all modules  
 
 ---
 
@@ -104,29 +87,29 @@ It keeps call state, session state and real time updates in sync so everything b
 
 <br>
 
-Frontend  
-React  
-TypeScript  
-Tailwind CSS  
-Zustand  
+### Frontend
+• React  
+• TypeScript  
+• Tailwind CSS  
+• Zustand  
 
 <br>
 
-Backend  
-Node.js  
-Express  
+### Backend
+• Node.js  
+• Express.js  
 
 <br>
 
-Database  
-MongoDB  
+### Database
+• MongoDB  
 
 <br>
 
-Real time  
-Socket.io  
-WebSockets  
-WebRTC  
+### Real time
+• Socket.io  
+• WebSockets  
+• WebRTC  
 
 ---
 
@@ -138,7 +121,7 @@ WebRTC
 
 SagX simulates real enterprise systems where everything depends on rules, resources and coordination between users.
 
-It represents how internal tools work in real companies where actions must be validated and cannot happen freely without constraints.
+It reflects how internal tools work in real companies where actions must be validated and cannot happen freely without constraints.
 
 ---
 
